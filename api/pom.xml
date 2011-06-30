@@ -103,7 +103,7 @@
     <scm>
         <connection>scm:svn:https://svn.java.net/svn/el-spec~source-code/trunk/api</connection>
         <developerConnection>scm:svn:https://svn.java.net/svn/el-spec~source-code/trunk/api</developerConnection>
-        <url>http://java.net/projects/el-spec/sources/svn/show</url>
+        <url>http://java.net/projects/el-spec/sources/source-code/show</url>
     </scm>
 
     <build>
