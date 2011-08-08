@@ -69,6 +69,8 @@ import java.util.Locale;
  * <ul>
  *   <li>a reference to the base {@link ELResolver} that will be consulted
  *       to resolve model objects and their properties</li>
+ *   <li>a reference to {@linke ImportHandler} that will be consulted to
+ *       to resolve classes that has been imported</li>
  *   <li>a reference to {@link FunctionMapper} that will be used
  *       to resolve EL Functions.
  *   <li>a reference to {@link VariableMapper} that will be used
@@ -201,6 +203,17 @@ public abstract class ELContext {
      */
     public abstract ELResolver getELResolver();
     
+    /**
+     * Retrieves the <code>ImportHandler</code> associated with this
+     * <code>ELContext</code>.
+     *
+     * @return The import handler to manage imports of classes and packages.
+     * @since EL 3.0
+     */
+    public ImportHandler getImportHandler() {
+        return null;
+    }
+
     /**
      * Retrieves the <code>FunctionMapper</code> associated with this 
      * <code>ELContext</code>.

@@ -23,6 +23,11 @@ public class StandardELContext extends ELContext {
     private CompositeELResolver customResolvers;
 
     /*
+     * The ImportHandler for this ELContext.
+     */
+    private ImportHandler importHandler;
+
+    /*
      * The FunctionMapper for this ELContext.
      */
     private FunctionMapper functionMapper;
@@ -96,18 +101,6 @@ public class StandardELContext extends ELContext {
     }
 
     /**
-     * Set the <code>ELResolver</code> for this context.
-     * @param elResolver The new ELResolver.
-     */
-    public ELResolver setELResolver(ELResolver elResolver) {
-        ELResolver prev = this.elResolver;
-        this.elResolver = elResolver;
-        // Remove all custom ELResolvers added
-        customResolvers = null;
-        return prev;
-    }
-
-    /**
      * Add a custom ELResolver to the context.  The list of the custom
      * ELResolvers will be accessed in the order they are added.
      * A custom ELResolver added to the context cannot be removed, unless
@@ -125,6 +118,16 @@ public class StandardELContext extends ELContext {
             elResolver = resolver;
         }
         customResolvers.add(cELResolver);
+    }
+
+    /**
+     * Construct (if need) and return an ImportHandler {
+     */
+    public ImportHandler getImportHandler() {
+        if (importHandler == null) {
+            importHandler = new ImportHandler();
+        }
+        return importHandler;
     }
 
     /**

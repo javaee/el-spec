@@ -9,7 +9,7 @@ abstract class BeanNameResolver {
      * Return the bean known by its name
      * @param beanName The name of the bean
      * @return The bean with the given name.  A <code>null</code> indicates
-     *     that there a bean with the given name is not found.
+     *     that a bean with the given name is not found.
      */
     public String getBean(String beanName) {
         return null;
@@ -18,7 +18,7 @@ abstract class BeanNameResolver {
     /*
      * Set a value to an existing bean of the given name.
      * @param beanName The name of the bean
-     * @param value The bean to be set for the name
+     * @param value The new bean for the given name.
      * @throws PropertyNotWritableException if setting a new bean for the given
      *    name is not allowed.
      */

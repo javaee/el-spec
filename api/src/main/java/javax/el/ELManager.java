@@ -83,18 +83,6 @@ public class ELManager {
         getELContext().addELResolver(elr);
     }
 
-    /*
-     * Set the ELResolver in the ELContext, to be used for EL expression
-     * processing.  Note that the ELResolvers added in the previous calls to
-     * addELResolver and addBeanNameResolver are associated with the previous
-     * ELContext, and will not be automatically added to the new ELResolver.
-     * @param elr The new ELResolver
-     * @return The previous ELResolver or null if there is none.
-     */
-    public ELResolver setELResolver(ELResolver elr) {
-        return getELContext().setELResolver(elr);
-    }
-
     /**
      * Maps a static method to an EL function
      * @param prefix The prefix of the function, or "" if no prefix.
@@ -120,4 +108,22 @@ public class ELManager {
     public void setVariable(String variable, ValueExpression expression) {
         getELContext().getVariableMapper().setVariable(variable, expression);
     }
+
+    /**
+     * Import a class.
+     * @param name The full class name of the class to be imported
+     * @throws ELException if the name is not a full class name.
+     */
+    public void importClass(String className) throws ELException {
+        getELContext().getImportHandler().importClass(className);
+    }
+
+    /**
+     * Import all the classes in a package.
+     * @param The package name to be imported
+     */
+    public void importPackage(String packageName) {
+        getELContext().getImportHandler().importPackage(packageName);
+    }
+
 }
