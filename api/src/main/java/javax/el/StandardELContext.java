@@ -1,6 +1,7 @@
 package javax.el;
 
-import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.lang.reflect.Method;
 
 /*
@@ -44,6 +45,11 @@ public class StandardELContext extends ELContext {
      */
     private ELContext delegate = null;
  
+    /**
+     * A bean repository local to this context
+     */
+    private Map<String, Object> beans = new ConcurrentHashMap<String, Object>();
+
     /**
      * Default Constructor
      */
@@ -90,6 +96,7 @@ public class StandardELContext extends ELContext {
     public ELResolver getELResolver() {
         if (elResolver == null) {
             CompositeELResolver resolver = new CompositeELResolver();
+            resolver.add(new BeanNameELResolver(new LocalBeanNameResolver()));
             resolver.add(new MapELResolver());
             resolver.add(new ResourceBundleELResolver());
             resolver.add(new ListELResolver());
@@ -131,6 +138,14 @@ public class StandardELContext extends ELContext {
     }
 
     /**
+     * Get the local bean repository
+     * @return the bean repository
+     */
+    public Map<String, Object> getBeans() {
+        return beans;
+    } 
+
+    /**
      * Construct (if needed) and return a default FunctionMapper.
      * @param The default FunctionMapper
      */
@@ -156,7 +171,7 @@ public class StandardELContext extends ELContext {
 
     private static class DefaultFunctionMapper extends FunctionMapper {
 
-        private HashMap<String, Method> functions = null;
+        private Map<String, Method> functions = null;
         
         @Override
         public Method resolveFunction(String prefix, String localName) {
@@ -170,7 +185,7 @@ public class StandardELContext extends ELContext {
         @Override
         public void mapFunction(String prefix, String localName, Method meth){
             if (functions == null) {
-                functions = new HashMap<String, Method>();
+                functions = new ConcurrentHashMap<String, Method>();
             }
             functions.put(prefix + ":" + localName, meth);
         }
@@ -178,7 +193,7 @@ public class StandardELContext extends ELContext {
 
     private static class DefaultVariableMapper extends VariableMapper {
 
-        private HashMap<String, ValueExpression> variables = null;
+        private Map<String, ValueExpression> variables = null;
 
         @Override
         public ValueExpression resolveVariable (String variable) {
@@ -190,15 +205,35 @@ public class StandardELContext extends ELContext {
 
         @Override
         public ValueExpression setVariable(String variable,
-                                       ValueExpression expression) {
+                                           ValueExpression expression) {
+            if (variables == null) {
+                variables = new ConcurrentHashMap<String, ValueExpression>();
+            }
             ValueExpression prev = null;
             if (expression == null) {
-                variables.remove(variable);
+                prev = variables.remove(variable);
             } else {
-                prev = variables.get(variable);
-                variables.put(variable, expression);
+                prev = variables.put(variable, expression);
             }
             return prev;
+        }
+    }
+
+    private class LocalBeanNameResolver extends BeanNameResolver {
+
+        @Override
+        public String getBean(String beanName) {
+            return beans.get(beanName);
+        }
+
+        @Override
+        public void setBeanValue(String beanName, Object value) {
+            beans.set(beanName, value);
+        }
+
+        @Override
+        public boolean isReadOnly(String beanName) {
+            return false;
         }
     }
 }

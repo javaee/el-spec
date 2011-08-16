@@ -102,8 +102,6 @@ public class ELManager {
      * @param variable The variable name
      * @param expression The ValueExpression to be assigned
      *        to the variable.
-     * @return The previous ValueExpression assigned to this variable,
-     *         null if there is no previouse assignment to this variable.
      */
     public void setVariable(String variable, ValueExpression expression) {
         getELContext().getVariableMapper().setVariable(variable, expression);
@@ -126,4 +124,12 @@ public class ELManager {
         getELContext().getImportHandler().importPackage(packageName);
     }
 
+    /**
+     * Define a bean in the local bean repository
+     * @name The name of the bean
+     * @bean The bean instance to be defined
+     */
+    public void defineBean(String name, Object bean) {
+        getELContext().getBeans().set(name, bean);
+    }
 }
