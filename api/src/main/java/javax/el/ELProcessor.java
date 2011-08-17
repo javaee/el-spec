@@ -114,11 +114,12 @@ public class ELProcessor {
             throws ClassNotFoundException, NoSuchMethodException {
 
         Method meth = null;
-        Class<?> klass = Class.forName(className);
+        ClassLoader loader = getClass().getClassLoader();
+        Class<?> klass = Class.forName(className, false, loader);
         int j = method.indexOf('(');
         if (j < 0) {
             // Just a name is given
-            for (Method m: klass.getMethods()) {
+            for (Method m: klass.getDeclaredMethods()) {
                 if (m.getName().equals(method)) {
                     meth = m;
                 }
@@ -127,7 +128,26 @@ public class ELProcessor {
                 throw new NoSuchMethodException();
             }
         } else {
-            // TODO: get meth from signature
+            // method is the signature
+            // First get the method name, ignore the return type
+            int p = method.indexOf(' ');
+            if (p < 0) {
+                throw new NoSuchMethodException(
+                    "Bad method singnature: " + method);
+            }
+            String methodName = method.substring(p+1, j).trim();
+            // Extract parameter types
+            p = method.indexOf(')', j+1);
+            if (p < 0) {
+                throw new NoSuchMethodException(
+                    "Bad method singnature: " + method);
+            }
+            String[] params = method.substring(j+1, p).split(",");
+            Class<?>[] paramTypes = new Class<?>[params.length];
+            for (int i = 0; i < params.length; i++) {
+                paramTypes[i] = toClass(params[i], loader);
+            }
+            meth = klass.getDeclaredMethod(methodName, paramTypes);
         }
         elManager.mapFunction(prefix, localName, meth);
     }
@@ -140,5 +160,52 @@ public class ELProcessor {
     public void defineBean(String name, Object bean) {
         elManager.defineBean(name, bean);
     }
+
+    /**
+     * Return the Class object associated with the class or interface with
+     * the given name.
+     */
+    private static Class<?> toClass(String type, ClassLoader loader)
+            throws ClassNotFoundException {
+
+        Class<?> c = null;
+        int i0 = type.indexOf('[');
+        int dims = 0;
+        if (i0 > 0) {
+            // This is an array.  Count the dimensions
+            for (int i = 0; i < type.length(); i++) {
+                if (type.charAt(i) == '[')
+                    dims++;
+            }
+            type = type.substring(0, i0);
+        }
+
+        if ("boolean".equals(type))
+            c = boolean.class;
+        else if ("char".equals(type))
+            c = char.class;
+        else if ("byte".equals(type))
+            c =  byte.class;
+        else if ("short".equals(type))
+            c = short.class;
+        else if ("int".equals(type))
+            c = int.class;
+        else if ("long".equals(type))
+            c = long.class;
+        else if ("float".equals(type))
+            c = float.class;
+        else if ("double".equals(type))
+            c = double.class;
+        else
+            c = loader.loadClass(type);
+
+        if (dims == 0)
+            return c;
+
+        if (dims == 1)
+            return java.lang.reflect.Array.newInstance(c, 1).getClass();
+
+        // Array of more than i dimension
+        return java.lang.reflect.Array.newInstance(c, new int[dims]).getClass();    }
 }
 
