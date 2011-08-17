@@ -92,7 +92,7 @@ package javax.el;
  * {@link ELResolver#setValue}, {@link ELResolver#isReadOnly} or 
  * {@link ELResolver#getType} method, depending on which was called on 
  * the <code>ValueExpression</code>.
- * For the {@link getValueReference} method, the (base, property) is
+ * For the {@link #getValueReference} method, the (base, property) is
  * not resolved by the ELResolver, but an instance of {@link ValueReference}
  * is created to encapsulate this (base ,property), and returned.
  * </p>

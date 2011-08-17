@@ -69,7 +69,7 @@ import java.util.Locale;
  * <ul>
  *   <li>a reference to the base {@link ELResolver} that will be consulted
  *       to resolve model objects and their properties</li>
- *   <li>a reference to {@linke ImportHandler} that will be consulted to
+ *   <li>a reference to {@link ImportHandler} that will be consulted to
  *       to resolve classes that has been imported</li>
  *   <li>a reference to {@link FunctionMapper} that will be used
  *       to resolve EL Functions.

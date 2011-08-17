@@ -154,8 +154,8 @@ public class ELProcessor {
 
     /**
      * Define a bean in a local bean repository
-     * @name The name of the bean
-     * @bean The bean instance to be defined
+     * @param name The name of the bean
+     * @param bean The bean instance to be defined
      */
     public void defineBean(String name, Object bean) {
         elManager.defineBean(name, bean);

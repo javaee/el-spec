@@ -147,7 +147,7 @@ public class StandardELContext extends ELContext {
 
     /**
      * Construct (if needed) and return a default FunctionMapper.
-     * @param The default FunctionMapper
+     * @return The default FunctionMapper
      */
     @Override
     public FunctionMapper getFunctionMapper() {

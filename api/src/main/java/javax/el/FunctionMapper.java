@@ -96,7 +96,7 @@ public abstract class FunctionMapper {
    *     <code>""</code> in <code>${method()}</code>.
    * @param localName the short name of the function. For example,
    *     <code>"method"</code> in <code>${fn:method()}</code>.
-   * @meth The static method that is to be invoked, when the function is
+   * @param meth The static method that is to be invoked, when the function is
    *     referenced.  The null value causes the function to be removed from the
    *     map.
    */

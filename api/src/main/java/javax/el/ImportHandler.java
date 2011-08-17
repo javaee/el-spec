@@ -34,7 +34,7 @@ public class ImportHandler {
 
     /**
      * Import all the classes in a package.
-     * @param The package name to be imported
+     * @param packageName The package name to be imported
      */
     public void importPackage(String packageName) {
         packages.add(packageName);

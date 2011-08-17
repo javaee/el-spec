@@ -109,7 +109,7 @@ public class ELManager {
 
     /**
      * Import a class.
-     * @param name The full class name of the class to be imported
+     * @param className The full class name of the class to be imported
      * @throws ELException if the name is not a full class name.
      */
     public void importClass(String className) throws ELException {
@@ -118,7 +118,7 @@ public class ELManager {
 
     /**
      * Import all the classes in a package.
-     * @param The package name to be imported
+     * @param packageName The package name to be imported
      */
     public void importPackage(String packageName) {
         getELContext().getImportHandler().importPackage(packageName);
@@ -126,8 +126,8 @@ public class ELManager {
 
     /**
      * Define a bean in the local bean repository
-     * @name The name of the bean
-     * @bean The bean instance to be defined
+     * @param name The name of the bean
+     * @param bean The bean instance to be defined
      */
     public void defineBean(String name, Object bean) {
         getELContext().getBeans().put(name, bean);
