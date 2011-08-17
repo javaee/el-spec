@@ -138,7 +138,7 @@ public class ELProcessor {
      * @bean The bean instance to be defined
      */
     public void defineBean(String name, Object bean) {
-        elManage.defineBean(name, bean);
+        elManager.defineBean(name, bean);
     }
 }
 

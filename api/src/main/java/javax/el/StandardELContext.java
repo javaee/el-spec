@@ -222,13 +222,13 @@ public class StandardELContext extends ELContext {
     private class LocalBeanNameResolver extends BeanNameResolver {
 
         @Override
-        public String getBean(String beanName) {
+        public Object getBean(String beanName) {
             return beans.get(beanName);
         }
 
         @Override
         public void setBeanValue(String beanName, Object value) {
-            beans.set(beanName, value);
+            beans.put(beanName, value);
         }
 
         @Override

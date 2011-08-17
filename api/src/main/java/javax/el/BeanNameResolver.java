@@ -11,7 +11,7 @@ abstract class BeanNameResolver {
      * @return The bean with the given name.  A <code>null</code> indicates
      *     that a bean with the given name is not found.
      */
-    public String getBean(String beanName) {
+    public Object getBean(String beanName) {
         return null;
     }
 

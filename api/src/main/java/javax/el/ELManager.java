@@ -130,6 +130,6 @@ public class ELManager {
      * @bean The bean instance to be defined
      */
     public void defineBean(String name, Object bean) {
-        getELContext().getBeans().set(name, bean);
+        getELContext().getBeans().put(name, bean);
     }
 }
