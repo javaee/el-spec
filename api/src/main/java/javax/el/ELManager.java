@@ -9,6 +9,8 @@ import java.lang.reflect.Method;
  *
  * The ELManager manages the EL vironment and handles adding an ELResolver,
  * defining a function, and setting of a variable.
+ *
+ * @since EL 3.0
  */
 public class ELManager {
 

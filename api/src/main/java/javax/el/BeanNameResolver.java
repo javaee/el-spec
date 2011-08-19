@@ -3,6 +3,8 @@ package javax.el;
 /*
  * This class can be extended to return a bean object given its name,
  * or to set a value to an existing bean.
+ *
+ * @since EL 3.0
  */
 abstract class BeanNameResolver {
     /*

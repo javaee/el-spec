@@ -1,13 +1,15 @@
 package javax.el;
 
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashMap;
 import java.lang.reflect.Method;
 
 /*
  * A stadard ELContext suitable for use in stand alone EL.
  * This class provides a default implementation of an ELResolver, FunctionMapper
  * and a VariableMapper.  
+ *
+ * @since EL 3.0
  */
 
 public class StandardELContext extends ELContext {
@@ -48,7 +50,7 @@ public class StandardELContext extends ELContext {
     /**
      * A bean repository local to this context
      */
-    private Map<String, Object> beans = new ConcurrentHashMap<String, Object>();
+    private Map<String, Object> beans = new HashMap<String, Object>();
 
     /**
      * Default Constructor
@@ -97,6 +99,8 @@ public class StandardELContext extends ELContext {
         if (elResolver == null) {
             CompositeELResolver resolver = new CompositeELResolver();
             resolver.add(new BeanNameELResolver(new LocalBeanNameResolver()));
+            customResolvers = new CompositeELResolver();
+            resolver.add(customResolvers);
             resolver.add(new MapELResolver());
             resolver.add(new ResourceBundleELResolver());
             resolver.add(new ListELResolver());
@@ -110,20 +114,11 @@ public class StandardELContext extends ELContext {
     /**
      * Add a custom ELResolver to the context.  The list of the custom
      * ELResolvers will be accessed in the order they are added.
-     * A custom ELResolver added to the context cannot be removed, unless
-     * the ELResolver for the context is replaced with setELResover.
+     * A custom ELResolver added to the context cannot be removed.
      * @param cELResolver The new ELResolver to be added to the context
      */
     public void addELResolver(ELResolver cELResolver) {
-        if (customResolvers == null) {
-            customResolvers = new CompositeELResolver();
-            ELResolver tempResolver = getELResolver();
-            CompositeELResolver resolver = new CompositeELResolver();
-            // custom ELResolvers are used first
-            resolver.add(customResolvers);
-            resolver.add(tempResolver);
-            elResolver = resolver;
-        }
+        getELResolver();  // make sure elResolver is constructed
         customResolvers.add(cELResolver);
     }
 
@@ -185,7 +180,7 @@ public class StandardELContext extends ELContext {
         @Override
         public void mapFunction(String prefix, String localName, Method meth){
             if (functions == null) {
-                functions = new ConcurrentHashMap<String, Method>();
+                functions = new HashMap<String, Method>();
             }
             functions.put(prefix + ":" + localName, meth);
         }
@@ -207,7 +202,7 @@ public class StandardELContext extends ELContext {
         public ValueExpression setVariable(String variable,
                                            ValueExpression expression) {
             if (variables == null) {
-                variables = new ConcurrentHashMap<String, ValueExpression>();
+                variables = new HashMap<String, ValueExpression>();
             }
             ValueExpression prev = null;
             if (expression == null) {

@@ -5,6 +5,8 @@ import java.beans.FeatureDescriptor;
 
 /*
  * An ELResolver for resolving user or container managed beans.
+ *
+ * @since EL 3.0
  */
 public class BeanNameELResolver extends ELResolver {
 
