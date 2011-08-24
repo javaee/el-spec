@@ -87,11 +87,19 @@ public class ELManager {
 
     /**
      * Maps a static method to an EL function
-     * @param prefix The prefix of the function, or "" if no prefix.
-     * @param localName The short name of the function.
+     * @param function The name of the function
      * @param meth The static method to be invoked when the function is used.
      */
-    public void mapFunction(String prefix, String localName, Method meth) {
+    public void mapFunction(String function, Method meth) {
+        int i = function.indexOf(':');
+        String prefix, localName;
+        if (i < 0) {
+            prefix = "";
+            localName = function;
+        } else {
+            prefix = function.substring(0, i);
+            localName = function.substring(i+1);
+        }
         getELContext().getFunctionMapper().mapFunction(prefix, localName, meth);
     }
 

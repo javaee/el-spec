@@ -93,10 +93,11 @@ public class ELProcessor {
 
     /*
      * Define an EL function.
-     * @param prefix The prefix of the function, or "" if prefix not used.
-     * @param localName The short name of the function.
+     * @param function The name of the function, with optional namespace prefix
+     *    (e.g. "sum" or "ns:func").  Can be null or empty (""), in which case
+     *    the method name is used as the function name.
      * @param className The name of the Java class that implements the function
-     * @param method The name (without the parenthese) or the signature 
+     * @param method The name (specified without parenthesis) or the signature 
      *    (as in the Java Language Spec) of the method that implements the
      *    function.  If the name (e.g. "sum") is given, the first declared
      *    method in class that matches the name is selected.  If the signature
@@ -108,7 +109,7 @@ public class ELProcessor {
      *    signature) is not a declared method of the class, or if the method
      *    signature is not valid.
      */
-    public void defineFunction(String prefix, String localName,
+    public void defineFunction(String function,
                                String className,
                                String method)
             throws ClassNotFoundException, NoSuchMethodException {
@@ -149,7 +150,19 @@ public class ELProcessor {
             }
             meth = klass.getDeclaredMethod(methodName, paramTypes);
         }
-        elManager.mapFunction(prefix, localName, meth);
+        elManager.mapFunction(function, meth);
+    }
+
+    /**
+     * Define an EL function
+     * @param function The name of the function, with optional namespace prefix
+     *    (e.g. "sum" or "ns:func").  Can be null or empty (""), in which case
+     *    the method name is used as the function name.
+     * @param method The java.lang.reflect.Method instance of the method that
+     *    implements the function.
+     */
+    public void defineFunction(String function, Method method) {
+        elManager.mapFunction(function, method);
     }
 
     /**
