@@ -24,7 +24,7 @@ public class StandardTypeConverter extends TypeConverter {
      *     conversion rules.
      */
     @Override
-    public Object coerceToType(Object obj, Class<?> targetType) {
-        return getExpressionFactory().coerceToType(obj, targetType);
+    public <T> T coerceToType(Object obj, Class<T> targetType) {
+        return (T)getExpressionFactory().coerceToType(obj, targetType);
     }
 }

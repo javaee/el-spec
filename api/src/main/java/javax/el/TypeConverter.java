@@ -29,6 +29,6 @@ public abstract class TypeConverter {
      * @throws ELException thrown if an error results from applying the
      *     conversion rules.
      */
-    public abstract Object coerceToType(Object obj, Class<?> targetType);
+    public abstract <T> T coerceToType(Object obj, Class<T> targetType);
 
 }
