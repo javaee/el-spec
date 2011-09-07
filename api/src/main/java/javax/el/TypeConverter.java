@@ -1,15 +1,15 @@
 package javax.el;
 
 /**
- * The interface for coercing an object to a specific type.  The
- * {@link ELResolver} contains an implementation of this interface, and
- * is used to coerce an object to a type, in expression evaluations.
+ * The abstract class coerces an object to a specific type.  The
+ * {@link ELContext} contains an extension of this interface, and
+ * is used for type coercion in expression evaluations.
  *
- * <p>{@link StandardTypeConverter} extends this interface and implements the
+ * <p>{@link StandardTypeConverter} extends this class to implement the
  * conversion rules specified in the specification and is used in
  * {@link StandardELContext}.  The easiest way to plug in a TypeConverter is to
  * subclass <code>StandardTypeConverter</code> to provide a conversion for a
- * specific source and target type, and leave other conversions to its
+ * specific source and target type, while leaving other conversions to its
  * super class.
  *
  * @since EL 3.0
