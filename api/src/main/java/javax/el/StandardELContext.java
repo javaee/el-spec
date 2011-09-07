@@ -41,6 +41,11 @@ public class StandardELContext extends ELContext {
     private VariableMapper variableMapper;
 
     /*
+     * The TypeConverter for this ELContext.
+     */
+    private TypeConverter typeConverter;
+
+    /*
      * If non-null, indicates the presence of a delegate ELContext.
      * When a Standard is constructed from another ELContext, there is no
      * easy way to get its private context map, therefore delegation is needed.
@@ -162,6 +167,29 @@ public class StandardELContext extends ELContext {
             variableMapper = new DefaultVariableMapper();
         }
         return variableMapper;
+    }
+
+    /**
+     * Set the TypeConverter for expression evaluation
+     * @param typeConverter The TypeConverter to be used for expression
+     *     evaluations.
+     * @return The previous TypeConverter
+     */
+    public TypeConverter setTypeConverter(TypeConverter typeConverter) {
+        TypeConverter prev = this.typeConverter;
+        this.typeConverter = typeConverter;
+        return prev;
+    }
+
+    /**
+     * Construct (if needed) and return a default TypeConverter() {
+     */
+    @Override
+    public TypeConverter getTypeConverter() {
+        if (typeConverter == null) {
+            typeConverter = new StandardTypeConverter();
+        }
+        return typeConverter;
     }
 
     private static class DefaultFunctionMapper extends FunctionMapper {

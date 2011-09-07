@@ -266,6 +266,19 @@ public abstract class ELContext {
      */
     public abstract VariableMapper getVariableMapper();
 
+    /**
+     * Retrieves the <code>TypeConverter</code> associated with this
+     * <code>ELContext</code>
+     *
+     * @return The type converter to be consulted for cocercing an object
+     * to a specific type.
+     *
+     * @since EL 3.0
+     */
+    public TypeConverter getTypeConverter() {
+        return null;
+    }
+
     private boolean resolved;
     private HashMap<Class<?>, Object> map = new HashMap<Class<?>, Object>();
 

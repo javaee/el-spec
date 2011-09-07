@@ -17,7 +17,7 @@ public class ELManager {
     private ExpressionFactory expressionFactory;
     private StandardELContext elContext;
 
-    /*
+    /**
      * Return the ExpressionFactory instance used for EL evaluations
      * @return The ExpressionFactory
      */
@@ -26,17 +26,6 @@ public class ELManager {
             expressionFactory = ExpressionFactory.newInstance();
         }
         return expressionFactory;
-    }
-
-    /*
-     * Set the ExpressionFactory used for EL evaluations.
-     * @param The new ExpressionFactory.
-     * @return The previous ExpressionFactory, null if none
-     */
-    public ExpressionFactory setExpressionFactory(ExpressionFactory factory) {
-        ExpressionFactory prev = expressionFactory;
-        expressionFactory = factory;
-        return prev;
     }
 
     /**
@@ -50,7 +39,7 @@ public class ELManager {
         return elContext;
     }
 
-    /*
+    /**
      * Set the ELContext used for parsing and evaluating EL expressions.
      * @param context The new ELContext.
      * @return The previous ELContext, null if none.
@@ -65,7 +54,7 @@ public class ELManager {
         return prev;
     }
 
-    /*
+    /**
      * Register a BeanNameResolver.
      * Implicitly adds a BeanNameELResolver to the list of ELResolvers
      * Once reigstered, it cannot be removed.
@@ -75,7 +64,7 @@ public class ELManager {
         getELContext().addELResolver(new BeanNameELResolver(bnr));
     }
 
-    /*
+    /**
      * Add an user defined ELResolver to the currect list of ELResolvers
      * Can be called multiple times with additive effect.
      * @param elr The ELResolver to be added to the list of ELResolvers in
@@ -142,4 +131,15 @@ public class ELManager {
     public void defineBean(String name, Object bean) {
         getELContext().getBeans().put(name, bean);
     }
+
+    /**
+     * Set the TypeConverter for expression evaluation
+     * @param typeConverter The TypeConverter to be used for expression 
+     *     evaluations.
+     * @return The previous TypeConverter
+     */
+    public TypeConverter setTypeConverter(TypeConverter typeConverter) {
+        return getELContext().setTypeConverter(typeConverter);
+    }
+
 }
