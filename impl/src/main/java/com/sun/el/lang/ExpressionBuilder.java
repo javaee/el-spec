@@ -140,6 +140,7 @@ public final class ExpressionBuilder implements NodeVisitor {
                 new SoftConcurrentHashMap();
     private FunctionMapper fnMapper;
     private VariableMapper varMapper;
+    private VariableMapper targetVarMapper;
     private String expression;
 
     /**
@@ -157,6 +158,7 @@ public final class ExpressionBuilder implements NodeVisitor {
         }
         if (ctxVar != null) {
             this.varMapper = new VariableMapperFactory(ctxVar);
+            this.targetVarMapper = ctxVar;
         }
     }
 
@@ -272,7 +274,7 @@ public final class ExpressionBuilder implements NodeVisitor {
             throws ELException {
         Node n = this.build();
         return new ValueExpressionImpl(this.expression, n, this.fnMapper,
-                this.varMapper, expectedType);
+                this.varMapper, this.targetVarMapper, expectedType);
     }
 
     public MethodExpression createMethodExpression(Class expectedReturnType,
@@ -280,8 +282,8 @@ public final class ExpressionBuilder implements NodeVisitor {
         Node n = this.build();
         if (n instanceof AstValue || n instanceof AstIdentifier) {
             return new MethodExpressionImpl(expression, n,
-                    this.fnMapper, this.varMapper, expectedReturnType,
-                    expectedParamTypes);
+                    this.fnMapper, this.varMapper, this.targetVarMapper,
+                    expectedReturnType, expectedParamTypes);
         } else if (n instanceof AstLiteralExpression) {
             return new MethodExpressionLiteral(expression, expectedReturnType,
                     expectedParamTypes);

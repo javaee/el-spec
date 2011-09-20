@@ -110,6 +110,7 @@ public final class MethodExpressionImpl extends MethodExpression implements
     private FunctionMapper fnMapper;
 
     private VariableMapper varMapper;
+    private VariableMapper targetVarMapper;
 
     private transient Node node;
 
@@ -131,12 +132,14 @@ public final class MethodExpressionImpl extends MethodExpression implements
      */
     public MethodExpressionImpl(String expr, Node node,
             FunctionMapper fnMapper, VariableMapper varMapper,
+            VariableMapper targetVarMapper,
             Class expectedType, Class[] paramTypes) {
         super();
         this.expr = expr;
         this.node = node;
         this.fnMapper = fnMapper;
         this.varMapper = varMapper;
+        this.targetVarMapper =  targetVarMapper;
         this.expectedType = expectedType;
         this.paramTypes = paramTypes;
     }
@@ -228,7 +231,7 @@ public final class MethodExpressionImpl extends MethodExpression implements
             ELException {
         Node n = this.getNode();
         EvaluationContext ctx = new EvaluationContext(context, this.fnMapper,
-                this.varMapper);
+                this.varMapper, this.targetVarMapper);
         return n.getMethodInfo(ctx, this.paramTypes);
     }
 
@@ -298,7 +301,7 @@ public final class MethodExpressionImpl extends MethodExpression implements
             throws PropertyNotFoundException, MethodNotFoundException,
             ELException {
         EvaluationContext ctx = new EvaluationContext(context, this.fnMapper,
-                this.varMapper);
+                this.varMapper, targetVarMapper);
         return this.getNode().invoke(ctx, this.paramTypes, params);
     }
 
@@ -318,6 +321,7 @@ public final class MethodExpressionImpl extends MethodExpression implements
                 .readObject()));
         this.fnMapper = (FunctionMapper) in.readObject();
         this.varMapper = (VariableMapper) in.readObject();
+        this.targetVarMapper = (VariableMapper) in.readObject();
     }
 
     /*
@@ -332,6 +336,7 @@ public final class MethodExpressionImpl extends MethodExpression implements
         out.writeObject(ReflectionUtil.toTypeNameArray(this.paramTypes));
         out.writeObject(this.fnMapper);
         out.writeObject(this.varMapper);
+        out.writeObject(this.targetVarMapper);
     }
 
     public boolean isLiteralText() {

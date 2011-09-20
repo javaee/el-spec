@@ -118,7 +118,16 @@ void DynamicExpression() #DynamicExpression : {}
  */
 void Expression() : {}
 {
-	Choice()
+	Assignment()
+}
+
+/*
+ * Assignment
+ * For '=', then Choice
+ */
+void Assignment() : {}
+{
+        Choice() (<ASSIGN> Assignment() #Assign(2) )?
 }
 
 /*
@@ -127,7 +136,7 @@ void Expression() : {}
  */
 void Choice() : {}
 {
-	Or() (<QUESTIONMARK> Choice() <COLON> Choice() #Choice(3))*
+	Or() (<QUESTIONMARK> Choice() <COLON> Choice() #Choice(3))?
 }
 
 /*
@@ -168,16 +177,25 @@ void Equality() : {}
  */
 void Compare() : {}
 {
-	Math()
+	Concatenation()
 	(
-		((<LT0>|<LT1>) Math() #LessThan(2))
+		((<LT0>|<LT1>) Concatenation() #LessThan(2))
 	|
-		((<GT0>|<GT1>) Math() #GreaterThan(2))
+		((<GT0>|<GT1>) Concatenation() #GreaterThan(2))
 	|
-		((<LE0>|<LE1>) Math() #LessThanEqual(2))
+		((<LE0>|<LE1>) Concatenation() #LessThanEqual(2))
 	|
-		((<GE0>|<GE1>) Math() #GreaterThanEqual(2))
+		((<GE0>|<GE1>) Concatenation() #GreaterThanEqual(2))
 	)*
+}
+
+/*
+ * Concatenation
+ * For '&', then Math()
+ */
+void Concatenation() : {}
+{
+        Math() ( <CONCAT> Math() #Concat(2) )*
 }
 
 /*
@@ -473,6 +491,8 @@ void Null() #Null : {}
 |	< DIV1 : "div" >
 |	< MOD0 : "%" >
 |	< MOD1 : "mod" >
+|       < CONCAT : "&" >
+|       < ASSIGN : "=" >
 |	< IDENTIFIER : (<LETTER>|<IMPL_OBJ_START>) (<LETTER>|<DIGIT>)* >
 |	< #IMPL_OBJ_START: "#" >
 |	< #LETTER:

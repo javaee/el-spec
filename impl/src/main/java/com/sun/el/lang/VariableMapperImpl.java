@@ -56,7 +56,7 @@ public class VariableMapperImpl extends VariableMapper implements Externalizable
     
     private Map<String, ValueExpression> vars =
             new HashMap<String, ValueExpression>();
-    
+
     public VariableMapperImpl() {
         super();
     }

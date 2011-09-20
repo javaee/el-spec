@@ -44,7 +44,7 @@
 
 <project name="el-impl" default="generate" basedir=".">
 
-    <property name="javacc.home" value="/z/tools/javacc-4.1/"/>
+    <property name="javacc.home" value="/home/kchung/tools/javacc-5.0"/>
     <property name="dir" value="src/main/java/com/sun/el/parser"/>
 
     <target name="generate" description="Generate java files">

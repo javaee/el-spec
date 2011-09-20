@@ -122,6 +122,7 @@ public final class ValueExpressionImpl extends ValueExpression implements
     private FunctionMapper fnMapper;
 
     private VariableMapper varMapper;
+    private VariableMapper targetVarMapper;
 
     private transient Node node;
 
@@ -133,11 +134,13 @@ public final class ValueExpressionImpl extends ValueExpression implements
      * 
      */
     public ValueExpressionImpl(String expr, Node node, FunctionMapper fnMapper,
-            VariableMapper varMapper, Class expectedType) {
+            VariableMapper varMapper, VariableMapper targetVarMapper,
+            Class expectedType) {
         this.expr = expr;
         this.node = node;
         this.fnMapper = fnMapper;
         this.varMapper = varMapper;
+        this.targetVarMapper = targetVarMapper;
         this.expectedType = expectedType;
     }
 
@@ -196,7 +199,7 @@ public final class ValueExpressionImpl extends ValueExpression implements
     public Class getType(ELContext context) throws PropertyNotFoundException,
             ELException {
         EvaluationContext ctx = new EvaluationContext(context, this.fnMapper,
-                this.varMapper);
+                this.varMapper, this.targetVarMapper);
         return this.getNode().getType(ctx);
     }
 
@@ -208,7 +211,7 @@ public final class ValueExpressionImpl extends ValueExpression implements
     public ValueReference getValueReference(ELContext context)
             throws PropertyNotFoundException, ELException {
         EvaluationContext ctx = new EvaluationContext(context, this.fnMapper,
-                this.varMapper);
+                this.varMapper,  this.targetVarMapper);
         return this.getNode().getValueReference(ctx);
     }
 
@@ -220,7 +223,7 @@ public final class ValueExpressionImpl extends ValueExpression implements
     public Object getValue(ELContext context) throws PropertyNotFoundException,
             ELException {
         EvaluationContext ctx = new EvaluationContext(context, this.fnMapper,
-                this.varMapper);
+                this.varMapper, this.targetVarMapper);
         Object value = this.getNode().getValue(ctx);
         if (this.expectedType != null) {
             try {
@@ -262,7 +265,7 @@ public final class ValueExpressionImpl extends ValueExpression implements
     public boolean isReadOnly(ELContext context)
             throws PropertyNotFoundException, ELException {
         EvaluationContext ctx = new EvaluationContext(context, this.fnMapper,
-                this.varMapper);
+                this.varMapper, this.targetVarMapper);
         return this.getNode().isReadOnly(ctx);
     }
 
@@ -275,6 +278,7 @@ public final class ValueExpressionImpl extends ValueExpression implements
         }
         this.fnMapper = (FunctionMapper) in.readObject();
         this.varMapper = (VariableMapper) in.readObject();
+        this.targetVarMapper = (VariableMapper) in.readObject();
     }
 
     /*
@@ -287,7 +291,7 @@ public final class ValueExpressionImpl extends ValueExpression implements
             throws PropertyNotFoundException, PropertyNotWritableException,
             ELException {
         EvaluationContext ctx = new EvaluationContext(context, this.fnMapper,
-                this.varMapper);
+                this.varMapper, targetVarMapper);
         this.getNode().setValue(ctx, value);
     }
 
@@ -297,6 +301,7 @@ public final class ValueExpressionImpl extends ValueExpression implements
                 : "");
         out.writeObject(this.fnMapper);
         out.writeObject(this.varMapper);
+        out.writeObject(this.targetVarMapper);
     }
 
     public String toString() {

@@ -162,7 +162,6 @@ public final class AstValue extends SimpleNode {
         Object base = this.children[0].getValue(ctx);
         int propCount = this.jjtGetNumChildren();
         int i = 1;
-        ELResolver resolver = ctx.getELResolver();
         while (base != null && i < propCount) {
             base = getValue(base, this.children[i], ctx);
             i++;

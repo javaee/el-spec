@@ -52,12 +52,14 @@ public final class EvaluationContext extends ELContext {
     private final FunctionMapper fnMapper;
 
     private final VariableMapper varMapper;
+    private final VariableMapper targetVarMapper;
 
     public EvaluationContext(ELContext elContext, FunctionMapper fnMapper,
-            VariableMapper varMapper) {
+            VariableMapper varMapper, VariableMapper targetVarMapper) {
         this.elContext = elContext;
         this.fnMapper = fnMapper;
         this.varMapper = varMapper;
+        this.targetVarMapper = targetVarMapper;
     }
 
     public ELContext getELContext() {
@@ -70,6 +72,10 @@ public final class EvaluationContext extends ELContext {
 
     public VariableMapper getVariableMapper() {
         return this.varMapper;
+    }
+
+    public VariableMapper getTargetVariableMapper() {
+        return this.targetVarMapper;
     }
 
     public Object getContext(Class key) {
