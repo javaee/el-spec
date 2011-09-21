@@ -28,8 +28,8 @@ public interface ELParserTreeConstants
   public int JJTNOT = 22;
   public int JJTEMPTY = 23;
   public int JJTVALUE = 24;
-  public int JJTPROPERTYSUFFIX = 25;
-  public int JJTMETHODSUFFIX = 26;
+  public int JJTDOTSUFFIX = 25;
+  public int JJTMETHODARGUMENTS = 26;
   public int JJTBRACKETSUFFIX = 27;
   public int JJTIDENTIFIER = 28;
   public int JJTFUNCTION = 29;
@@ -67,8 +67,8 @@ public interface ELParserTreeConstants
     "Not",
     "Empty",
     "Value",
-    "PropertySuffix",
-    "MethodSuffix",
+    "DotSuffix",
+    "MethodArguments",
     "BracketSuffix",
     "Identifier",
     "Function",
@@ -80,4 +80,4 @@ public interface ELParserTreeConstants
     "Null",
   };
 }
-/* JavaCC - OriginalChecksum=852eef5390b7ae106bf0c808519ff750 (do not edit this line) */
+/* JavaCC - OriginalChecksum=d2d2bdf7ddc350f173858c5a96e20c23 (do not edit this line) */

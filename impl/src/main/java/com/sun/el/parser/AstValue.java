@@ -70,6 +70,10 @@ public final class AstValue extends SimpleNode {
             this.base = base;
             this.suffixNode = suffixNode;
         }
+
+        boolean isMethodCall() {
+            return getArguments(suffixNode) != null;
+        }
     }
 
     public AstValue(int id) {
@@ -78,7 +82,7 @@ public final class AstValue extends SimpleNode {
 
     public Class getType(EvaluationContext ctx) throws ELException {
         Target t = getTarget(ctx);
-        if (t.suffixNode instanceof AstMethodSuffix) {
+        if (t.isMethodCall()) {
             return null;
         }
         Object property = t.suffixNode.getValue(ctx);
@@ -93,28 +97,42 @@ public final class AstValue extends SimpleNode {
     public ValueReference getValueReference(EvaluationContext ctx)
             throws ELException {
         Target t = getTarget(ctx);
-        if (t.suffixNode instanceof AstMethodSuffix) {
+        if (t.isMethodCall()) {
             return null;
         }
         Object property = t.suffixNode.getValue(ctx);
         return new ValueReference(t.base, property);
     }
 
+    private static AstMethodArguments getArguments(Node n) {
+        if (n instanceof AstDotSuffix && n.jjtGetNumChildren() > 0) {
+            return (AstMethodArguments) n.jjtGetChild(0);
+        }
+        if (n instanceof AstBracketSuffix && n.jjtGetNumChildren() > 1) {
+            return (AstMethodArguments) n.jjtGetChild(1);
+        }
+        return null;
+    }
+            
     private Object getValue(Object base, Node child, EvaluationContext ctx)
             throws ELException {
 
         Object value = null;
         ELResolver resolver = ctx.getELResolver();
-        if (child instanceof AstMethodSuffix) {
-            AstMethodSuffix methodSuffix = (AstMethodSuffix)child;
-            String method = methodSuffix.getMethodName();
-            Class<?>[] paramTypes = methodSuffix.getParamTypes();
-            Object[] params = methodSuffix.getParameters(ctx);
+        Object property = child.getValue(ctx);
+        AstMethodArguments args = getArguments(child);
+        if (args != null) {
+            // This is a method call
+            if (! (property instanceof String)) {
+                throw new ELException(MessageFactory.get(
+                    "error.method.name", property));
+            }
+            Class<?>[] paramTypes = args.getParamTypes();
+            Object[] params = args.getParameters(ctx);
 
             ctx.setPropertyResolved(false);
-            value = resolver.invoke(ctx, base, method, paramTypes, params);
+            value = resolver.invoke(ctx, base, property, paramTypes, params);
         } else {
-            Object property = child.getValue(ctx);
             if (property != null) {
                 ctx.setPropertyResolved(false);
                 value = resolver.getValue(ctx, base, property);
@@ -171,7 +189,7 @@ public final class AstValue extends SimpleNode {
 
     public boolean isReadOnly(EvaluationContext ctx) throws ELException {
         Target t = getTarget(ctx);
-        if (t.suffixNode instanceof AstMethodSuffix) {
+        if (t.isMethodCall()) {
             return true;
         }
         Object property = t.suffixNode.getValue(ctx);
@@ -186,7 +204,7 @@ public final class AstValue extends SimpleNode {
     public void setValue(EvaluationContext ctx, Object value)
             throws ELException {
         Target t = getTarget(ctx);
-        if (t.suffixNode instanceof AstMethodSuffix) {
+        if (t.isMethodCall()) {
             throw new PropertyNotWritableException(
                         MessageFactory.get("error.syntax.set"));
         }
@@ -206,7 +224,7 @@ public final class AstValue extends SimpleNode {
     public MethodInfo getMethodInfo(EvaluationContext ctx, Class[] paramTypes)
             throws ELException {
         Target t = getTarget(ctx);
-        if (t.suffixNode instanceof AstMethodSuffix) {
+        if (t.isMethodCall()) {
             return null;
         }
         Object property = t.suffixNode.getValue(ctx);
@@ -218,13 +236,13 @@ public final class AstValue extends SimpleNode {
     public Object invoke(EvaluationContext ctx, Class[] paramTypes,
             Object[] paramValues) throws ELException {
         Target t = getTarget(ctx);
-        if (t.suffixNode instanceof AstMethodSuffix) {
-            AstMethodSuffix methodSuffix = (AstMethodSuffix)t.suffixNode;
+        if (t.isMethodCall()) {
+            AstMethodArguments args = getArguments(t.suffixNode);
             // Always use the param types in the expression, and ignore those
             // specified elsewhere, such as TLD
-            paramTypes = methodSuffix.getParamTypes();
-            Object[] params = methodSuffix.getParameters(ctx);
-            String method = methodSuffix.getMethodName();
+            paramTypes = args.getParamTypes();
+            Object[] params = args.getParameters(ctx);
+            String method = (String) t.suffixNode.getValue(ctx);
 
             ctx.setPropertyResolved(false);
             ELResolver resolver = ctx.getELResolver();
@@ -245,7 +263,7 @@ public final class AstValue extends SimpleNode {
 
     @Override
     public boolean isParametersProvided() {
-        return this.jjtGetNumChildren() == 2 &&
-                    this.children[1] instanceof AstMethodSuffix;
+        // XXX
+        return true;
     }
 }
