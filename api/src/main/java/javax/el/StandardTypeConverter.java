@@ -24,6 +24,7 @@ public class StandardTypeConverter extends TypeConverter {
      *     conversion rules.
      */
     @Override
+    @SuppressWarnings("unchecked")
     public <T> T coerceToType(Object obj, Class<T> targetType) {
         return (T)getExpressionFactory().coerceToType(obj, targetType);
     }

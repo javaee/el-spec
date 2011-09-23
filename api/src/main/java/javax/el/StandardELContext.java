@@ -106,6 +106,7 @@ public class StandardELContext extends ELContext {
             resolver.add(new BeanNameELResolver(new LocalBeanNameResolver()));
             customResolvers = new CompositeELResolver();
             resolver.add(customResolvers);
+            resolver.add(new StaticFieldELResolver());
             resolver.add(new MapELResolver());
             resolver.add(new ResourceBundleELResolver());
             resolver.add(new ListELResolver());

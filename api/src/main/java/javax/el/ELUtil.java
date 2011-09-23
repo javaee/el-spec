@@ -58,6 +58,10 @@
 
 package javax.el;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Modifier;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Locale;
@@ -209,5 +213,112 @@ class ELUtil {
         return result;
     }
         
-    
+    static Constructor<?> findConstructor(Class<?> klass,
+                                  Class<?>[] paramTypes,
+                                  Object[] params) {
+
+        if (paramTypes != null) {
+            try {
+                Constructor<?> c = klass.getConstructor(paramTypes);
+                if (Modifier.isPublic(c.getModifiers())) {
+                    return c;
+                }
+            } catch (java.lang.NoSuchMethodException ex) {
+            }
+            throw new MethodNotFoundException("The constructor for class " +
+                           klass + " not found or accessible");
+        }
+
+        int paramCount = (params == null)? 0: params.length;
+        for (Constructor<?> c: klass.getConstructors()) {
+            if (c.isVarArgs() || c.getParameterTypes().length==paramCount) {
+                return c;
+            }
+        }
+        throw new MethodNotFoundException("The constructor for class " +
+                     klass +  " not found");
+    }
+
+    static Object invokeConstructor(Constructor<?> c, Object[] params) {
+        Class[] parameterTypes = c.getParameterTypes();
+        Object[] parameters = null;
+        if (parameterTypes.length > 0) {
+            ExpressionFactory exprFactory = ExpressionFactory.newInstance();
+            if (c.isVarArgs()) {
+                // TODO
+            } else {
+                parameters = new Object[parameterTypes.length];
+                for (int i = 0; i < parameterTypes.length; i++) {
+                    parameters[i] = exprFactory.coerceToType(params[i],
+                                                           parameterTypes[i]);
+                }
+            }
+        }
+        try {
+            return c.newInstance(parameters);
+        } catch (IllegalAccessException iae) {
+            throw new ELException(iae);
+        } catch (InvocationTargetException ite) {
+            throw new ELException(ite.getCause());
+        } catch (InstantiationException ie) {
+            throw new ELException(ie.getCause());
+        }
+    }
+
+    static Method findMethod(Class<?> klass,
+                             String method,
+                             Class<?>[] paramTypes,
+                             Object[] params,
+                             boolean staticOnly) {
+
+        if (paramTypes != null) {
+            try {
+                Method m = klass.getMethod(method, paramTypes);
+                int mod = m.getModifiers();
+                if (Modifier.isPublic(mod) && 
+                    (!staticOnly || Modifier.isStatic(mod))) {
+                    return m;
+                }
+            } catch (java.lang.NoSuchMethodException ex) {
+            }
+            throw new MethodNotFoundException("Method " + method +
+                           "for class " + klass +
+                           " not found or accessible");
+        }
+
+        int paramCount = (params == null)? 0: params.length;
+        for (Method m: klass.getMethods()) {
+            if (m.getName().equals(method) && (
+                         m.isVarArgs() ||
+                         m.getParameterTypes().length==paramCount)){
+                return m;
+            }
+        }
+        throw new MethodNotFoundException("Method " + method + " not found");
+    }
+
+    static Object invokeMethod(Method m, Object base, Object[] params) {
+
+        Class[] parameterTypes = m.getParameterTypes();
+        Object[] parameters = null;
+        if (parameterTypes.length > 0) {
+            ExpressionFactory exprFactory = ExpressionFactory.newInstance();
+            if (m.isVarArgs()) {
+                // TODO
+            } else {
+                parameters = new Object[parameterTypes.length];
+                for (int i = 0; i < parameterTypes.length; i++) {
+                    parameters[i] = exprFactory.coerceToType(params[i],
+                                                           parameterTypes[i]);
+                }
+            }
+        }
+        try {
+            return m.invoke(base, parameters);
+        } catch (IllegalAccessException iae) {
+            throw new ELException(iae);
+        } catch (InvocationTargetException ite) {
+            throw new ELException(ite.getCause());
+        }
+    }
 }

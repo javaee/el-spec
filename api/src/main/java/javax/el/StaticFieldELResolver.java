@@ -2,18 +2,19 @@ package javax.el;
 
 import java.util.Iterator;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Constructor;
 
 import java.beans.FeatureDescriptor;
 
 /*
- * An ELResolver for resolving user or container managed beans.
+ * An ELResolver for resolving static fields (including enum constants) and 
+ * methods.  Also handles constructor call as a special case.
  *
  * @since EL 3.0
  */
 public class StaticFieldELResolver extends ELResolver {
-
-    private BeanNameResolver beanNameResolver;
 
     /**
      * If the base object is an instance of <code>ELClass</code>and the
@@ -117,6 +118,77 @@ public class StaticFieldELResolver extends ELResolver {
                             "staticFieldWriteError",
                             new Object[] { klass.getName(), fieldName}));
         }
+    }
+
+    /**
+     * If the base object is an instance of <code>ELClass</code>and the
+     * method is a String, invoke the static method of the class in ELClass.
+     * The return value from the method is returned.
+     *
+     * If the base object is an instance of <code>ELClass</code>and the
+     * method is a String,
+     * the <code>propertyResolved</code> property of the
+     * <code>ELContext</code> object must be set to <code>true</code>
+     * by the resolver, before returning. If this property is not
+     * <code>true</code> after this method is called, the caller
+     * should ignore the return value.</p>
+     * The process involved in the method selection and invocation is the same
+     * as that used in {@link BeanELResolver}.
+     *
+     * As a specail case, if the name of the method is "<init>", the
+     * constructor for the class will be invoked.  
+     *
+     * @param base The bean on which to invoke the method
+     * @param method The simple name of the method to invoke.
+     *     Will be coerced to a <code>String</code>.
+     * @param paramTypes An array of Class objects identifying the
+     *     method's formal parameter types, in declared order.
+     *     Use an empty array if the method has no parameters.
+     *     Can be <code>null</code>, in which case the method's formal
+     *     parameter types are assumed to be unknown.
+     * @param params The parameters to pass to the method, or
+     *     <code>null</code> if no parameters.
+     * @return The result of the method invocation (<code>null</code> if
+     *     the method has a <code>void</code> return type).
+     * @throws MethodNotFoundException if no suitable method can be found.
+     * @throws ELException if an exception was thrown while performing
+     *     (base, method) resolution.  The thrown exception must be
+     *     included as the cause property of this exception, if
+     *     available.  If the exception thrown is an
+     *     <code>InvocationTargetException</code>, extract its
+     *     <code>cause</code> and pass it to the
+     *     <code>ELException</code> constructor.
+     */
+
+     public Object invoke(ELContext context,
+                         Object base,
+                         Object method,
+                         Class<?>[] paramTypes,
+                         Object[] params) {
+
+        if (context == null) {
+            throw new NullPointerException();
+        }
+
+        if (!(base instanceof ELClass && method instanceof String)) {
+            return null;
+        }
+
+        Class<?> klass = getClassClass(context, (ELClass)base);
+        String name = (String) method;
+
+        Object ret;
+        if ("<init>".equals(name)) {
+            Constructor<?> constructor =
+                ELUtil.findConstructor(klass, paramTypes, params);
+            ret = ELUtil.invokeConstructor(constructor, params);
+        } else {
+            Method meth =
+                ELUtil.findMethod(klass, name, paramTypes, params, true);
+            ret = ELUtil.invokeMethod(meth, null, params);
+        }
+        context.setPropertyResolved(true);
+        return ret;
     }
 
     /**
