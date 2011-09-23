@@ -275,7 +275,7 @@ void ValueSuffix() : {}
 
 /*
  * DotSuffix
- * Dot Property
+ * Dot Property and Dot Method
  */
 void DotSuffix() #DotSuffix : {  Token t = null; }
 {
@@ -306,6 +306,21 @@ void NonLiteral() : {}
  	<LPAREN> Expression() <RPAREN>
  	| LOOKAHEAD(4) Function()
 	| Identifier()
+        | Type()
+}
+
+/*
+ * Type
+ * T(...)
+ */
+void Type() #Type : { Token t; StringBuilder buffer = new StringBuilder(); }
+{
+        <TYPE> <LPAREN> t=<IDENTIFIER> {buffer.append(t.image); }
+                 (<DOT> t=<IDENTIFIER> {buffer.append('.').append(t.image);} )* 
+               <RPAREN> {jjtThis.setImage(buffer.toString()); }
+        ( (<LPAREN> (Expression() (<COMMA> Expression())*)? <RPAREN> )
+            #MethodArguments
+        )?
 }
 
 /*
