@@ -142,4 +142,12 @@ public class ELManager {
         return getELContext().setTypeConverter(typeConverter);
     }
 
+    /**
+     * Register a listener.
+     *
+     * @param listener The listener to be added.
+     */
+    public <T extends java.util.EventListener> void addListener(T listener) {
+        getELContext().addListener(listener);
+    }
 }

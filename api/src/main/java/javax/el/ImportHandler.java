@@ -41,35 +41,35 @@ public class ImportHandler {
     }
 
     /**
-     * Resolve a class name.
+     * Resolve a class name from its imports.
+     *
      * @param name The name of the class taken from the expression T(name).
-     *     It can be a name with or without a package.
-     * @return If the name is a full (package plus class) name, then the name.
-     *     If the name is a class name without a package, and the class has
-     *     been imported (either explicitly, or as part of an imported package),
-     *     then the full (package plus class) name.
+     *     It is assumed that this is a name without a package.
+     * @return  If the class has been imported previously (either explicitly,
+     *     or as part of an imported package), then its Class instance.
      *     Otherwise <code>null</code>.
      */
-    public String resolve(String name) {
-        if (name.indexOf('.') > 0) {
-            // assumed full class name
-            return name;
-        }
+    public Class<?> resolve(String name) {
+
+        // TODO: Precomfig and optimize for java.lang.*
         String className = map.get(name);
         if (className != null) {
-            return className;
+            return getClassFor(className);
         }
+
         for (String packageName: packages) {
             String fullClassName = packageName + "." + name;
-            if (getClassFor(fullClassName) != null) {
-                return fullClassName;
+            Class<?> c = getClassFor(fullClassName);
+            if (c != null) {
+                map.put(name, fullClassName);
+                return c;
             }
         }
         return null;
     }
             
-    private Class getClassFor(String className) {
-        Class c = null;
+    private Class<?> getClassFor(String className) {
+        Class<?> c = null;
         try {
             c = Class.forName(className, false, getClass().getClassLoader());
         } catch (ClassNotFoundException ex) {

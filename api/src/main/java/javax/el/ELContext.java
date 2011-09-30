@@ -59,7 +59,10 @@
 package javax.el;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Locale;
+import java.util.EventListener;
 
 /**
  * Context information for expression evaluation.
@@ -279,9 +282,27 @@ public abstract class ELContext {
         return null;
     }
 
+    /**
+     * Registers a listener to the ELContext.
+     *
+     * @param listener The listener to be added.
+     */
+    public <T extends EventListener> void addListener(T listener) {
+        listeners.add(listener);
+    }
+
+    /**
+     * Returns the list of registered listeners.
+     * @return The list of registered listeners.
+     */
+    public List<EventListener> getlisteners() {
+        return listeners;
+    }
+
     private boolean resolved;
     private HashMap<Class<?>, Object> map = new HashMap<Class<?>, Object>();
-
+    private transient List<EventListener> listeners =
+        new ArrayList<EventListener>();
 
 }
 

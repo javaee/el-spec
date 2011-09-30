@@ -311,17 +311,32 @@ public class StaticFieldELResolver extends ELResolver {
     }
 
     /**
-     * Return the Class object for the specified class
+     * Return the Class object for the specified class.  If the name is
+     * specified without a package, use the context's ImportHandler to check
+     * if the name has been imported.
      */
     private Class<?> getClassClass(ELContext context, ELClass elClass) {
+
+        String className = elClass.getClassName();
+        if (className.indexOf('.') < 0) {
+            // No package, assume it has been imported
+            Class<?> c = context.getImportHandler().resolve(className);
+            if (c == null) {
+                throw new PropertyNotFoundException(
+                        ELUtil.getExceptionMessageString(context,
+                        "classNotFound",
+                        new Object[] {className}));
+            }
+            return c;
+        }
+
         try {
-            return Class.forName(elClass.getClassName(), false,
-                                 getClass().getClassLoader());
+            return Class.forName(className, false, getClass().getClassLoader());
         } catch (ClassNotFoundException ex) {
             throw new PropertyNotFoundException(
                         ELUtil.getExceptionMessageString(context,
                         "classNotFound",
-                        new Object[] {elClass.getClassName()}));
+                        new Object[] {className}));
         }
     }
 }

@@ -15,6 +15,14 @@ import java.lang.reflect.Method;
  *
  * The EL processing environment is handled by the use of ELManager.
  *
+ * The EL expressions allowed in the methods getValue, setValue, and 
+ * setVariable are limited to non-composite expressions, i.e. expressions
+ * of the form ${...} or #{...}.  Also, it is not necessary (in fact not
+ * allowed) to bracket the expression strings with ${ or #{ and } in these
+ * methods: they will be automatically bracketed.  This reduces the visual
+ * cluster, without lost of functionalities (thanks to the addition of the
+ * concatenation operator).
+ *
  * @since EL 3.0
  */
 
@@ -50,7 +58,7 @@ public class ELProcessor {
     public Object getValue(String expression, Class<?> expectedType) {
         ValueExpression exp = factory.createValueExpression(
                                   elManager.getELContext(),
-                                  expression, expectedType);
+                                  bracket(expression), expectedType);
         return exp.getValue(elManager.getELContext());
     }
 
@@ -72,13 +80,13 @@ public class ELProcessor {
     public void setValue(String expression, Object value) {
         ValueExpression exp = factory.createValueExpression(
                                   elManager.getELContext(),
-                                  expression, Object.class);
+                                  bracket(expression), Object.class);
         exp.setValue(elManager.getELContext(), value);
     }
 
     /**
-     * Assign an EL expression to an EL variable, replacing
-     * any previously assignment to the same variable.
+     * Assign an EL expression to an EL variable, without evaluation, and
+     * replace any previously assign expression to the same variable.
      * The assignment for the variable is removed if
      * the expression is <code>null</code>.
      * @param var The name of the variable.
@@ -87,14 +95,14 @@ public class ELProcessor {
     public void setVariable(String var, String expression) {
         ValueExpression exp = factory.createValueExpression(
                                   elManager.getELContext(),
-                                  expression, Object.class);
+                                  bracket(expression), Object.class);
         elManager.setVariable(var, exp);
     }
 
     /*
      * Define an EL function.
      * @param function The name of the function, with optional namespace prefix
-     *    (e.g. "sum" or "ns:func").  Can be null or empty (""), in which case
+     *    (e.g. "func" or "ns:func").  Can be null or empty (""), in which case
      *    the method name is used as the function name.
      * @param className The name of the Java class that implements the function
      * @param method The name (specified without parenthesis) or the signature 
@@ -156,7 +164,7 @@ public class ELProcessor {
     /**
      * Define an EL function
      * @param function The name of the function, with optional namespace prefix
-     *    (e.g. "sum" or "ns:func").  Can be null or empty (""), in which case
+     *    (e.g. "func" or "ns:func").  Can be null or empty (""), in which case
      *    the method name is used as the function name.
      * @param method The java.lang.reflect.Method instance of the method that
      *    implements the function.
@@ -219,6 +227,11 @@ public class ELProcessor {
             return java.lang.reflect.Array.newInstance(c, 1).getClass();
 
         // Array of more than i dimension
-        return java.lang.reflect.Array.newInstance(c, new int[dims]).getClass();    }
+        return java.lang.reflect.Array.newInstance(c, new int[dims]).getClass();
+    }
+
+    private String bracket(String expression) {
+        return "${" + expression + '}';
+    }
 }
 
