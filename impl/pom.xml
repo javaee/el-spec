@@ -207,6 +207,23 @@
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
+                <artifactId>javacc-maven-plugin</artifactId>
+                <version>2.6</version>
+                <executions>
+                    <execution>
+                        <id>jjtree-javacc</id>
+                        <goals>
+                            <goal>jjtree-javacc</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirectory>src/main/java</sourceDirectory>
+                            <outputDirectory>src/main/java</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
                 <artifactId>findbugs-maven-plugin</artifactId>
                 <version>${findbugs.version}</version>
                 <configuration>
