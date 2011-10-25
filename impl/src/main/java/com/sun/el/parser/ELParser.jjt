@@ -280,9 +280,7 @@ void ValueSuffix() : {}
 void DotSuffix() #DotSuffix : {  Token t = null; }
 {
         <DOT> t=<IDENTIFIER> { jjtThis.setImage(t.image); }
-        ( (<LPAREN> (Expression() (<COMMA> Expression())*)? <RPAREN> )
-            #MethodArguments
-        )?
+        (MethodArguments())?
 }
 
 /*
@@ -292,9 +290,31 @@ void DotSuffix() #DotSuffix : {  Token t = null; }
 void BracketSuffix() #BracketSuffix : {}
 {
 	<LBRACK> Expression() <RBRACK>
-        ( (<LPAREN> (Expression() (<COMMA> Expression())*)? <RPAREN> )
-            #MethodArguments
-        )?
+        (MethodArguments())?
+}
+
+/*
+ * MethodArguments
+ */
+void MethodArguments() #MethodArguments : {}
+{
+        <LPAREN> (Expression() (<COMMA> Expression())*)? <RPAREN>
+}
+
+/*
+ * LambdaExpression
+ */
+void LambdaExpression() #LambdaExpression : { Token t = null; }
+{
+        <START_LAMBDA>
+            (
+                t = <IDENTIFIER> { jjtThis.addParam(t.image); }
+                ( <COMMA> t = <IDENTIFIER> { jjtThis.addParam(t.image); })*
+            )?
+            <ARROW>
+            Expression()
+        <END_LAMBDA>
+        (MethodArguments())?
 }
 
 /*
@@ -307,7 +327,9 @@ void NonLiteral() : {}
  	| LOOKAHEAD(4) Function()
 	| Identifier()
         | Type()
+        | LambdaExpression()
 }
+
 
 /*
  * Type
@@ -318,9 +340,7 @@ void Type() #Type : { Token t; StringBuilder buffer = new StringBuilder(); }
         <TYPE> <LPAREN> t=<IDENTIFIER> {buffer.append(t.image); }
                  (<DOT> t=<IDENTIFIER> {buffer.append('.').append(t.image);} )* 
                <RPAREN> {jjtThis.setImage(buffer.toString()); }
-        ( (<LPAREN> (Expression() (<COMMA> Expression())*)? <RPAREN> )
-            #MethodArguments
-        )?
+        (MethodArguments())?
 }
 
 /*
@@ -435,9 +455,21 @@ void Null() #Null : {}
 
 <DEFAULT> SKIP : { "\\" }
 
-<IN_EXPRESSION> SKIP : { " " | "\t" | "\n" | "\r" }
+<IN_EXPRESSION, IN_LAMBDA> SKIP : { " " | "\t" | "\n" | "\r" }
 
 <IN_EXPRESSION> TOKEN :
+{
+	< END_EXPRESSION : "}" > : DEFAULT
+|       < START_LAMBDA: "#{" >: IN_LAMBDA
+}
+
+<IN_LAMBDA> TOKEN :
+{
+        < ARROW : "->" >
+|	< END_LAMBDA : "}" > : IN_EXPRESSION
+}
+
+<IN_EXPRESSION, IN_LAMBDA> TOKEN :
 {
 	< INTEGER_LITERAL: ["0"-"9"] (["0"-"9"])* >
 |	< FLOATING_POINT_LITERAL: (["0"-"9"])+ "." (["0"-"9"])* (<EXPONENT>)? 
@@ -456,7 +488,6 @@ void Null() #Null : {}
 |	< TRUE : "true" >
 |	< FALSE : "false" >
 |	< NULL : "null" >
-|	< END_EXPRESSION : "}" > : DEFAULT
 |	< DOT : "." >
 |	< LPAREN : "(" >
 |	< RPAREN : ")" >
@@ -535,3 +566,4 @@ void Null() #Null : {}
 	>
 |	< ILLEGAL_CHARACTER: (~[]) >
 }
+
