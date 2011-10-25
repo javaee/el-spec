@@ -231,8 +231,7 @@ public class CompositeELResolver extends ELResolver {
      * @param context The context of this evaluation.
      * @param base The bean on which to invoke the method
      * @param method The simple name of the method to invoke.
-     *     Will be coerced to a <code>String</code>.  If method is
-     *     "<init>"or "<clinit>" a NoSuchMethodException is raised.
+     *     Will be coerced to a <code>String</code>.
      * @param paramTypes An array of Class objects identifying the
      *     method's formal parameter types, in declared order.
      *     Use an empty array if the method has no parameters.

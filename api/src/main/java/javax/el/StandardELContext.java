@@ -70,7 +70,13 @@ public class StandardELContext extends ELContext {
     public StandardELContext(ELContext context) {
         this.delegate = context;
         // Copy all attributes except map and resolved
-        elResolver = context.getELResolver();
+        CompositeELResolver elr = new CompositeELResolver();
+        elr.add(new BeanNameELResolver(new LocalBeanNameResolver()));
+        customResolvers = new CompositeELResolver();
+        elr.add(customResolvers);
+        elr.add(context.getELResolver());
+        elResolver = elr;
+
         functionMapper = context.getFunctionMapper();
         variableMapper = context.getVariableMapper();
         setLocale(context.getLocale());

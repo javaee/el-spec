@@ -41,16 +41,13 @@ public class ELManager {
 
     /**
      * Set the ELContext used for parsing and evaluating EL expressions.
+     * The supplied EL will not be modified, except for the context object map.
      * @param context The new ELContext.
      * @return The previous ELContext, null if none.
      */
     public ELContext setELContext(ELContext context) {
         ELContext prev = elContext;
-        if (context instanceof StandardELContext) {
-            elContext = (StandardELContext) context;
-        } else {
-            elContext = new StandardELContext(context);
-        }
+        elContext = new StandardELContext(context);
         return prev;
     }
 
@@ -126,10 +123,13 @@ public class ELManager {
     /**
      * Define a bean in the local bean repository
      * @param name The name of the bean
-     * @param bean The bean instance to be defined
+     * @param bean The bean instance to be defined.  If null, the defination
+     *        of the bean is removed.
      */
-    public void defineBean(String name, Object bean) {
+    public Object defineBean(String name, Object bean) {
+        Object ret = getELContext().getBeans().get(name);
         getELContext().getBeans().put(name, bean);
+        return ret;
     }
 
     /**
