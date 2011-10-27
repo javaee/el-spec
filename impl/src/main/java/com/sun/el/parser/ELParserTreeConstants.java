@@ -32,15 +32,17 @@ public interface ELParserTreeConstants
   public int JJTBRACKETSUFFIX = 26;
   public int JJTMETHODARGUMENTS = 27;
   public int JJTLAMBDAEXPRESSION = 28;
-  public int JJTTYPE = 29;
-  public int JJTIDENTIFIER = 30;
-  public int JJTFUNCTION = 31;
-  public int JJTTRUE = 32;
-  public int JJTFALSE = 33;
-  public int JJTFLOATINGPOINT = 34;
-  public int JJTINTEGER = 35;
-  public int JJTSTRING = 36;
-  public int JJTNULL = 37;
+  public int JJTLISTDATA = 29;
+  public int JJTLISTENTRY = 30;
+  public int JJTTYPE = 31;
+  public int JJTIDENTIFIER = 32;
+  public int JJTFUNCTION = 33;
+  public int JJTTRUE = 34;
+  public int JJTFALSE = 35;
+  public int JJTFLOATINGPOINT = 36;
+  public int JJTINTEGER = 37;
+  public int JJTSTRING = 38;
+  public int JJTNULL = 39;
 
 
   public String[] jjtNodeName = {
@@ -73,6 +75,8 @@ public interface ELParserTreeConstants
     "BracketSuffix",
     "MethodArguments",
     "LambdaExpression",
+    "ListData",
+    "ListEntry",
     "Type",
     "Identifier",
     "Function",
@@ -84,4 +88,4 @@ public interface ELParserTreeConstants
     "Null",
   };
 }
-/* JavaCC - OriginalChecksum=e2a22da11a5c92abd76e5476822619bb (do not edit this line) */
+/* JavaCC - OriginalChecksum=f5cd371bea8dfbc9727319e16fc1dc57 (do not edit this line) */

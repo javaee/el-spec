@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2011 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -42,7 +42,7 @@
 	Author:	Jacob Hookom
 	Email:	jacob at hookom.net
 
-        Author: Kin-man Chung
+        Author: Kin-man Chung (EL 2.2 and EL 3.0)
 */
 
 /* == Option Declaration == */
@@ -328,8 +328,20 @@ void NonLiteral() : {}
 	| Identifier()
         | Type()
         | LambdaExpression()
+        | ListData()
 }
 
+void ListData() #ListData: {}
+{
+    (<START_LIST_E1> | <START_LIST_L1> | <START_LIST_E2> | <START_LIST_L2>)
+        ( ListEntry() ( <COMMA> ListEntry() )* )?
+    (<END_LIST_E1> | <END_LIST_L1> | <END_LIST_E2> | <END_LIST_L2>)
+}
+
+void ListEntry() #ListEntry: {}
+{
+    Expression() (<ARROW> Expression())?
+}
 
 /*
  * Type
@@ -455,21 +467,50 @@ void Null() #Null : {}
 
 <DEFAULT> SKIP : { "\\" }
 
-<IN_EXPRESSION, IN_LAMBDA> SKIP : { " " | "\t" | "\n" | "\r" }
+<IN_EXPRESSION, IN_LAMBDA, IN_LIST_E1, IN_LIST_E2, IN_LIST_L1, IN_LIST_L2> SKIP:
+{ " " | "\t" | "\n" | "\r" }
 
 <IN_EXPRESSION> TOKEN :
 {
 	< END_EXPRESSION : "}" > : DEFAULT
 |       < START_LAMBDA: "#{" >: IN_LAMBDA
+|       < START_LIST_E1: "{" >: IN_LIST_E1
 }
 
 <IN_LAMBDA> TOKEN :
 {
-        < ARROW : "->" >
-|	< END_LAMBDA : "}" > : IN_EXPRESSION
+	< END_LAMBDA : "}" > : IN_EXPRESSION
+|       < START_LIST_L1 : "{" > : IN_LIST_L1
 }
 
-<IN_EXPRESSION, IN_LAMBDA> TOKEN :
+<IN_LIST_E1> TOKEN :
+{
+        < START_LIST_E2: "{" > : IN_LIST_E2
+|       < END_LIST_E1: "}" > : IN_EXPRESSION
+}
+
+<IN_LIST_E2> TOKEN :
+{
+        < END_LIST_E2: "}" > : IN_LIST_E1
+}
+
+<IN_LIST_L1> TOKEN :
+{
+        < START_LIST_L2: "{" > : IN_LIST_L2
+|       < END_LIST_L1: "}" > : IN_LAMBDA
+}
+
+<IN_LIST_L2> TOKEN :
+{
+        < END_LIST_L2: "}" > : IN_LIST_L1
+}
+
+<IN_LAMBDA, IN_LIST_E1, IN_LIST_L1, IN_LIST_E2, IN_LIST_L2> TOKEN :
+{
+        < ARROW : "->" >
+}
+
+<IN_EXPRESSION, IN_LAMBDA, IN_LIST_E1, IN_LIST_L1, IN_LIST_E2, IN_LIST_L2> TOKEN :
 {
 	< INTEGER_LITERAL: ["0"-"9"] (["0"-"9"])* >
 |	< FLOATING_POINT_LITERAL: (["0"-"9"])+ "." (["0"-"9"])* (<EXPONENT>)? 

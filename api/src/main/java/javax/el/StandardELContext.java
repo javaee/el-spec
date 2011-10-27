@@ -26,6 +26,11 @@ public class StandardELContext extends ELContext {
     private CompositeELResolver customResolvers;
 
     /*
+     * The optional ELResolver implementing the query operators.
+     */
+    private ELResolver queryOperatorELResolver;
+
+    /*
      * The ImportHandler for this ELContext.
      */
     private ImportHandler importHandler;
@@ -60,7 +65,8 @@ public class StandardELContext extends ELContext {
     /**
      * Default Constructor
      */
-    public StandardELContext() {
+    public StandardELContext(ELResolver queryOperatorELResolver) {
+        this.queryOperatorELResolver = queryOperatorELResolver;
     }
 
     /**
@@ -112,6 +118,9 @@ public class StandardELContext extends ELContext {
             resolver.add(new BeanNameELResolver(new LocalBeanNameResolver()));
             customResolvers = new CompositeELResolver();
             resolver.add(customResolvers);
+            if (queryOperatorELResolver != null) {
+                resolver.add(queryOperatorELResolver);
+            }
             resolver.add(new StaticFieldELResolver());
             resolver.add(new MapELResolver());
             resolver.add(new ResourceBundleELResolver());

@@ -35,7 +35,7 @@ class AstLambdaExpression extends SimpleNode {
         Object ret = lambda;
 
         // If there are arguments following the lambda exprn, invoke it now.
-        if (this.jjtGetNumChildren() > 0) {
+        if (this.jjtGetNumChildren() > 1) {
             AstMethodArguments args = (AstMethodArguments) this.children[1];
             ret = lambda.invoke(ctx, args.getParameters(ctx));
         }

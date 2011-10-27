@@ -38,7 +38,7 @@ public class LambdaExpression {
      * @param args The arguments for the lambda expression
      * @return The result of the lambda expression
      */
-    public Object invoke(ELContext elContext, Object[] args) 
+    public Object invoke(ELContext elContext, Object... args) 
             throws ELException {
         ELManager elManager = new ELManager();
         elManager.setELContext(elContext);
@@ -47,7 +47,7 @@ public class LambdaExpression {
         for (String fParam: formalParameters) {
             if (i >= args.length) {
                 // XXX
-                throw new ELException();
+                throw new ELException("Argument missing in Lambda Expression");
             }
             elManager.defineBean(fParam, args[i++]);
         }

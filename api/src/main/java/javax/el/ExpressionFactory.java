@@ -327,6 +327,25 @@ public abstract class ExpressionFactory {
             Object obj,
             Class<?> targetType);
     
+    /**
+     * Retrieves an ELResolver that implements the Query Operators in
+     * LINQ, .NET Language Integrated Query.  For detail, see
+     * http://msdn.microsoft.com/en-us/library/bb394939.aspx
+     * See also EL.x.x for details about how to use these operators in EL.
+     *
+     * This ELResolver relosves the method invocation on (base, property)
+     * when base is an Iterable and property is the name of the operator,
+     * so they acts like built-in methods of Iterables.
+     * See EL.x.x for detailed descriptions on the arguments types, and the
+     * return values of these operators.
+     *
+     * The support for the Query Operators is optional in EL 3.0.
+     * @Returns The ELResolver that implements the Query Operators.  If null,
+     *     the query operators are not support by this implementation.
+     *
+     * @since EL 3.0
+     */
+    public abstract ELResolver getQueryOperatorELResolver();
 }
 
 

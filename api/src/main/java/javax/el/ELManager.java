@@ -34,7 +34,8 @@ public class ELManager {
      */
     public StandardELContext getELContext() {
         if (elContext == null) {
-            elContext = new StandardELContext();
+            elContext = new StandardELContext(
+                            expressionFactory.getQueryOperatorELResolver());
         }
         return elContext;
     }

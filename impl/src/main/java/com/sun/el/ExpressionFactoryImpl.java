@@ -45,10 +45,12 @@ import javax.el.ELException;
 import javax.el.ExpressionFactory;
 import javax.el.MethodExpression;
 import javax.el.ValueExpression;
+import javax.el.ELResolver;
 
 import com.sun.el.lang.ExpressionBuilder;
 import com.sun.el.lang.ELSupport;
 import com.sun.el.util.MessageFactory;
+import com.sun.el.query.QueryOperatorELResolver;
 
 /**
  * @see javax.el.ExpressionFactory
@@ -105,5 +107,9 @@ public class ExpressionFactoryImpl extends ExpressionFactory {
                     .get("error.value.expectedType"));
         }
         return new ValueExpressionLiteral(instance, expectedType);
+    }
+
+    public ELResolver getQueryOperatorELResolver() {
+        return new QueryOperatorELResolver();
     }
 }

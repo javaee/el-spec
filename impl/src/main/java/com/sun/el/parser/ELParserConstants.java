@@ -21,111 +21,127 @@ public interface ELParserConstants {
   /** RegularExpression Id. */
   int START_LAMBDA = 10;
   /** RegularExpression Id. */
-  int ARROW = 11;
+  int START_LIST_E1 = 11;
   /** RegularExpression Id. */
   int END_LAMBDA = 12;
   /** RegularExpression Id. */
-  int INTEGER_LITERAL = 13;
+  int START_LIST_L1 = 13;
   /** RegularExpression Id. */
-  int FLOATING_POINT_LITERAL = 14;
+  int START_LIST_E2 = 14;
   /** RegularExpression Id. */
-  int EXPONENT = 15;
+  int END_LIST_E1 = 15;
   /** RegularExpression Id. */
-  int STRING_LITERAL = 16;
+  int END_LIST_E2 = 16;
   /** RegularExpression Id. */
-  int BADLY_ESCAPED_STRING_LITERAL = 17;
+  int START_LIST_L2 = 17;
   /** RegularExpression Id. */
-  int TRUE = 18;
+  int END_LIST_L1 = 18;
   /** RegularExpression Id. */
-  int FALSE = 19;
+  int END_LIST_L2 = 19;
   /** RegularExpression Id. */
-  int NULL = 20;
+  int ARROW = 20;
   /** RegularExpression Id. */
-  int DOT = 21;
+  int INTEGER_LITERAL = 21;
   /** RegularExpression Id. */
-  int LPAREN = 22;
+  int FLOATING_POINT_LITERAL = 22;
   /** RegularExpression Id. */
-  int RPAREN = 23;
+  int EXPONENT = 23;
   /** RegularExpression Id. */
-  int LBRACK = 24;
+  int STRING_LITERAL = 24;
   /** RegularExpression Id. */
-  int RBRACK = 25;
+  int BADLY_ESCAPED_STRING_LITERAL = 25;
   /** RegularExpression Id. */
-  int COLON = 26;
+  int TRUE = 26;
   /** RegularExpression Id. */
-  int COMMA = 27;
+  int FALSE = 27;
   /** RegularExpression Id. */
-  int GT0 = 28;
+  int NULL = 28;
   /** RegularExpression Id. */
-  int GT1 = 29;
+  int DOT = 29;
   /** RegularExpression Id. */
-  int LT0 = 30;
+  int LPAREN = 30;
   /** RegularExpression Id. */
-  int LT1 = 31;
+  int RPAREN = 31;
   /** RegularExpression Id. */
-  int GE0 = 32;
+  int LBRACK = 32;
   /** RegularExpression Id. */
-  int GE1 = 33;
+  int RBRACK = 33;
   /** RegularExpression Id. */
-  int LE0 = 34;
+  int COLON = 34;
   /** RegularExpression Id. */
-  int LE1 = 35;
+  int COMMA = 35;
   /** RegularExpression Id. */
-  int EQ0 = 36;
+  int GT0 = 36;
   /** RegularExpression Id. */
-  int EQ1 = 37;
+  int GT1 = 37;
   /** RegularExpression Id. */
-  int NE0 = 38;
+  int LT0 = 38;
   /** RegularExpression Id. */
-  int NE1 = 39;
+  int LT1 = 39;
   /** RegularExpression Id. */
-  int NOT0 = 40;
+  int GE0 = 40;
   /** RegularExpression Id. */
-  int NOT1 = 41;
+  int GE1 = 41;
   /** RegularExpression Id. */
-  int AND0 = 42;
+  int LE0 = 42;
   /** RegularExpression Id. */
-  int AND1 = 43;
+  int LE1 = 43;
   /** RegularExpression Id. */
-  int OR0 = 44;
+  int EQ0 = 44;
   /** RegularExpression Id. */
-  int OR1 = 45;
+  int EQ1 = 45;
   /** RegularExpression Id. */
-  int EMPTY = 46;
+  int NE0 = 46;
   /** RegularExpression Id. */
-  int INSTANCEOF = 47;
+  int NE1 = 47;
   /** RegularExpression Id. */
-  int MULT = 48;
+  int NOT0 = 48;
   /** RegularExpression Id. */
-  int PLUS = 49;
+  int NOT1 = 49;
   /** RegularExpression Id. */
-  int MINUS = 50;
+  int AND0 = 50;
   /** RegularExpression Id. */
-  int QUESTIONMARK = 51;
+  int AND1 = 51;
   /** RegularExpression Id. */
-  int DIV0 = 52;
+  int OR0 = 52;
   /** RegularExpression Id. */
-  int DIV1 = 53;
+  int OR1 = 53;
   /** RegularExpression Id. */
-  int MOD0 = 54;
+  int EMPTY = 54;
   /** RegularExpression Id. */
-  int MOD1 = 55;
+  int INSTANCEOF = 55;
   /** RegularExpression Id. */
-  int CONCAT = 56;
+  int MULT = 56;
   /** RegularExpression Id. */
-  int ASSIGN = 57;
+  int PLUS = 57;
   /** RegularExpression Id. */
-  int TYPE = 58;
+  int MINUS = 58;
   /** RegularExpression Id. */
-  int IDENTIFIER = 59;
+  int QUESTIONMARK = 59;
   /** RegularExpression Id. */
-  int IMPL_OBJ_START = 60;
+  int DIV0 = 60;
   /** RegularExpression Id. */
-  int LETTER = 61;
+  int DIV1 = 61;
   /** RegularExpression Id. */
-  int DIGIT = 62;
+  int MOD0 = 62;
   /** RegularExpression Id. */
-  int ILLEGAL_CHARACTER = 63;
+  int MOD1 = 63;
+  /** RegularExpression Id. */
+  int CONCAT = 64;
+  /** RegularExpression Id. */
+  int ASSIGN = 65;
+  /** RegularExpression Id. */
+  int TYPE = 66;
+  /** RegularExpression Id. */
+  int IDENTIFIER = 67;
+  /** RegularExpression Id. */
+  int IMPL_OBJ_START = 68;
+  /** RegularExpression Id. */
+  int LETTER = 69;
+  /** RegularExpression Id. */
+  int DIGIT = 70;
+  /** RegularExpression Id. */
+  int ILLEGAL_CHARACTER = 71;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -133,6 +149,14 @@ public interface ELParserConstants {
   int IN_EXPRESSION = 1;
   /** Lexical state. */
   int IN_LAMBDA = 2;
+  /** Lexical state. */
+  int IN_LIST_E1 = 3;
+  /** Lexical state. */
+  int IN_LIST_E2 = 4;
+  /** Lexical state. */
+  int IN_LIST_L1 = 5;
+  /** Lexical state. */
+  int IN_LIST_L2 = 6;
 
   /** Literal token values. */
   String[] tokenImage = {
@@ -147,8 +171,16 @@ public interface ELParserConstants {
     "\"\\r\"",
     "\"}\"",
     "\"#{\"",
-    "\"->\"",
+    "\"{\"",
     "\"}\"",
+    "\"{\"",
+    "\"{\"",
+    "\"}\"",
+    "\"}\"",
+    "\"{\"",
+    "\"}\"",
+    "\"}\"",
+    "\"->\"",
     "<INTEGER_LITERAL>",
     "<FLOATING_POINT_LITERAL>",
     "<EXPONENT>",
