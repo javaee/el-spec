@@ -1,6 +1,8 @@
 package javax.el;
 
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.ArrayList;
 
 /*
@@ -40,17 +42,19 @@ public class LambdaExpression {
      */
     public Object invoke(ELContext elContext, Object... args) 
             throws ELException {
-        ELManager elManager = new ELManager();
-        elManager.setELContext(elContext);
-        // XXX TODO need to handle clashes in VariableMapper
         int i = 0;
+        Map<String, Object> lambdaArgs = new HashMap<String, Object>();
         for (String fParam: formalParameters) {
             if (i >= args.length) {
                 // XXX
                 throw new ELException("Argument missing in Lambda Expression");
             }
-            elManager.defineBean(fParam, args[i++]);
+            lambdaArgs.put(fParam, args[i++]);
         }
-        return expression.getValue(elManager.getELContext());
+        Map<String, Object> prev = elContext.setLambdaArguments(lambdaArgs);
+        Object ret = expression.getValue(elContext);
+        // Restore the previous Lambda arguments
+        elContext.setLambdaArguments(prev);
+        return ret;
     }
 }

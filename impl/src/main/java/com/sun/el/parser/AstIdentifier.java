@@ -64,6 +64,11 @@ public final class AstIdentifier extends SimpleNode {
     }
 
     public Class getType(EvaluationContext ctx) throws ELException {
+        // First check if this is a lambda argument
+        Object argValue = ctx.getELContext().getLambdaArgument(this.image);
+        if (argValue != null) {
+            return Object.class;
+        }
         VariableMapper varMapper = ctx.getVariableMapper();
         if (varMapper != null) {
             ValueExpression expr = varMapper.resolveVariable(this.image);
@@ -91,7 +96,13 @@ public final class AstIdentifier extends SimpleNode {
         return new ValueReference(null, this.image);
     }
 
+    @Override
     public Object getValue(EvaluationContext ctx) throws ELException {
+        // First check if this is a lambda argument
+        Object argValue = ctx.getELContext().getLambdaArgument(this.image);
+        if (argValue != null) {
+            return argValue;
+        }
         VariableMapper varMapper = ctx.getVariableMapper();
         if (varMapper != null) {
             ValueExpression expr = varMapper.resolveVariable(this.image);
@@ -108,6 +119,11 @@ public final class AstIdentifier extends SimpleNode {
     }
 
     public boolean isReadOnly(EvaluationContext ctx) throws ELException {
+        // Lambda arguments are read only.
+        Object argValue = ctx.getELContext().getLambdaArgument(this.image);
+        if (argValue != null) {
+            return true;
+        }
         VariableMapper varMapper = ctx.getVariableMapper();
         if (varMapper != null) {
             ValueExpression expr = varMapper.resolveVariable(this.image);
@@ -125,6 +141,12 @@ public final class AstIdentifier extends SimpleNode {
 
     public void setValue(EvaluationContext ctx, Object value)
             throws ELException {
+        // First check if this is a lambda argument
+        Object argValue = ctx.getELContext().getLambdaArgument(this.image);
+        if (argValue != null) {
+            // Lambda arguments are read only
+            return;
+        }
         VariableMapper varMapper = ctx.getVariableMapper();
         if (varMapper != null) {
             ValueExpression expr = varMapper.resolveVariable(this.image);

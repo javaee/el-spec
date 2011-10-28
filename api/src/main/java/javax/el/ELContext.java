@@ -58,6 +58,7 @@
 
 package javax.el;
 
+import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
@@ -286,6 +287,8 @@ public abstract class ELContext {
      * Registers a listener to the ELContext.
      *
      * @param listener The listener to be added.
+     *
+     * @since EL 3.0
      */
     public <T extends EventListener> void addListener(T listener) {
         listeners.add(listener);
@@ -294,15 +297,45 @@ public abstract class ELContext {
     /**
      * Returns the list of registered listeners.
      * @return The list of registered listeners.
+     *
+     * @since EL 3.0
      */
     public List<EventListener> getlisteners() {
         return listeners;
+    }
+
+    /**
+     * Retrieve the object for the Lambda argument, when the Lambda expression
+     * is evaluated.
+     * @param arg The formal parameter for the Lambda argument
+     * @return The object associated with formal parameter.  Null if 
+     *      no object has been associated with the parameter.
+     * @since EL 3.0
+     */
+    public Object getLambdaArgument(String arg) {
+        if (lambdaArgs == null) {
+            return null;
+        }
+        return lambdaArgs.get(arg);
+    }
+
+    /**
+     * Install a Map for Lambda arguments, in preparation for the evaluation
+     * of a Lambda expression.
+     * @param args The Lambda arguments map
+     * @return The previous map for the Lamda argument
+     * @since EL 3.0
+     */
+    public Map<String,Object> setLambdaArguments(Map<String,Object> args) {
+        Map<String, Object> prev = lambdaArgs;
+        lambdaArgs = args;
+        return prev;
     }
 
     private boolean resolved;
     private HashMap<Class<?>, Object> map = new HashMap<Class<?>, Object>();
     private transient List<EventListener> listeners =
         new ArrayList<EventListener>();
-
+    private Map<String,Object> lambdaArgs;
 }
 
