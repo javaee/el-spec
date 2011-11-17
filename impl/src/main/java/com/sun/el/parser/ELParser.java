@@ -110,7 +110,7 @@ public class ELParser/*@bgen(jjtree)*/implements ELParserTreeConstants, ELParser
     try {
       jj_consume_token(START_DEFERRED_EXPRESSION);
       Expression();
-      jj_consume_token(END_EXPRESSION);
+      jj_consume_token(RCURL);
     } catch (Throwable jjte000) {
           if (jjtc000) {
             jjtree.clearNodeScope(jjtn000);
@@ -144,7 +144,7 @@ public class ELParser/*@bgen(jjtree)*/implements ELParserTreeConstants, ELParser
     try {
       jj_consume_token(START_DYNAMIC_EXPRESSION);
       Expression();
-      jj_consume_token(END_EXPRESSION);
+      jj_consume_token(RCURL);
     } catch (Throwable jjte000) {
           if (jjtc000) {
             jjtree.clearNodeScope(jjtn000);
@@ -1020,10 +1020,7 @@ public class ELParser/*@bgen(jjtree)*/implements ELParserTreeConstants, ELParser
       }
       break;
     case START_LAMBDA:
-    case START_LIST_E1:
-    case START_LIST_L1:
-    case START_LIST_E2:
-    case START_LIST_L2:
+    case START_LIST:
     case INTEGER_LITERAL:
     case FLOATING_POINT_LITERAL:
     case STRING_LITERAL:
@@ -1101,10 +1098,7 @@ public class ELParser/*@bgen(jjtree)*/implements ELParserTreeConstants, ELParser
       Literal();
       break;
     case START_LAMBDA:
-    case START_LIST_E1:
-    case START_LIST_L1:
-    case START_LIST_E2:
-    case START_LIST_L2:
+    case START_LIST:
     case LPAREN:
     case TYPE:
     case IDENTIFIER:
@@ -1232,10 +1226,7 @@ public class ELParser/*@bgen(jjtree)*/implements ELParserTreeConstants, ELParser
       jj_consume_token(LPAREN);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case START_LAMBDA:
-      case START_LIST_E1:
-      case START_LIST_L1:
-      case START_LIST_E2:
-      case START_LIST_L2:
+      case START_LIST:
       case INTEGER_LITERAL:
       case FLOATING_POINT_LITERAL:
       case STRING_LITERAL:
@@ -1325,7 +1316,7 @@ public class ELParser/*@bgen(jjtree)*/implements ELParserTreeConstants, ELParser
       }
       jj_consume_token(ARROW);
       Expression();
-      jj_consume_token(END_LAMBDA);
+      jj_consume_token(RCURL);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case LPAREN:
         MethodArguments();
@@ -1381,10 +1372,7 @@ public class ELParser/*@bgen(jjtree)*/implements ELParserTreeConstants, ELParser
         case START_LAMBDA:
           LambdaExpression();
           break;
-        case START_LIST_E1:
-        case START_LIST_L1:
-        case START_LIST_E2:
-        case START_LIST_L2:
+        case START_LIST:
           ListData();
           break;
         default:
@@ -1402,30 +1390,10 @@ public class ELParser/*@bgen(jjtree)*/implements ELParserTreeConstants, ELParser
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case START_LIST_E1:
-        jj_consume_token(START_LIST_E1);
-        break;
-      case START_LIST_L1:
-        jj_consume_token(START_LIST_L1);
-        break;
-      case START_LIST_E2:
-        jj_consume_token(START_LIST_E2);
-        break;
-      case START_LIST_L2:
-        jj_consume_token(START_LIST_L2);
-        break;
-      default:
-        jj_la1[39] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
+      jj_consume_token(START_LIST);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case START_LAMBDA:
-      case START_LIST_E1:
-      case START_LIST_L1:
-      case START_LIST_E2:
-      case START_LIST_L2:
+      case START_LIST:
       case INTEGER_LITERAL:
       case FLOATING_POINT_LITERAL:
       case STRING_LITERAL:
@@ -1447,7 +1415,7 @@ public class ELParser/*@bgen(jjtree)*/implements ELParserTreeConstants, ELParser
             ;
             break;
           default:
-            jj_la1[40] = jj_gen;
+            jj_la1[39] = jj_gen;
             break label_12;
           }
           jj_consume_token(COMMA);
@@ -1455,27 +1423,10 @@ public class ELParser/*@bgen(jjtree)*/implements ELParserTreeConstants, ELParser
         }
         break;
       default:
-        jj_la1[41] = jj_gen;
+        jj_la1[40] = jj_gen;
         ;
       }
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case END_LIST_E1:
-        jj_consume_token(END_LIST_E1);
-        break;
-      case END_LIST_L1:
-        jj_consume_token(END_LIST_L1);
-        break;
-      case END_LIST_E2:
-        jj_consume_token(END_LIST_E2);
-        break;
-      case END_LIST_L2:
-        jj_consume_token(END_LIST_L2);
-        break;
-      default:
-        jj_la1[42] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
+      jj_consume_token(RCURL);
     } catch (Throwable jjte000) {
       if (jjtc000) {
         jjtree.clearNodeScope(jjtn000);
@@ -1510,7 +1461,7 @@ public class ELParser/*@bgen(jjtree)*/implements ELParserTreeConstants, ELParser
         Expression();
         break;
       default:
-        jj_la1[43] = jj_gen;
+        jj_la1[41] = jj_gen;
         ;
       }
     } catch (Throwable jjte000) {
@@ -1555,7 +1506,7 @@ public class ELParser/*@bgen(jjtree)*/implements ELParserTreeConstants, ELParser
           ;
           break;
         default:
-          jj_la1[44] = jj_gen;
+          jj_la1[42] = jj_gen;
           break label_13;
         }
         jj_consume_token(DOT);
@@ -1569,7 +1520,7 @@ public class ELParser/*@bgen(jjtree)*/implements ELParserTreeConstants, ELParser
         MethodArguments();
         break;
       default:
-        jj_la1[45] = jj_gen;
+        jj_la1[43] = jj_gen;
         ;
       }
     } catch (Throwable jjte000) {
@@ -1632,7 +1583,7 @@ public class ELParser/*@bgen(jjtree)*/implements ELParserTreeConstants, ELParser
         t1 = jj_consume_token(IDENTIFIER);
         break;
       default:
-        jj_la1[46] = jj_gen;
+        jj_la1[44] = jj_gen;
         ;
       }
                 if (t1 != null) {
@@ -1644,10 +1595,7 @@ public class ELParser/*@bgen(jjtree)*/implements ELParserTreeConstants, ELParser
       jj_consume_token(LPAREN);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case START_LAMBDA:
-      case START_LIST_E1:
-      case START_LIST_L1:
-      case START_LIST_E2:
-      case START_LIST_L2:
+      case START_LIST:
       case INTEGER_LITERAL:
       case FLOATING_POINT_LITERAL:
       case STRING_LITERAL:
@@ -1669,7 +1617,7 @@ public class ELParser/*@bgen(jjtree)*/implements ELParserTreeConstants, ELParser
             ;
             break;
           default:
-            jj_la1[47] = jj_gen;
+            jj_la1[45] = jj_gen;
             break label_14;
           }
           jj_consume_token(COMMA);
@@ -1677,7 +1625,7 @@ public class ELParser/*@bgen(jjtree)*/implements ELParserTreeConstants, ELParser
         }
         break;
       default:
-        jj_la1[48] = jj_gen;
+        jj_la1[46] = jj_gen;
         ;
       }
       jj_consume_token(RPAREN);
@@ -1725,7 +1673,7 @@ public class ELParser/*@bgen(jjtree)*/implements ELParserTreeConstants, ELParser
       Null();
       break;
     default:
-      jj_la1[49] = jj_gen;
+      jj_la1[47] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1762,7 +1710,7 @@ public class ELParser/*@bgen(jjtree)*/implements ELParserTreeConstants, ELParser
       }
       break;
     default:
-      jj_la1[50] = jj_gen;
+      jj_la1[48] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1859,9 +1807,9 @@ public class ELParser/*@bgen(jjtree)*/implements ELParserTreeConstants, ELParser
   private boolean jj_3R_34() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(46)) {
+    if (jj_scan_token(38)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(47)) return true;
+    if (jj_scan_token(39)) return true;
     }
     return false;
   }
@@ -1869,9 +1817,9 @@ public class ELParser/*@bgen(jjtree)*/implements ELParserTreeConstants, ELParser
   private boolean jj_3R_33() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(44)) {
+    if (jj_scan_token(36)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(45)) return true;
+    if (jj_scan_token(37)) return true;
     }
     return false;
   }
@@ -1894,9 +1842,9 @@ public class ELParser/*@bgen(jjtree)*/implements ELParserTreeConstants, ELParser
   private boolean jj_3R_28() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(50)) {
+    if (jj_scan_token(42)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(51)) return true;
+    if (jj_scan_token(43)) return true;
     }
     return false;
   }
@@ -1930,9 +1878,9 @@ public class ELParser/*@bgen(jjtree)*/implements ELParserTreeConstants, ELParser
   private boolean jj_3R_26() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(52)) {
+    if (jj_scan_token(44)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(53)) return true;
+    if (jj_scan_token(45)) return true;
     }
     return false;
   }
@@ -1986,31 +1934,11 @@ public class ELParser/*@bgen(jjtree)*/implements ELParserTreeConstants, ELParser
   }
 
   private boolean jj_3R_84() {
+    if (jj_scan_token(START_LIST)) return true;
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(11)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(13)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(14)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(17)) return true;
-    }
-    }
-    }
-    xsp = jj_scanpos;
     if (jj_3R_88()) jj_scanpos = xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(15)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(18)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(16)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(19)) return true;
-    }
-    }
-    }
+    if (jj_scan_token(RCURL)) return true;
     return false;
   }
 
@@ -2168,9 +2096,9 @@ public class ELParser/*@bgen(jjtree)*/implements ELParserTreeConstants, ELParser
   private boolean jj_3R_48() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(48)) {
+    if (jj_scan_token(40)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(49)) return true;
+    if (jj_scan_token(41)) return true;
     }
     if (jj_3R_43()) return true;
     return false;
@@ -2206,9 +2134,9 @@ public class ELParser/*@bgen(jjtree)*/implements ELParserTreeConstants, ELParser
   private boolean jj_3R_53() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(62)) {
+    if (jj_scan_token(54)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(63)) return true;
+    if (jj_scan_token(55)) return true;
     }
     return false;
   }
@@ -2221,9 +2149,9 @@ public class ELParser/*@bgen(jjtree)*/implements ELParserTreeConstants, ELParser
   private boolean jj_3R_52() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(60)) {
+    if (jj_scan_token(52)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(61)) return true;
+    if (jj_scan_token(53)) return true;
     }
     return false;
   }
@@ -2394,9 +2322,9 @@ public class ELParser/*@bgen(jjtree)*/implements ELParserTreeConstants, ELParser
   private boolean jj_3R_40() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(40)) {
+    if (jj_scan_token(32)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(41)) return true;
+    if (jj_scan_token(33)) return true;
     }
     return false;
   }
@@ -2404,9 +2332,9 @@ public class ELParser/*@bgen(jjtree)*/implements ELParserTreeConstants, ELParser
   private boolean jj_3R_39() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(42)) {
+    if (jj_scan_token(34)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(43)) return true;
+    if (jj_scan_token(35)) return true;
     }
     return false;
   }
@@ -2414,9 +2342,9 @@ public class ELParser/*@bgen(jjtree)*/implements ELParserTreeConstants, ELParser
   private boolean jj_3R_38() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(36)) {
+    if (jj_scan_token(28)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(37)) return true;
+    if (jj_scan_token(29)) return true;
     }
     return false;
   }
@@ -2424,9 +2352,9 @@ public class ELParser/*@bgen(jjtree)*/implements ELParserTreeConstants, ELParser
   private boolean jj_3R_37() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(38)) {
+    if (jj_scan_token(30)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(39)) return true;
+    if (jj_scan_token(31)) return true;
     }
     return false;
   }
@@ -2480,23 +2408,18 @@ public class ELParser/*@bgen(jjtree)*/implements ELParserTreeConstants, ELParser
   private Token jj_scanpos, jj_lastpos;
   private int jj_la;
   private int jj_gen;
-  final private int[] jj_la1 = new int[51];
+  final private int[] jj_la1 = new int[49];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
-  static private int[] jj_la1_2;
   static {
       jj_la1_init_0();
       jj_la1_init_1();
-      jj_la1_init_2();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0xe,0xe,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x5d626c00,0x20000000,0x5d626c00,0x20000000,0x40000000,0x40000000,0x0,0x5d626c00,0x0,0x0,0x40000000,0x40000000,0x26c00,0x26800,0x0,0x5d626c00,0xd8000,0x100000,0x20000000,0x40000000,0x0,0x0,0x5d626c00,0x1d600000,0xc000000,};
+      jj_la1_0 = new int[] {0xe,0xe,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xf0000000,0xc0000000,0x30000000,0x0,0x0,0xf0000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x5d6c00,0x1200000,0x5d6c00,0x1200000,0x400000,0x400000,0x8000000,0x5d6c00,0x8000000,0x0,0x400000,0x400000,0xc00,0x8000000,0x5d6c00,0x200,0x200000,0x400000,0x4000000,0x8000000,0x5d6c00,0x1d6000,0xc0000,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x0,0x0,0x0,0x8000000,0x300000,0x300000,0xc0000,0xc0000,0xf000,0x3000,0xc000,0xf000,0xff0,0xc0,0x30,0xc00,0x300,0xff0,0x0,0x6000000,0x6000000,0xf1000000,0x30000000,0xc0000000,0xf1000000,0x30000,0x4430000,0x1,0x0,0x1,0x0,0x0,0x8,0x4430000,0x8,0x0,0x0,0x0,0x0,0x0,0x8,0x4430000,0x0,0x0,0x0,0x0,0x4,0x8,0x4430000,0x0,0x0,};
-   }
-   private static void jj_la1_init_2() {
-      jj_la1_2 = new int[] {0x0,0x0,0x2,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xc,0x0,0xc,0x0,0x0,0x0,0x0,0xc,0x0,0x8,0x0,0x0,0xc,0x0,0x0,0xc,0x0,0x0,0x0,0x0,0x0,0x0,0xc,0x0,0x0,};
+      jj_la1_1 = new int[] {0x0,0x0,0x2000000,0x80000,0x3000,0x3000,0xc00,0xc00,0xf0,0x30,0xc0,0xf0,0xf,0x0,0x0,0xc,0x3,0xf,0x1000000,0x60000,0x60000,0xf10000,0x300000,0xc00000,0xf10000,0x300,0xc044300,0x0,0xc000000,0x0,0x0,0x0,0x0,0xc044300,0x0,0x8000000,0x0,0x0,0xc000000,0x0,0xc044300,0x0,0x0,0x0,0x0,0x0,0xc044300,0x0,0x0,};
    }
   final private JJCalls[] jj_2_rtns = new JJCalls[1];
   private boolean jj_rescan = false;
@@ -2513,7 +2436,7 @@ public class ELParser/*@bgen(jjtree)*/implements ELParserTreeConstants, ELParser
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 51; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 49; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -2529,7 +2452,7 @@ public class ELParser/*@bgen(jjtree)*/implements ELParserTreeConstants, ELParser
     jj_ntk = -1;
     jjtree.reset();
     jj_gen = 0;
-    for (int i = 0; i < 51; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 49; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -2540,7 +2463,7 @@ public class ELParser/*@bgen(jjtree)*/implements ELParserTreeConstants, ELParser
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 51; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 49; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -2552,7 +2475,7 @@ public class ELParser/*@bgen(jjtree)*/implements ELParserTreeConstants, ELParser
     jj_ntk = -1;
     jjtree.reset();
     jj_gen = 0;
-    for (int i = 0; i < 51; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 49; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -2562,7 +2485,7 @@ public class ELParser/*@bgen(jjtree)*/implements ELParserTreeConstants, ELParser
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 51; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 49; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -2573,7 +2496,7 @@ public class ELParser/*@bgen(jjtree)*/implements ELParserTreeConstants, ELParser
     jj_ntk = -1;
     jjtree.reset();
     jj_gen = 0;
-    for (int i = 0; i < 51; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 49; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -2685,12 +2608,12 @@ public class ELParser/*@bgen(jjtree)*/implements ELParserTreeConstants, ELParser
   /** Generate ParseException. */
   public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[72];
+    boolean[] la1tokens = new boolean[64];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 51; i++) {
+    for (int i = 0; i < 49; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {
@@ -2699,13 +2622,10 @@ public class ELParser/*@bgen(jjtree)*/implements ELParserTreeConstants, ELParser
           if ((jj_la1_1[i] & (1<<j)) != 0) {
             la1tokens[32+j] = true;
           }
-          if ((jj_la1_2[i] & (1<<j)) != 0) {
-            la1tokens[64+j] = true;
-          }
         }
       }
     }
-    for (int i = 0; i < 72; i++) {
+    for (int i = 0; i < 64; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;
