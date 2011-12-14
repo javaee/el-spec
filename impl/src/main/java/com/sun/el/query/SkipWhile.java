@@ -4,28 +4,29 @@ import java.util.Iterator;
 import javax.el.ELContext;
 import javax.el.LambdaExpression;
 
-class Where extends QueryOperator {
+class SkipWhile extends QueryOperator {
     @Override
     public Iterable<Object> invoke(final ELContext context,
                                    final Iterable<Object> base,
                                    final Object[] params) {
-        final LambdaExpression predicate = getLambda("where", params, 0);
+        final LambdaExpression predicate = getLambda("takeWhile", params, 0);
         return new Iterable<Object>() {
             @Override
             public Iterator<Object> iterator() {
-                return new WhereIterator(context, base, predicate);
+                return new SkipWhileIterator(context, base, predicate);
             }
         };
     }
 
-    private static class WhereIterator extends BaseIterator {
+    private static class SkipWhileIterator extends BaseIterator {
 
         private ELContext context;
         private Iterator<Object> iter;
         private LambdaExpression predicate;
+        private boolean testedFalse = false;
 
-        public WhereIterator(ELContext context, Iterable<Object>base,
-                             LambdaExpression predicate) {
+        public SkipWhileIterator(ELContext context, Iterable<Object>base,
+                            LambdaExpression predicate) {
             this.context = context;
             this.iter = base.iterator();
             this.predicate = predicate;
@@ -33,16 +34,17 @@ class Where extends QueryOperator {
 
         @Override
         public boolean hasNext() {
-            if (visited) {
-                return visitedValue;
-            }
-            while(iter.hasNext()) {
+            while (!testedFalse && iter.hasNext()) {
                 current = iter.next();
-                if ((Boolean)predicate.invoke(context, current, index)) {
-                    return setVisited(true);
+                if (!(Boolean)predicate.invoke(context, current, index)) {
+                    testedFalse = true;
                 }
             }
-            return setVisited(false);
+            if (iter.hasNext()) {
+                current = iter.next();
+                return true;
+            }
+            return false;
         }
     }
 }

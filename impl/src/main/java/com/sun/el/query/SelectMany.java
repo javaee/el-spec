@@ -10,7 +10,8 @@ class SelectMany extends QueryOperator {
                                    final Iterable<Object> base,
                                    final Object[] params) {
         final LambdaExpression selector = getLambda("selectMany", params, 0);
-        final LambdaExpression resultSelector = getLambda("selectMany", params, 1);
+        final LambdaExpression resultSelector =
+                  getLambda("selectMany", params, 1, true);
         return new Iterable<Object>() {
             @Override
             public Iterator<Object> iterator() {

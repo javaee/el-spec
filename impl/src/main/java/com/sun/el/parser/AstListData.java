@@ -3,8 +3,6 @@
 package com.sun.el.parser;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import javax.el.ELException;
 import com.sun.el.lang.EvaluationContext;
 
 public
@@ -15,25 +13,9 @@ class AstListData extends SimpleNode {
 
     public Object getValue(EvaluationContext ctx) {
         ArrayList<Object> list = new ArrayList<Object>();
-        HashMap<Object, Object> map = new HashMap<Object, Object>();
-
         int paramCount = this.jjtGetNumChildren();
         for (int i = 0; i < paramCount; i++) {
-            Node entry = this.children[i];
-            Object v1 = entry.jjtGetChild(0).getValue(ctx);
-            if (entry.jjtGetNumChildren() > 1) {
-                // expr -> expr
-                map.put(v1, entry.jjtGetChild(1).getValue(ctx));
-            } else {
-                list.add(v1);
-            }
-        }
-        // It is error to have mixed list entries
-        if (list.size() > 0 && map.size() > 0) {
-            throw new ELException("Cannot mix list entry with map entry.");
-        }
-        if (map.size() > 0) {
-            return map;
+            list.add(this.children[i].getValue(ctx));
         }
         return list;
     }

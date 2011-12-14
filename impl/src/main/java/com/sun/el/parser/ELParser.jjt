@@ -120,7 +120,8 @@ void DynamicExpression() #DynamicExpression : {}
  */
 void Expression() : {}
 {
-	Assignment()
+        LOOKAHEAD(3) LambdaExpression()
+        | Assignment()
 }
 
 /*
@@ -306,15 +307,15 @@ void MethodArguments() #MethodArguments : {}
  */
 void LambdaExpression() #LambdaExpression : { Token t = null; }
 {
-        <START_LAMBDA>
-            (
-                t = <IDENTIFIER> { jjtThis.addParam(t.image); }
-                ( <COMMA> t = <IDENTIFIER> { jjtThis.addParam(t.image); })*
-            )?
-            <ARROW>
-            Expression()
-        <RCURL>
-        (MethodArguments())?
+       ( t = <IDENTIFIER> {jjtThis.addParam(t.image);}
+          | ( <LPAREN>  
+                (
+                    t = <IDENTIFIER> { jjtThis.addParam(t.image); }
+                    ( <COMMA> t = <IDENTIFIER> { jjtThis.addParam(t.image); })*
+                )?
+              <RPAREN>
+            )
+       ) <ARROW> Expression()
 }
 
 /*
@@ -327,20 +328,27 @@ void NonLiteral() : {}
  	| LOOKAHEAD(4) Function()
 	| Identifier()
         | Type()
-        | LambdaExpression()
+        | MapData()
         | ListData()
+}
+
+void MapData() #MapData: {}
+{
+    <START_MAP>
+        ( MapEntry() ( <COMMA> MapEntry() )* )?
+    <RCURL>
+}
+
+void MapEntry() #MapEntry: {}
+{
+    Expression() (<ARROW> Expression())?
 }
 
 void ListData() #ListData: {}
 {
-    <START_LIST>
-        ( ListEntry() ( <COMMA> ListEntry() )* )?
-    <RCURL>
-}
-
-void ListEntry() #ListEntry: {}
-{
-    Expression() (<ARROW> Expression())?
+    <LBRACK>
+        ( Expression() ( <COMMA> Expression() )* )?
+    <RBRACK>
 }
 
 /*
@@ -472,18 +480,12 @@ TOKEN_MGR_DECLS:
 
 <DEFAULT> SKIP : { "\\" }
 
-<IN_EXPRESSION, IN_LAMBDA, IN_LIST> SKIP:
+<IN_EXPRESSION, IN_MAP> SKIP:
 { " " | "\t" | "\n" | "\r" }
 
-<IN_LAMBDA, IN_LIST> TOKEN :
+<IN_EXPRESSION, IN_MAP> TOKEN :
 {
-        < ARROW : "->" >
-}
-
-<IN_EXPRESSION, IN_LAMBDA, IN_LIST> TOKEN :
-{
-        < START_LAMBDA: "#{" > {stack.push(curLexState);} : IN_LAMBDA
-|       < START_LIST : "{" > {stack.push(curLexState);}: IN_LIST
+        < START_MAP : "{" > {stack.push(curLexState);}: IN_MAP
 |       < RCURL: "}" > {SwitchTo(stack.pop());}
 |       < INTEGER_LITERAL: ["0"-"9"] (["0"-"9"])* >
 |	< FLOATING_POINT_LITERAL: (["0"-"9"])+ "." (["0"-"9"])* (<EXPONENT>)? 
@@ -540,6 +542,7 @@ TOKEN_MGR_DECLS:
 |       < CONCAT : "&" >
 |       < ASSIGN : "=" >
 |       < TYPE : "T" >
+|       < ARROW : "->" >
 |	< IDENTIFIER : (<LETTER>|<IMPL_OBJ_START>) (<LETTER>|<DIGIT>)* >
 |	< #IMPL_OBJ_START: "#" >
 |	< #LETTER:
