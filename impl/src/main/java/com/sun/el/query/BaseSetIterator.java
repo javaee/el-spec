@@ -2,22 +2,22 @@ package com.sun.el.query;
 
 import java.util.Iterator;
 
-abstract class BaseIterator implements Iterator<Object> {
+abstract class BaseSetIterator implements Iterator<Object> {
 
     int index;
 
-    private Iterator<Object> iter;
+    private Iterator<Object> iter1, iter2;
     private Object current;
     private boolean yielded;
     private boolean yieldBreak;
 
-    BaseIterator(Iterable<Object> base){
-        iter = base.iterator();
+    BaseSetIterator(Iterable<Object> first, Iterable<Object> second){
+        iter1 = first.iterator();
+        iter2 = second.iterator();
     }
 
     @Override
     public Object next() {
-        index++;
         yielded = false;
         return current;
     }
@@ -27,13 +27,18 @@ abstract class BaseIterator implements Iterator<Object> {
         if (yieldBreak) {
             return false;
         }
-        while ((!yielded) && iter.hasNext()) {
-            doItem(iter.next());
+        while (!yielded) {
+            if (iter1.hasNext()) {
+                doItem(iter1.next());
+            } else if (iter2.hasNext()) {
+                doItem(iter2.next());
+            }
         }
         return yielded;
     }
 
     abstract void doItem(Object item);
+    abstract void doItem2(Object item);
 
     void yield(Object current) {
         this.current = current;

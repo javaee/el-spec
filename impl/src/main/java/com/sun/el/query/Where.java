@@ -13,36 +13,15 @@ class Where extends QueryOperator {
         return new Iterable<Object>() {
             @Override
             public Iterator<Object> iterator() {
-                return new WhereIterator(context, base, predicate);
+                return new BaseIterator(base) {
+                    @Override
+                    public void doItem(Object item) {
+                        if ((Boolean) predicate.invoke(context, item, index)) {
+                            yield(item);
+                        }
+                    }
+                };
             }
         };
-    }
-
-    private static class WhereIterator extends BaseIterator {
-
-        private ELContext context;
-        private Iterator<Object> iter;
-        private LambdaExpression predicate;
-
-        public WhereIterator(ELContext context, Iterable<Object>base,
-                             LambdaExpression predicate) {
-            this.context = context;
-            this.iter = base.iterator();
-            this.predicate = predicate;
-        }
-
-        @Override
-        public boolean hasNext() {
-            if (visited) {
-                return visitedValue;
-            }
-            while(iter.hasNext()) {
-                current = iter.next();
-                if ((Boolean)predicate.invoke(context, current, index)) {
-                    return setVisited(true);
-                }
-            }
-            return setVisited(false);
-        }
     }
 }

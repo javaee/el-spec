@@ -13,32 +13,13 @@ class Select extends QueryOperator {
         return new Iterable<Object>() {
             @Override
             public Iterator<Object> iterator() {
-                return new SelectIterator(context, base, selector);
+                return new BaseIterator(base) {
+                    @Override
+                    public void doItem(Object item) {
+                        yield(selector.invoke(context, item, index));
+                    }
+                };
             }
         };
-    }
-
-    private static class SelectIterator extends BaseIterator {
-
-        ELContext context;
-        private Iterator<Object> iter;
-        private LambdaExpression selector;
-
-        public SelectIterator(ELContext context,
-                              Iterable<Object>base,
-                              LambdaExpression selector) {
-            this.context = context;
-            this.iter = base.iterator();
-            this.selector = selector;
-        }
-
-        @Override
-        public boolean hasNext() {
-            if (iter.hasNext()) {
-                current = selector.invoke(context, iter.next(), index);
-                return true;
-            }
-            return false;
-        }
     }
 }

@@ -12,36 +12,16 @@ class Skip extends QueryOperator {
         return new Iterable<Object>() {
             @Override
             public Iterator<Object> iterator() {
-                return new SkipIterator(context, base, count);
+                return new BaseIterator(base) {
+                    @Override
+                    void doItem(Object item) {
+                        if (index < count) {
+                            return;
+                        }
+                        yield(item);
+                    }
+                };
             }
         };
-    }
-
-    private static class SkipIterator extends BaseIterator {
-
-        private ELContext context;
-        private Iterator<Object> iter;
-        private int count;
-        private int curCount = 0;
-
-        public SkipIterator(ELContext context, Iterable<Object>base,
-                            int count) {
-            this.context = context;
-            this.iter = base.iterator();
-            this.count = count;
-        }
-
-        @Override
-        public boolean hasNext() {
-            while (curCount < count  && iter.hasNext()) {
-                iter.next();
-                curCount++;
-            }
-            if (iter.hasNext()) {
-                current = iter.next();
-                return true;
-            }
-            return false;
-        }
     }
 }

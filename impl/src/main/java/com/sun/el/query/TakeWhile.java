@@ -13,37 +13,17 @@ class TakeWhile extends QueryOperator {
         return new Iterable<Object>() {
             @Override
             public Iterator<Object> iterator() {
-                return new TakeWhileIterator(context, base, predicate);
+                return new BaseIterator(base) {
+                    @Override
+                    void doItem(Object item) {
+                        if ((Boolean)predicate.invoke(context, item, index)) {
+                            yield(item);
+                        } else {
+                            yieldBreak();
+                        }
+                    }
+                };
             }
         };
-    }
-
-    private static class TakeWhileIterator extends BaseIterator {
-
-        private ELContext context;
-        private Iterator<Object> iter;
-        private LambdaExpression predicate;
-        private boolean testedFalse = false;
-
-        public TakeWhileIterator(ELContext context, Iterable<Object>base,
-                                 LambdaExpression predicate) {
-            this.context = context;
-            this.iter = base.iterator();
-            this.predicate = predicate;
-        }
-
-        @Override
-        public boolean hasNext() {
-            if (!testedFalse && iter.hasNext()) {
-                current = iter.next();
-                if ((Boolean)predicate.invoke(context, current, index)) {
-                    return true;
-                }
-                else {
-                    testedFalse = true;
-                }
-            }
-            return false;
-        }
     }
 }

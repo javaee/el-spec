@@ -10,63 +10,30 @@ class Join extends QueryOperator {
                                    final Iterable<Object> base,
                                    final Object[] params) {
         final Iterable<Object> inner = getIterable("join", params, 0);
-        final LambdaExpression outer_selector = getLambda("join", params, 1);
-        final LambdaExpression inner_selector = getLambda("join", params, 2);
+        final LambdaExpression outerSelector = getLambda("join", params, 1);
+        final LambdaExpression innerSelector = getLambda("join", params, 2);
         final LambdaExpression resultSelector = getLambda("join", params, 3);
         return new Iterable<Object>() {
             @Override
             public Iterator<Object> iterator() {
-                return new JoinIterator(context, base, inner,
-                            outer_selector, inner_selector, resultSelector);                }
-        };
-    }
+                return new BaseDoubleIterator(base) {
+                    private Object key;
 
-    private static class JoinIterator extends BaseIterator {
-
-        private ELContext context;
-        private Iterable<Object> inner;
-        private Iterator<Object> innerIter, outerIter;
-        private LambdaExpression outerSelector, innerSelector, resultSelector;
-        private Object currentOuter;
-        private Object key;
-
-        public JoinIterator(ELContext context,
-                            Iterable<Object> base,
-                            Iterable<Object> inner,
-                            LambdaExpression outerSelector,
-                            LambdaExpression innerSelector,
-                            LambdaExpression resultSelector) {
-            this.context = context;
-            outerIter = base.iterator();
-            this.inner = inner;
-            this.outerSelector = outerSelector;
-            this.innerSelector = innerSelector;
-            this.resultSelector = resultSelector;
-        }
-
-        @Override
-        public boolean hasNext() {
-            if (innerIter != null) {
-                while (innerIter.hasNext()) {
-                    Object currentInner = innerIter.next();
-                    if (key.equals(innerSelector.invoke(context,
-                                                        currentInner))){
-                        current = resultSelector.invoke(context, currentOuter,
-                                                        currentInner);
-                        return true;
+                    @Override
+                    Iterator<Object> doItem(Object item) {
+                        key = outerSelector.invoke(context, item);
+                        return inner.iterator();
                     }
-                }
-                innerIter = null;
-                return hasNext();
+
+                    @Override
+                    void doItem(Object item, Object item2) {
+                        if (key.equals(innerSelector.invoke(context, item2))) {
+                            yield(resultSelector.invoke(context, item, item2));
+                        }
+                    }
+                };
             }
-            if (outerIter.hasNext()) {
-                currentOuter = outerIter.next();
-                key = outerSelector.invoke(context, currentOuter);
-                innerIter = inner.iterator();
-                return hasNext();
-            }
-            return false;
-        }
+        };
     }
 }
 

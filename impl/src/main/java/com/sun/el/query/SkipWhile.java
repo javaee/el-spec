@@ -13,38 +13,17 @@ class SkipWhile extends QueryOperator {
         return new Iterable<Object>() {
             @Override
             public Iterator<Object> iterator() {
-                return new SkipWhileIterator(context, base, predicate);
+                return new BaseIterator(base) {
+                    @Override
+                    void doItem(Object item) {
+                        if (!(Boolean)predicate.invoke(context, item, index)) {
+                            yield(item);
+                        } else {
+                            yieldBreak();
+                        }
+                    }
+                };
             }
         };
-    }
-
-    private static class SkipWhileIterator extends BaseIterator {
-
-        private ELContext context;
-        private Iterator<Object> iter;
-        private LambdaExpression predicate;
-        private boolean testedFalse = false;
-
-        public SkipWhileIterator(ELContext context, Iterable<Object>base,
-                            LambdaExpression predicate) {
-            this.context = context;
-            this.iter = base.iterator();
-            this.predicate = predicate;
-        }
-
-        @Override
-        public boolean hasNext() {
-            while (!testedFalse && iter.hasNext()) {
-                current = iter.next();
-                if (!(Boolean)predicate.invoke(context, current, index)) {
-                    testedFalse = true;
-                }
-            }
-            if (iter.hasNext()) {
-                current = iter.next();
-                return true;
-            }
-            return false;
-        }
     }
 }
