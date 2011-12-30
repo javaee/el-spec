@@ -121,7 +121,15 @@ void DynamicExpression() #DynamicExpression : {}
 void Expression() : {}
 {
         LOOKAHEAD(3) LambdaExpression()
-        | Assignment()
+        | SemiColon()
+}
+
+/*
+ * SemiColon
+ */
+void SemiColon() : {}
+{
+        Assignment() ( <SEMICOLON> Assignment() #SemiColon(2) )*
 }
 
 /*
@@ -511,6 +519,7 @@ TOKEN_MGR_DECLS:
 |	< RBRACK : "]" >
 |	< COLON : ":" >
 |	< COMMA : "," >
+|       < SEMICOLON : ";" >
 |	< GT0 : ">" >
 |	< GT1 : "gt" >
 |	< LT0 : "<" >
