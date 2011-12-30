@@ -12,33 +12,43 @@ class Concat extends QueryOperator {
         return new Iterable<Object>() {
             @Override
             public Iterator<Object> iterator() {
-                return new ConcatIterator(base, second);
+                return new Iterator<Object>() {
+                    private Iterator<Object> iter = base.iterator();
+                    private Iterator<Object> iter2 = second.iterator();
+                    private boolean yielded;
+                    private Object current;
+
+                    @Override
+                    public Object next() {
+                        yielded = false;
+                        return current;
+                    }
+
+                    @Override
+                    public boolean hasNext() {
+                        if (!yielded) {
+                            return false;
+                        }
+                        if (iter.hasNext()) {
+                            yielded = true;
+                            current = iter.next();
+                            return true;
+                        }
+                        if (iter2.hasNext()) {
+                            yielded = true;
+                            current = iter2.next();
+                            return true;
+                        }
+                        return false;
+                    }
+
+                    @Override
+                    public void remove() {
+                        throw new UnsupportedOperationException();
+                    }
+                };
             }
         };
-    }
-
-    private static class ConcatIterator extends BaseIterator {
-
-        private Iterable<Object> second;
-        private Iterator<Object> iter, iter1;
-
-        public ConcatIterator(Iterable<Object> base, Iterable<Object> second) {
-            iter = iter1 = base.iterator();
-            this.second = second;
-        }
-
-        @Override
-        public boolean hasNext() {
-            if (iter.hasNext()) {
-                current = iter.next();
-                return true;
-            }
-            if (iter == iter1) {
-                iter = second.iterator();
-                return hasNext();
-            }
-            return false;
-        }
     }
 }
 
