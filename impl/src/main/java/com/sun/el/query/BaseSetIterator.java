@@ -9,7 +9,7 @@ abstract class BaseSetIterator implements Iterator<Object> {
     private Iterator<Object> iter1, iter2;
     private Object current;
     private boolean yielded;
-    private boolean yieldBreak;
+    private int state = 1;
 
     BaseSetIterator(Iterable<Object> first, Iterable<Object> second){
         iter1 = first.iterator();
@@ -24,14 +24,22 @@ abstract class BaseSetIterator implements Iterator<Object> {
 
     @Override
     public boolean hasNext() {
-        if (yieldBreak) {
-            return false;
-        }
         while (!yielded) {
-            if (iter1.hasNext()) {
-                doItem(iter1.next());
-            } else if (iter2.hasNext()) {
-                doItem(iter2.next());
+            switch (state) {
+            case 1:
+                if (iter1.hasNext()) {
+                    doItem(iter1.next());
+                    break;
+                }
+                state = 2;
+            case 2:
+                if (iter2.hasNext()) {
+                    doItem2(iter2.next());
+                    break;
+                }
+                state = 3;
+            case 3:
+                doPost();
             }
         }
         return yielded;
@@ -45,8 +53,7 @@ abstract class BaseSetIterator implements Iterator<Object> {
         yielded = true;
     }
 
-    void yieldBreak() {
-        yieldBreak = true;
+    void doPost() {
     }
 
     @Override

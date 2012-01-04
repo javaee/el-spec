@@ -16,28 +16,25 @@ class Except extends QueryOperator {
         return new Iterable<Object>() {
             @Override
             public Iterator<Object> iterator() {
-                return new BaseIterator(base) {
+                return new BaseSetIterator(base, second) {
                     private Set<Object> set = new HashSet<Object>();
+                    private Iterator iter = set.iterator();
 
                     @Override
                     void doItem(Object item) {
-                        if (set.add(item)) {
-                            if (!secondHas(item)) {
-                                yield(item);
-                            }
-                        }
+                        set.add(item);
                     }
 
-                    private boolean secondHas(Object item) {
-                        if (second instanceof Collection) {
-                            return ((Collection) second).contains(item);
+                    @Override
+                    void doItem2(Object item) {
+                        set.remove(item);
+                    }
+
+                    @Override
+                    void doPost() {
+                        if (iter.hasNext()) {
+                            yield(iter.next());
                         }
-                        for (Object obj: second) {
-                            if (obj.equals(item)) {
-                                return true;
-                            }
-                        }
-                        return false;
                     }
                 };
             }

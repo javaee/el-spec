@@ -79,7 +79,7 @@ public abstract class QueryOperator {
         return result;
     }
 
-    static Comparator getComparator(String name, Object[] params, int i,
+    static Comparator<Object> getComparator(String name, Object[] params, int i,
                                     boolean optional) {
         if (i > params.length || ! (params[i] instanceof Comparator)) {
             if (optional) {
@@ -88,7 +88,9 @@ public abstract class QueryOperator {
             throw new ELException("Expecting a Comparartor for " + 
                 "argument " + i + " of " + name + " operator.");
         }
-        return (Comparator) params[i];
+        @SuppressWarnings("unchecked")
+        Comparator<Object> result = (Comparator<Object>)params[i];
+        return result;
     }
 
 }

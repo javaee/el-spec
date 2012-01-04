@@ -48,5 +48,4 @@ abstract class BaseIterator implements Iterator<Object> {
     public void remove() {
         throw new UnsupportedOperationException();
     }
-
 }
