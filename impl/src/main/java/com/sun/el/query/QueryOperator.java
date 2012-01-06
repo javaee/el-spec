@@ -54,7 +54,15 @@ public abstract class QueryOperator {
     }
 
     static Object getArgument(String name, Object[] params, int i) {
+        return getArgument(name, params, i, false);
+    }
+
+    static Object getArgument(String name, Object[] params, int i,
+                              boolean optional) {
         if (i > params.length ) {
+            if (optional) {
+                return null;
+            }
             throw new ELException("Expecting argument " + i + " of " +
                 name + " operator.");
         }

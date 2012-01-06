@@ -2,20 +2,27 @@ package com.sun.el.query;
 
 import javax.el.ELContext;
 import javax.el.LambdaExpression;
+import javax.el.InvalidOperationException;
 
-class Any extends QueryOperator {
+class Single extends QueryOperator {
 
     @Override
     public Object invoke(final ELContext context,
                          final Iterable<Object> base,
                          final Object[] params) {
-        final LambdaExpression predicate = getLambda("any", params, 0, true);
+        final LambdaExpression predicate = getLambda("single", params, 0, true);
 
+        Object result = null;
+        int count = 0;
         for (Object item: base) {
             if (predicate == null || (Boolean)predicate.invoke(context, item)) {
-                return Boolean.TRUE;
+                count++;
+                result = item;
             }
         }
-        return Boolean.FALSE;
+        if (count != 1) {
+            throw new InvalidOperationException();
+        }
+        return result;
     }
 }

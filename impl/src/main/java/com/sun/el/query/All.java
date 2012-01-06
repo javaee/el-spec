@@ -1,6 +1,5 @@
 package com.sun.el.query;
 
-import java.util.Iterator;
 import javax.el.ELContext;
 import javax.el.LambdaExpression;
 
@@ -11,10 +10,9 @@ class All extends QueryOperator {
                          final Iterable<Object> base,
                          final Object[] params) {
         final LambdaExpression predicate = getLambda("all", params, 0);
-        Iterator<Object> iter = base.iterator();
 
-        while (iter.hasNext()) {
-            if (!(Boolean)predicate.invoke(context, iter.next())) {
+        for (Object item: base) {
+            if (!(Boolean)predicate.invoke(context, item)) {
                 return Boolean.FALSE;
             }
         }

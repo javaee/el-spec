@@ -13,8 +13,8 @@ import javax.el.ELContext;
  * This implements the operators orderedBy and thenBy, orderByDescending and
  * thenByDescending operators.
  *
- * To avoid unnecessary intemmediate sorting, the key selectors and the key
- * comparators are kept and applied only on the last operator, and only when
+ * To avoid unnecessary intermediate sortings, the key selectors and the key
+ * comparators are kept in a list and only applied on the last operator, when
  * the iterator of the final Iterable is needed.
  *
  * A Comparator is used to handle the sorting of the primary and secondary
