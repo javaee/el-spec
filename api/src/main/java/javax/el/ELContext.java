@@ -59,6 +59,7 @@
 package javax.el;
 
 import java.util.Map;
+import java.util.Stack;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
@@ -300,13 +301,15 @@ public abstract class ELContext {
      *
      * @since EL 3.0
      */
-    public List<EventListener> getlisteners() {
+    public List<EventListener> getListeners() {
         return listeners;
     }
 
     /**
-     * Retrieve the object for the Lambda argument, when the Lambda expression
-     * is evaluated.
+     * Retrieve the Lambda argument associate with a formal parameter.
+     * If the Lambda expression is nested within other Lambda expressions, the
+     * search order is from the inner to the outter scopes.
+     *
      * @param arg The formal parameter for the Lambda argument
      * @return The object associated with formal parameter.  Null if 
      *      no object has been associated with the parameter.
@@ -316,26 +319,45 @@ public abstract class ELContext {
         if (lambdaArgs == null) {
             return null;
         }
-        return lambdaArgs.get(arg);
+
+        for (int i = lambdaArgs.size() - 1; i >= 0; i--) {
+            Map<String, Object> map = lambdaArgs.elementAt(i);
+            Object v = map.get(arg);
+            if (v != null) {
+                return v;
+            }
+        }
+        return null;
     }
 
     /**
-     * Install a Map for Lambda arguments, in preparation for the evaluation
-     * of a Lambda expression.
+     * Install a Lambda argument map, in preparation for the evaluation
+     * of a Lambda expression.  The arguments will be in scope during the
+     * evaluation of the Lambda expression.
      * @param args The Lambda arguments map
-     * @return The previous map for the Lamda argument
      * @since EL 3.0
      */
-    public Map<String,Object> setLambdaArguments(Map<String,Object> args) {
-        Map<String, Object> prev = lambdaArgs;
-        lambdaArgs = args;
-        return prev;
+    public void enterLambdaScope(Map<String,Object> args) {
+        if (lambdaArgs == null) {
+            lambdaArgs = new Stack<Map<String,Object>>();
+        }
+        lambdaArgs.push(args);
+    }
+
+    /**
+     * Exit the Lambda expression evaluation, ending the scope for the Lambda
+     * arguments.
+     */
+    public void exitLambdaScope() {
+        if (lambdaArgs != null) {
+            lambdaArgs.pop();
+        }
     }
 
     private boolean resolved;
     private HashMap<Class<?>, Object> map = new HashMap<Class<?>, Object>();
     private transient List<EventListener> listeners =
         new ArrayList<EventListener>();
-    private Map<String,Object> lambdaArgs;
+    private Stack<Map<String,Object>> lambdaArgs;
 }
 

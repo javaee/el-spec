@@ -47,14 +47,14 @@ public class LambdaExpression {
         for (String fParam: formalParameters) {
             if (i >= args.length) {
                 // XXX
-                throw new ELException("Argument missing in Lambda Expression");
+                throw new ELException("Expected Argument " + fParam +
+                            " missing in Lambda Expression");
             }
             lambdaArgs.put(fParam, args[i++]);
         }
-        Map<String, Object> prev = elContext.setLambdaArguments(lambdaArgs);
+        elContext.enterLambdaScope(lambdaArgs);
         Object ret = expression.getValue(elContext);
-        // Restore the previous Lambda arguments
-        elContext.setLambdaArguments(prev);
+        elContext.exitLambdaScope();
         return ret;
     }
 }
