@@ -21,7 +21,7 @@ class SelectMany extends QueryOperator {
                         Object tmp = selector.invoke(context, item, index);
                         if (tmp instanceof Iterable) {
                             @SuppressWarnings("unchecked")
-                            Iterator<Object> _iter = (Iterator<Object>) tmp;
+                            Iterator<Object> _iter = ((Iterable<Object>)tmp).iterator();
                             return _iter;
                         }
                         // Undefined.  We yield tmp, to continue

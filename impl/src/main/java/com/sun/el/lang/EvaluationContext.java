@@ -40,10 +40,15 @@
 
 package com.sun.el.lang;
 
+import java.util.EventListener;
+import java.util.List;
+import java.util.Map;
+
 import javax.el.ELContext;
 import javax.el.ELResolver;
 import javax.el.FunctionMapper;
 import javax.el.VariableMapper;
+import javax.el.TypeConverter;
 
 public final class EvaluationContext extends ELContext {
 
@@ -96,5 +101,29 @@ public final class EvaluationContext extends ELContext {
 
     public void setPropertyResolved(boolean resolved) {
         this.elContext.setPropertyResolved(resolved);
+    }
+
+    public TypeConverter getTypeConverter() {
+        return this.elContext.getTypeConverter();
+    }
+
+    public <T extends EventListener> void addListener(T listener) {
+        this.elContext.addListener(listener);
+    }
+
+    public List<EventListener> getListeners() {
+        return this.elContext.getListeners();
+    }
+
+    public Object getLambdaArgument(String arg) {
+        return this.elContext.getLambdaArgument(arg);
+    }
+
+    public void enterLambdaScope(Map<String,Object> args) {
+        this.elContext.enterLambdaScope(args);
+    }
+
+    public void exitLambdaScope() {
+        this.elContext.exitLambdaScope();
     }
 }

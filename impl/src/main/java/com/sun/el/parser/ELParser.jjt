@@ -349,7 +349,7 @@ void MapData() #MapData: {}
 
 void MapEntry() #MapEntry: {}
 {
-    Expression() (<ARROW> Expression())?
+    Expression() (<COLON> Expression())?
 }
 
 void ListData() #ListData: {}

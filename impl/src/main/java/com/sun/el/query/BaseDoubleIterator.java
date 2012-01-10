@@ -11,6 +11,7 @@ abstract class BaseDoubleIterator implements Iterator<Object> {
     private Object current;
     private boolean yielded;
     private boolean inOuter;
+    Object outerItem = null;
 
     BaseDoubleIterator(Iterable<Object> base){
         iter = base.iterator();
@@ -26,7 +27,6 @@ abstract class BaseDoubleIterator implements Iterator<Object> {
 
     @Override
     public boolean hasNext() {
-        Object outerItem = null;
         while (!yielded) {
             if (inOuter) {
                 if (! iter.hasNext()) {

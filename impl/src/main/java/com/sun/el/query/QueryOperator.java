@@ -22,8 +22,46 @@ public abstract class QueryOperator {
         operators.put("where", new Where());
         operators.put("select", new Select());
         operators.put("selectMany", new SelectMany());
+        operators.put("take", new Take());
+        operators.put("skip", new Skip());
+        operators.put("takeWhile", new TakeWhile());
+        operators.put("skipWhile", new SkipWhile());
+        operators.put("join", new Join());
+        operators.put("groupJoin", new GroupJoin());
+        operators.put("concat", new Concat());
+        operators.put("orderBy", new OrderBy());
+        operators.put("thenBy", new ThenBy());
+        operators.put("orderByDescending", new OrderByDescending());
+        operators.put("thenByDescending", new ThenByDescending());
+        operators.put("reverse", new Reverse());
+        operators.put("groupBy", new GroupBy());
+        operators.put("distinc", new Distinct());
+        operators.put("union", new Union());
+        operators.put("interset", new Intersect());
+        operators.put("except", new Except());
+        operators.put("toArray", new ToArray());
+        operators.put("toList", new ToList());
+        operators.put("toMap", new ToMap());
+        operators.put("toLookup", new ToLookup());
+        operators.put("sequenceEqual", new SequenceEqual());
+        operators.put("first", new First());
+        operators.put("firstOrDefault", new FirstOrDefault());
+        operators.put("last", new Last());
+        operators.put("lastOrDefault", new LastOrDefault());
+        operators.put("single", new Single());
+        operators.put("singleOrDefault", new SingleOrDefault());
+        operators.put("elementAt", new ElementAt());
+        operators.put("elementAtOrDefault", new ElementAtOrDefault());
+        operators.put("defaultEmpty", new DefaultEmpty());
+        operators.put("any", new Any());
+        operators.put("all", new All());
+        operators.put("contains", new Contains());
+        operators.put("count", new Count());
         operators.put("sum", new Sum());
-//        operators.put("average", Average.class);
+        operators.put("min", new Min());
+        operators.put("max", new Max());
+        operators.put("average", new Average());
+        operators.put("aggregate", new Aggregate());
     }
 
     public abstract Object invoke(ELContext context,
@@ -43,7 +81,7 @@ public abstract class QueryOperator {
      */
     static LambdaExpression getLambda(String name, Object[] params, int i,
                                       boolean optional) {
-        if (i > params.length || !(params[i] instanceof LambdaExpression)) {
+        if (i >= params.length || !(params[i] instanceof LambdaExpression)) {
             if (optional) {
                 return null;
             }
@@ -59,7 +97,7 @@ public abstract class QueryOperator {
 
     static Object getArgument(String name, Object[] params, int i,
                               boolean optional) {
-        if (i > params.length ) {
+        if (i >= params.length ) {
             if (optional) {
                 return null;
             }
@@ -70,7 +108,7 @@ public abstract class QueryOperator {
     }
 
     static int getInt(String name, Object[] params, int i) {
-        if (i > params.length || ! (params[i] instanceof Integer)) {
+        if (i >= params.length || ! (params[i] instanceof Integer)) {
             throw new ELException("Expecting an integer for " + 
                 "argument " + i + " of " + name + " operator.");
         }
@@ -78,7 +116,7 @@ public abstract class QueryOperator {
     }
 
     static Iterable<Object> getIterable(String name, Object[] params, int i) {
-        if (i > params.length || ! (params[i] instanceof Iterable)) {
+        if (i >= params.length || ! (params[i] instanceof Iterable)) {
             throw new ELException("Expecting an Iterable for " + 
                 "argument " + i + " of " + name + " operator.");
         }
@@ -89,7 +127,7 @@ public abstract class QueryOperator {
 
     static Comparator<Object> getComparator(String name, Object[] params, int i,
                                     boolean optional) {
-        if (i > params.length || ! (params[i] instanceof Comparator)) {
+        if (i >= params.length || ! (params[i] instanceof Comparator)) {
             if (optional) {
                 return null;
             }
