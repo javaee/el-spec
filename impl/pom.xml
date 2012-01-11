@@ -146,7 +146,8 @@
                         <Private-Package>
                             com.sun.el.lang,
                             com.sun.el.parser,
-                            com.sun.el.util
+                            com.sun.el.util,
+                            com.sun.el.query
                         </Private-Package>
                     </instructions>
                 </configuration>
@@ -244,6 +245,23 @@
                     <arguments>${release.arguments}</arguments>
                 </configuration>                                                      
             </plugin>                    
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.7.1</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.surefire</groupId>
+                        <artifactId>surefire-junit47</artifactId>
+                        <version>2.7.1</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <forkMode>never</forkMode>
+                    <!--
+                    <parallel>classes</parallel>
+                    -->
+                </configuration>
+            </plugin>
         </plugins>
         <resources>
             <resource>
@@ -283,6 +301,12 @@
             <groupId>javax.el</groupId>
             <artifactId>javax.el-api</artifactId>
             <version>3.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.8.2</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>
