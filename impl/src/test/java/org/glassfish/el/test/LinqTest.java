@@ -150,5 +150,32 @@ public class LinqTest {
         }
         assertTrue(indx == 3);
     }
+    
+    @Test
+    public void testJoin() {
+        p("customers.join(orders, c->c.customerID, o->o.customerID,");
+        p("               (c,o)->[c.name, o.orderDate, o.total])");
+        ret = elp.getValue("customers.join(orders, c->c.customerID, o->o.customerID,"
+                + "                        (c,o)->[c.name, o.orderDate, o.total])");
+        int indx = 0;
+        for (Object item: (Iterable) ret) {
+            p(item.toString());
+            indx++;
+        }
+    }
+    
+    @Test
+    public void testGroupJoin() {
+        p("customers.groupJoin(orders, c->c.customerID, o->o.customerID,");
+        p("                    (c,os)->[c.name, os.sum(o->o.total)])");
+        ret = elp.getValue("customers.groupJoin(orders," 
+                               + "c->c.customerID, o->o.customerID,"
+                               + "(c,os)->[c.name, os.sum(o->o.total)])");
+        int indx = 0;
+        for (Object item: (Iterable) ret) {
+            p(item.toString());
+            indx++;
+        }
+    }
 }
 
