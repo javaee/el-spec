@@ -100,6 +100,8 @@ public class LinqTest {
         }
     }
 
+    static String[] g1 = {"[John Doe, 11]", "[John Doe, 12]", "[Mary Lane, 13]"};
+    
     @Test
     public void testSelectMany2() {
         p("** Query ** customers.where(c->c.country == 'USA').");
@@ -113,7 +115,8 @@ public class LinqTest {
                            "select(co->[co.c.name, co.o.orderID])");
         int indx = 0;
         for (Object item: (Iterable) ret) {
-            p(item.getClass().getName() + item.toString());
+            p(item.toString());
+            assertEquals(item.toString(), g1[indx]);
             indx++;
         }
         assertTrue(indx == 3);
@@ -141,7 +144,8 @@ public class LinqTest {
                                "o.orderID])");
         int indx = 0;
         for (Object item: (Iterable) ret) {
-            p(item.getClass().getName() + item.toString());
+            p(item.toString());
+            assertEquals(item.toString(), g1[indx]);
             indx++;
         }
         assertTrue(indx == 3);
