@@ -26,7 +26,7 @@ public class LinqTest {
         System.out.println(msg);
     }
 
-    static int v[] = {200, 203, 204};
+    static int v[] = {200, 203, 204, 205};
 
     @Test
     public void testWhere() {
@@ -41,7 +41,7 @@ public class LinqTest {
     }
 
     static String pnames[] = {"Eagle", "Coming Home", "Greatest Hits",
-                       "History of Golf", "Toy Story" };
+                       "History of Golf", "Toy Story" , "iSee"};
     @Test
     public void testSelect() {
         p("** Query ** products.select(p->p.name)");
@@ -53,8 +53,8 @@ public class LinqTest {
         }
     }
 
-    static String p2names[] = {"Eagle", "History of Golf", "Toy Story"};
-    static double p2price[] = {12.5, 11.0, 10.0};
+    static String p2names[] = {"Eagle", "History of Golf", "Toy Story", "iSee"};
+    static double p2price[] = {12.5, 11.0, 10.0, 12.5};
     @Test
     public void testSelect2() {
         p("** Query ** products.where(p->p.unitPrice >= 10)");
@@ -70,7 +70,7 @@ public class LinqTest {
         }
     }
 
-    static int i3[] = {0, 3, 4};
+    static int i3[] = {0, 3, 4, 5};
     @Test
     public void testSelect3() {
         p("** Query ** products.select((p,i)->{'product':p,'index':i}).");
@@ -175,6 +175,28 @@ public class LinqTest {
         for (Object item: (Iterable) ret) {
             p(item.toString());
             indx++;
+        }
+    }
+    
+    @Test
+    public void testOrderBy() {
+        ret = elp.getValue("products.orderBy(p->p.category)."
+                                   + "thenByDescending(p->p.unitPrice)."
+                                   + "thenBy(p->p.name)");
+        int indx = 0;
+        for (Object item: (Iterable) ret) {
+            p(item.toString());
+            indx++;
+        }
+    }
+    
+    @Test
+    public void testOrderBy2() {
+        ret = elp.getValue("products.orderBy(p->p.name, "
+                + "T(java.lang.String).CASE_INSENSITIVE_ORDER)");
+        int indx = 0;
+        for (Object item: (Iterable) ret) {
+            p(item.toString());
         }
     }
 }

@@ -46,6 +46,7 @@ public class DataBase {
         p("Greatest Hits", "cd", 6.5, 200);  // id: 202
         p("History of Golf", "book", 11.0, 30);  // id: 203
         p("Toy Story", "dvd", 10.00, 1000);  // id: 204
+        p("iSee", "book", 12.50, 150);  // 205
     }
 
     void initOrder() {
