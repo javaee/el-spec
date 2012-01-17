@@ -108,11 +108,12 @@ public abstract class QueryOperator {
     }
 
     static int getInt(String name, Object[] params, int i) {
-        if (i >= params.length || ! (params[i] instanceof Integer)) {
-            throw new ELException("Expecting an integer for " + 
-                "argument " + i + " of " + name + " operator.");
+        String msg = "Expecting an integer for " + 
+            "argument " + i + " of " + name + " operator.";
+        if (i >= params.length) {
+            throw new ELException(msg);
         }
-        return (Integer) params[i];
+        return toInteger(params[i], msg);
     }
 
     static Iterable<Object> getIterable(String name, Object[] params, int i) {
@@ -139,5 +140,20 @@ public abstract class QueryOperator {
         return result;
     }
 
+    private static int toInteger(Object p, String msg) {
+        if (p instanceof Integer) {
+            return ((Integer) p).intValue();
+        }
+        if (p instanceof Character) {
+            return ((Character) p).charValue();
+        }
+        if (p instanceof Number) {
+            return ((Number) p).intValue();
+        }
+        if (p instanceof String) {
+            return Integer.parseInt((String) p);
+        }
+        throw new IllegalArgumentException(msg);
+    }
 }
 
