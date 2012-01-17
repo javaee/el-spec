@@ -26,187 +26,182 @@ public class LinqTest {
         System.out.println(msg);
     }
 
-    static int v[] = {200, 203, 204, 205};
+    /*
+     * Test a Linq query that returns an Iterable.
+     * @param name of the test
+     * @param query The EL query string
+     * @param expected The items of the result, which should be an Iterable,
+     *           when enumerated
+     */
+    void testIterable(String name, String query, String[] expected) {
+        p("=== Testing " + name + " ===");
+        p(query);
+        Object ret = elp.getValue(query);
+        int indx = 0;
+        p(" = returns =");
+        for (Object item: (Iterable) ret) {
+            p(" " + item.toString());
+            assertEquals(item.toString(), expected[indx++]);
+        }
+        assertTrue(indx == expected.length);
+    }
+
+    static String[] exp1 = {
+        "Product: 200, Eagle, book, 12.5, 100",
+        "Product: 203, History of Golf, book, 11.0, 30",
+        "Product: 204, Toy Story, dvd, 10.0, 1000",
+        "Product: 205, iSee, book, 12.5, 150"};
 
     @Test
     public void testWhere() {
-        p("** Query ** products.where(p->p.unitPrice >= 10)");
-        ret = elp.getValue("products.where(p->p.unitPrice >= 10)");
-        assertTrue(Iterable.class.isInstance(ret));
-        int indx = 0;
-        for (Object item: (Iterable) ret) {
-            p(item.toString());
-            assertTrue(((Product)item).getProductID() == v[indx++]);
-        }
+        testIterable("where", "products.where(p->p.unitPrice >= 10)", exp1);
     }
 
-    static String pnames[] = {"Eagle", "Coming Home", "Greatest Hits",
+    static String exp2[] = {"Eagle", "Coming Home", "Greatest Hits",
                        "History of Golf", "Toy Story" , "iSee"};
     @Test
     public void testSelect() {
-        p("** Query ** products.select(p->p.name)");
-        ret = elp.getValue("products.select(p->p.name)");
-        int indx = 0;
-        for (Object item: (Iterable) ret) {
-            p(item.toString());
-            assertTrue(pnames[indx++].equals(item));
-        }
+        testIterable("select", "products.select(p->p.name)", exp2);
     }
 
-    static String p2names[] = {"Eagle", "History of Golf", "Toy Story", "iSee"};
-    static double p2price[] = {12.5, 11.0, 10.0, 12.5};
+    static String[] exp3 = {
+        "[Eagle, 12.5]",
+        "[History of Golf, 11.0]",
+        "[Toy Story, 10.0]",
+        "[iSee, 12.5]"};
+
     @Test
     public void testSelect2() {
-        p("** Query ** products.where(p->p.unitPrice >= 10)");
-        p("                    .select(p->[p.name, p.unitPrice])");
-        ret = elp.getValue("products.where(p->p.unitPrice >= 10)" +
-                                   ".select(p->[p.name,p.unitPrice])");
-        int indx = 0;
-        for (Object item: (Iterable) ret) {
-            p(item.toString());
-            assertTrue(List.class.isInstance(item));
-            assertEquals(((List)item).get(0), p2names[indx]);
-            assertTrue(((List)item).get(1).equals(p2price[indx++]));
-        }
+        testIterable("select 2",
+                     " products.where(p->p.unitPrice >= 10).\n" +
+                     "          select(p->[p.name,p.unitPrice])",
+                    exp3);
     }
 
-    static int i3[] = {0, 3, 4, 5};
+    static String[] exp4 = {"0", "3", "4", "5"};
     @Test
     public void testSelect3() {
-        p("** Query ** products.select((p,i)->{'product':p,'index':i}).");
-        p("                     where(p->p.product.unitPrice >= 10).");
-        p("                     select(p->p.index)");
-        ret = elp.getValue("products.select((p,i)->{'product':p, 'index':i})." +
-                                    "where(p->p.product.unitPrice >= 10)." +
-                                    "select(p->p.index)");
-        int indx = 0;
-        for (Object item: (Iterable) ret) {
-            p(item.toString());
-            assertTrue(item.equals(i3[indx++]));
-        }
+        testIterable("select 3",
+                     " products.select((p,i)->{'product':p, 'index':i}).\n" +
+                     "          where(p->p.product.unitPrice >= 10).\n" +
+                     "          select(p->p.index)",
+                     exp4);
     }
 
-    static int i2[] = {10, 11, 12, 13, 14};
+    static String[] exp5 = {
+        "Order: 10, 100, 2/18/2010, 20.8",
+        "Order: 11, 100, 5/3/2011, 34.5",
+        "Order: 12, 100, 8/2/2011, 210.75",
+        "Order: 13, 101, 1/15/2011, 50.23",
+        "Order: 14, 101, 1/3/2012, 126.77"};
+
     @Test
     public void testSelectMany() {
-        p("** Query ** customers.where(c->c.country == 'USA').");
-        p("                      selectMany(c->c.orders)");
-        ret = elp.getValue("customers.where(c->c.country == 'USA')." +
-                                     "selectMany(c->c.orders)");
-        int indx = 0;
-        for (Object item: (Iterable) ret) {
-            p(item.toString());
-            assertEquals(((Order)item).getOrderID(), i2[indx++]);
-        }
+        testIterable("selectMany",
+                     " customers.where(c->c.country == 'USA').\n" +
+                     "           selectMany(c->c.orders)",
+                     exp5);
     }
 
-    static String[] g1 = {"[John Doe, 11]", "[John Doe, 12]", "[Mary Lane, 13]"};
+    static String[] exp6 = {
+        "[John Doe, 11]", "[John Doe, 12]", "[Mary Lane, 13]"};
     
     @Test
     public void testSelectMany2() {
-        p("** Query ** customers.where(c->c.country == 'USA').");
-        p("                      selectMany(c->c.orders, (c,o)->{'o':o,'c':c}).");
-        p("                      where(co->co.o.orderData.year == 2011)");
-        p("                      select(co->[co.c.name, co.o.orderID])");
-        ret = elp.getValue(
-                 "customers.where(c->c.country == 'USA')." +
-                           "selectMany(c->c.orders, (c,o)->{'o':o,'c':c})." +
-                           "where(co->co.o.orderDate.year == 2011)." +
-                           "select(co->[co.c.name, co.o.orderID])");
-        int indx = 0;
-        for (Object item: (Iterable) ret) {
-            p(item.toString());
-            assertEquals(item.toString(), g1[indx]);
-            indx++;
-        }
-        assertTrue(indx == 3);
+        testIterable("selectMany 2",
+                 " customers.where(c->c.country == 'USA').\n" +
+                 "           selectMany(c->c.orders, (c,o)->{'o':o,'c':c}).\n" +
+                 "           where(co->co.o.orderDate.year == 2011).\n" +
+                 "           select(co->[co.c.name, co.o.orderID])",
+                 exp6);
     }
 
     @Test
     public void testSelectMany2a() {
-        p("** Query **");
-        p("customers.where(c->c.country == 'USA').");
-        p("          selectMany(c->c.orders).");
-        p("          where(o->o.orderData.year == 2011).");
-        p("          select(o->[customers.where(c.customerID==o->o.customerID).");
-        p("                               select(c.name).");
-        p("                               single(),");
-        p("                     o.orderID])");
-
-        ret = elp.getValue(
-                 "customers.where(c->c.country == 'USA')." +
-                           "selectMany(c->c.orders)." +
-                           "where(o->o.orderDate.year == 2011)." +
-                           "select(o->" +
-                               "[customers.where(c->c.customerID==o.customerID)." +
-                                          "select(c->c.name)." +
-                                          "single()," +
-                               "o.orderID])");
-        int indx = 0;
-        for (Object item: (Iterable) ret) {
-            p(item.toString());
-            assertEquals(item.toString(), g1[indx]);
-            indx++;
-        }
-        assertTrue(indx == 3);
+        testIterable("selectMany 2a",
+             " customers.where(c->c.country == 'USA').\n" +
+             "           selectMany(c->c.orders).\n" +
+             "           where(o->o.orderDate.year == 2011).\n" +
+             "           select(o-> [customers.where(c->c.customerID==o.customerID).\n" +
+             "                                 select(c->c.name).\n" +
+             "                                 single(),\n" +
+             "                       o.orderID])",
+             exp6);
     }
+
+    static String[] exp7 = {
+        "Product: 200, Eagle, book, 12.5, 100",
+        "Product: 205, iSee, book, 12.5, 150",
+        "Product: 203, History of Golf, book, 11.0, 30"};
 
     @Test
     public void testTake() {
-        ret = elp.getValue("products.orderByDescending(p->p.unitPrice)." +
-                           "take(3)");
-        for (Object item: (Iterable) ret) {
-            p(item.toString());
-        }
+        testIterable("take",
+            " products.orderByDescending(p->p.unitPrice).\n" +
+            "          take(3)",
+            exp7);
     }
     
+    static String[] exp8 = {
+        "[John Doe, 2/18/2010, 20.8]",
+        "[John Doe, 5/3/2011, 34.5]",
+        "[John Doe, 8/2/2011, 210.75]",
+        "[Mary Lane, 1/15/2011, 50.23]",
+        "[Mary Lane, 1/3/2012, 126.77]",
+        "[Charlie Yeh, 4/15/2011, 101.2]"};
+
     @Test
     public void testJoin() {
-        p("customers.join(orders, c->c.customerID, o->o.customerID,");
-        p("               (c,o)->[c.name, o.orderDate, o.total])");
-        ret = elp.getValue("customers.join(orders, c->c.customerID, o->o.customerID,"
-                + "                        (c,o)->[c.name, o.orderDate, o.total])");
-        int indx = 0;
-        for (Object item: (Iterable) ret) {
-            p(item.toString());
-            indx++;
-        }
+        testIterable("join",
+            " customers.join(orders, c->c.customerID, o->o.customerID,\n" + 
+            "                (c,o)->[c.name, o.orderDate, o.total])",
+            exp8);
     }
     
+    static String[] exp9 = {
+        "[John Doe, 266.05]",
+        "[Mary Lane, 177.0]",
+        "[Charlie Yeh, 101.2]"};
+
     @Test
     public void testGroupJoin() {
-        p("customers.groupJoin(orders, c->c.customerID, o->o.customerID,");
-        p("                    (c,os)->[c.name, os.sum(o->o.total)])");
-        ret = elp.getValue("customers.groupJoin(orders," 
-                               + "c->c.customerID, o->o.customerID,"
-                               + "(c,os)->[c.name, os.sum(o->o.total)])");
-        int indx = 0;
-        for (Object item: (Iterable) ret) {
-            p(item.toString());
-            indx++;
-        }
+        testIterable("groupJoin",
+            " customers.groupJoin(orders, c->c.customerID, o->o.customerID,\n" +
+            "                     (c,os)->[c.name, os.sum(o->o.total)])",
+            exp9);
     }
     
+    static String[] exp10 = {
+        "Product: 200, Eagle, book, 12.5, 100",
+        "Product: 205, iSee, book, 12.5, 150",
+        "Product: 203, History of Golf, book, 11.0, 30",
+        "Product: 202, Greatest Hits, cd, 6.5, 200",
+        "Product: 204, Toy Story, dvd, 10.0, 1000",
+        "Product: 201, Coming Home, dvd, 8.0, 50"};
+
     @Test
     public void testOrderBy() {
-        ret = elp.getValue("products.orderBy(p->p.category)."
-                                   + "thenByDescending(p->p.unitPrice)."
-                                   + "thenBy(p->p.name)");
-        int indx = 0;
-        for (Object item: (Iterable) ret) {
-            p(item.toString());
-            indx++;
-        }
+        testIterable("orderBy",
+                     " products.orderBy(p->p.category).\n" + 
+                     "          thenByDescending(p->p.unitPrice).\n" +
+                     "          thenBy(p->p.name)",
+                     exp10);
     }
     
+    static String[] exp11 = {
+        "Product: 201, Coming Home, dvd, 8.0, 50",
+        "Product: 200, Eagle, book, 12.5, 100",
+        "Product: 202, Greatest Hits, cd, 6.5, 200",
+        "Product: 203, History of Golf, book, 11.0, 30",
+        "Product: 205, iSee, book, 12.5, 150",
+        "Product: 204, Toy Story, dvd, 10.0, 1000"};
+
     @Test
     public void testOrderBy2() {
-        ret = elp.getValue("products.orderBy(p->p.name, "
-                + "T(java.lang.String).CASE_INSENSITIVE_ORDER)");
-        int indx = 0;
-        for (Object item: (Iterable) ret) {
-            p(item.toString());
-        }
+        testIterable("orderBy 2",
+            " products.orderBy(p->p.name,\n" +
+            "                  T(java.lang.String).CASE_INSENSITIVE_ORDER)",
+            exp11);
     }
 }
 

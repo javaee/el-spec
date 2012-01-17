@@ -1,6 +1,5 @@
 package org.glassfish.el.test;
 
-import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 

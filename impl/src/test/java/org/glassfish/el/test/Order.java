@@ -1,7 +1,5 @@
 package org.glassfish.el.test;
 
-import java.util.Date;
-
 public class Order {
 
     int orderID; 
@@ -18,7 +16,7 @@ public class Order {
 
     public String toString() {
         return "Order: " + orderID + ", " + customerID +
-            ", " + orderDate.getYear() + ", " + total;
+            ", " + orderDate.toString() + ", " + total;
     }
 
     public int getOrderID() { return orderID; }
