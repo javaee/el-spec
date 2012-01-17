@@ -150,6 +150,15 @@ public class LinqTest {
         }
         assertTrue(indx == 3);
     }
+
+    @Test
+    public void testTake() {
+        ret = elp.getValue("products.orderByDescending(p->p.unitPrice)." +
+                           "take(3)");
+        for (Object item: (Iterable) ret) {
+            p(item.toString());
+        }
+    }
     
     @Test
     public void testJoin() {

@@ -17,8 +17,8 @@ public class Order {
     }
 
     public String toString() {
-        return "Order: orderID = " + orderID + " customerID = " + customerID +
-            " orderDate = " + orderDate + " total = " + total;
+        return "Order: " + orderID + ", " + customerID +
+            ", " + orderDate.getYear() + ", " + total;
     }
 
     public int getOrderID() { return orderID; }

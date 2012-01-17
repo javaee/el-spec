@@ -66,8 +66,6 @@ public class DataBase {
 
     void o(int customerID, Date orderDate, double total) {
         Order order = new Order(curOrder++, customerID, orderDate, total);
-        System.out.println("### order = " + curOrder + ", customer = " +
-            customerID);
         this.orders.add(order);
         findCustomer(customerID).getOrders().add(order);
     }

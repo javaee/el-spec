@@ -19,10 +19,8 @@ public class Product {
     }
 
     public String toString() {
-        return "Product: id=" + productID + ", name=" + name +
-            ", category=" +
-            category + ", unitPrice=" + unitPrice + ", unitsInStock=" +
-            unitsInStock;
+        return "Product: " + productID + ", " + name + ", " +
+            category + ", " + unitPrice + ", " + unitsInStock;
     }
 
     public int getProductID() { return productID; }

@@ -23,6 +23,11 @@ public class Customer {
         this.orders = new ArrayList<Order>();
     }
 
+    public String toString() {
+        return "Customer: " + customerID + ", " + name + ", " + city + ", " +
+                country;
+    }
+
     public int getCustomerID() { return customerID;}
     public String getName() { return name;}
     public String getAddress() { return address; }
