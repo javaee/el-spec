@@ -13,7 +13,6 @@ import javax.el.ELProcessor;
 public class LinqTest {
 
     ELProcessor elp;
-    Object ret;
 
     @Before
     public void setUP() {
