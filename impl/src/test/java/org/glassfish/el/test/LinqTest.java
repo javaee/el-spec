@@ -25,6 +25,12 @@ public class LinqTest {
         System.out.println(msg);
     }
 
+    void testO(String name, String query) {
+        p("=== Test " + name + "===");
+        p(query);
+        Object ret = elp.getValue(query);
+        p(ret.toString());
+    }
     /*
      * Test a Linq query that returns an Iterable.
      * @param name of the test
@@ -201,6 +207,14 @@ public class LinqTest {
             " products.orderBy(p->p.name,\n" +
             "                  T(java.lang.String).CASE_INSENSITIVE_ORDER)",
             exp11);
+    }
+    
+    @Test
+    public void testToMap() {
+        testO("toMap",
+             " customers.selectMany(c->c.orders).\n" +
+             "           where(o->o.orderDate.year == 2011).\n" +
+             "           toMap(o->o.orderID)");
     }
 }
 
