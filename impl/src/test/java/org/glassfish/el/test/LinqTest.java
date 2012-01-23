@@ -1,6 +1,7 @@
 package org.glassfish.el.test;
 
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Test;
 import org.junit.Before;
@@ -25,11 +26,15 @@ public class LinqTest {
         System.out.println(msg);
     }
 
-    void testO(String name, String query) {
+    void testMap(String name, String query, String[] expected) {
         p("=== Test " + name + "===");
         p(query);
         Object ret = elp.getValue(query);
-        p(ret.toString());
+        assertTrue(ret instanceof Map);
+        for (Object item: ((Map) ret).entrySet()) {
+            p(" " + item.toString());
+            assertEquals(item.toString(), expected[indx++]);
+        }
     }
     /*
      * Test a Linq query that returns an Iterable.
@@ -209,12 +214,19 @@ public class LinqTest {
             exp11);
     }
     
+    static String[] exp12 = {
+        "11=Order: 11, 100, 5/3/2011, 34.5",
+        "12=Order: 12, 100, 8/2/2011, 210.75",
+        "13=Order: 13, 101, 1/15/2011, 50.23",
+        "15=Order: 15, 102, 4/15/2011, 101.2"};
+
     @Test
     public void testToMap() {
-        testO("toMap",
+        testMap("toMap",
              " customers.selectMany(c->c.orders).\n" +
              "           where(o->o.orderDate.year == 2011).\n" +
-             "           toMap(o->o.orderID)");
+             "           toMap(o->o.orderID)",
+        exp12);
     }
 }
 
