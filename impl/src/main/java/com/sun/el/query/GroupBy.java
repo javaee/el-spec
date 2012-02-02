@@ -10,7 +10,7 @@ import javax.el.Grouping;
 
 class GroupBy extends QueryOperator {
     @Override
-    public Iterable<ArrayListGrouping<Object,Object>> invoke(
+    public Iterable<GroupingImpl<Object,Object>> invoke(
                                    final ELContext context,
                                    final Iterable<Object> base,
                                    final Object[] params) {
@@ -23,8 +23,8 @@ class GroupBy extends QueryOperator {
         }
         final Comparator cmp = getComparator("groupBy", params, indexC, true);
 
-        List<ArrayListGrouping<Object,Object>> groups =
-                    new ArrayList<ArrayListGrouping<Object,Object>>();
+        List<GroupingImpl<Object,Object>> groups =
+                    new ArrayList<GroupingImpl<Object,Object>>();
 
         for (Object element: base) {
             Object key = keySelector.invoke(context, element);
@@ -37,19 +37,18 @@ class GroupBy extends QueryOperator {
         return groups;
     }
 
-    private void addToGroup(List<ArrayListGrouping<Object,Object>> groups,
+    private void addToGroup(List<GroupingImpl<Object,Object>> groups,
                             Object key, Object value) {
         if (key == null || value == null) {
             return;
         }
-        for (ArrayListGrouping<Object, Object> group: groups) {
+        for (GroupingImpl<Object, Object> group: groups) {
             if (key.equals(group.getKey())) {
                 group.add(value);
                 return;
             }
         }
-        ArrayListGrouping<Object, Object> g =
-            new ArrayListGrouping<Object,Object>(key);
+        GroupingImpl<Object, Object> g = new GroupingImpl<Object,Object>(key);
         g.add(value);
         groups.add(g);
         return;
