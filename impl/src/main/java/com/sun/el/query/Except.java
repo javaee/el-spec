@@ -1,9 +1,8 @@
 package com.sun.el.query;
 
 import java.util.Iterator;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.Collection;
+import java.util.List;
+import java.util.ArrayList;
 
 import javax.el.ELContext;
 
@@ -17,24 +16,28 @@ class Except extends QueryOperator {
             @Override
             public Iterator<Object> iterator() {
                 return new BaseSetIterator(base, second) {
-                    private Set<Object> set = new HashSet<Object>();
-                    private Iterator iter = set.iterator();
+                    private List<Object> list = new ArrayList<Object>();
 
                     @Override
                     void doItem(Object item) {
-                        set.add(item);
+                        if (!list.contains(item)) {
+                            list.add(item);
+                        }
                     }
 
                     @Override
                     void doItem2(Object item) {
-                        set.remove(item);
+                        list.remove(item);
                     }
 
                     @Override
-                    void doPost() {
-                        if (iter.hasNext()) {
-                            yield(iter.next());
-                        }
+                    Iterator<Object> getIter3() {
+                        return list.iterator();
+                    }
+
+                    @Override
+                    void doItem3(Object item) {
+                        yield(item);
                     }
                 };
             }

@@ -30,7 +30,7 @@ class ToLookup extends QueryOperator {
 
         for (Object element: base) {
             Object key = keySelector.invoke(context, element);
-            Object dest = key;
+            Object dest = element;
             if (elementSelector != null) {
                 dest = elementSelector.invoke(context, element);
             }
@@ -44,16 +44,14 @@ class ToLookup extends QueryOperator {
         if (key == null || value == null) {
             return;
         }
-        for (ArrayListGrouping<Object, Object> group: map.values()) {
-            if (key.equals(group.getKey())) {
-                group.add(value);
-                return;
-            }
+
+        ArrayListGrouping<Object, Object> g;
+        g = map.get(key);
+        if (g == null) {
+            g = new ArrayListGrouping<Object,Object>(key);
+            map.put(key, g);
         }
-        ArrayListGrouping<Object, Object> g =
-                    new ArrayListGrouping<Object,Object>(key);
         g.add(value);
-        map.put(key, g);
         return;
     }
 }

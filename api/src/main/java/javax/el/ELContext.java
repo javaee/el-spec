@@ -306,9 +306,11 @@ public abstract class ELContext {
     }
 
     /**
-     * Retrieve the Lambda argument associate with a formal parameter.
+     * Retrieve the Lambda argument associated with a formal parameter.
      * If the Lambda expression is nested within other Lambda expressions, the
-     * search order is from the inner to the outter scopes.
+     * arguments for the current Lambda expression is first searched, and if
+     * not found, the arguments for the immediate nesting Lambda expression
+     * then searched, and so on.
      *
      * @param arg The formal parameter for the Lambda argument
      * @return The object associated with formal parameter.  Null if 
@@ -332,8 +334,8 @@ public abstract class ELContext {
 
     /**
      * Install a Lambda argument map, in preparation for the evaluation
-     * of a Lambda expression.  The arguments will be in scope during the
-     * evaluation of the Lambda expression.
+     * of a Lambda expression.  The arguments in the map will be in scope
+     * during the evaluation of the Lambda expression.
      * @param args The Lambda arguments map
      * @since EL 3.0
      */
@@ -345,8 +347,8 @@ public abstract class ELContext {
     }
 
     /**
-     * Exit the Lambda expression evaluation, ending the scope for the Lambda
-     * arguments.
+     * Exit the Lambda expression evaluation. The Lambda argument map that
+     * was previously installed is removed.
      */
     public void exitLambdaScope() {
         if (lambdaArgs != null) {

@@ -26,22 +26,40 @@ public class LinqTest {
         System.out.println(msg);
     }
 
+    /*
+     * Test a Lingq query that returns a Map
+     * @param name of the test
+     * @param query The EL query string
+     * @param expected The expected result of the Map. The element of the
+     *         array should equals a entry in the Map.
+     */
     void testMap(String name, String query, String[] expected) {
         p("=== Test " + name + "===");
         p(query);
-        Object ret = elp.getValue(query);
-        assertTrue(ret instanceof Map);
-        for (Object item: ((Map) ret).entrySet()) {
-            p(" " + item.toString());
-            assertEquals(item.toString(), expected[indx++]);
+        Map map = (Map)elp.getValue(query);
+        p(" = returns =");
+        int indx = 0;
+        while (indx < expected.length) {
+            boolean found = false;
+            for (Object item: map.entrySet()) {
+                if (item.toString().equals(expected[indx])) {
+                    p(" " + item);
+                    found = true;
+                    break;
+                }
+            }
+            assertTrue(found);
+            indx++;
         }
+        assertTrue(indx == expected.length);
     }
+
     /*
      * Test a Linq query that returns an Iterable.
      * @param name of the test
      * @param query The EL query string
-     * @param expected The items of the result, which should be an Iterable,
-     *           when enumerated
+     * @param expected The expected result of the Iterable.  The array
+     *           element should equal the Iterable element, when enumerated.
      */
     void testIterable(String name, String query, String[] expected) {
         p("=== Testing " + name + " ===");
@@ -180,6 +198,13 @@ public class LinqTest {
             "                     (c,os)->[c.name, os.sum(o->o.total)])",
             exp9);
     }
+
+    @Test
+    public void testGroupJoin2() {
+        testIterable("groupJoinNot",
+            " customers.select(c->[c.name, c.orders.sum(o->o.total)])",
+            exp9);
+    }
     
     static String[] exp10 = {
         "Product: 200, Eagle, book, 12.5, 100",
@@ -227,6 +252,79 @@ public class LinqTest {
              "           where(o->o.orderDate.year == 2011).\n" +
              "           toMap(o->o.orderID)",
         exp12);
+    }
+
+    @Test
+    public void testToMap2() {
+        testMap("toMap2",
+            "orders.where(o->o.orderDate.year == 2011).\n" +
+            "       toMap(o->o.orderID)",
+            exp12);
+    }
+
+    static String[] exp13 = {
+        "book: [Eagle, History of Golf, iSee]",
+        "dvd: [Coming Home, Toy Story]",
+        "cd: [Greatest Hits]" };
+
+    @Test
+    public void testGroupBy() {
+        testIterable("groupBy",
+            " products.groupBy(p->p.category, p->p.name) ",
+        exp13);
+    }
+
+    static String[] exp14 = {
+        "book=book: [Eagle, History of Golf, iSee]",
+        "dvd=dvd: [Coming Home, Toy Story]",
+        "cd=cd: [Greatest Hits]" };
+
+    @Test
+    public void testToLookup() {
+        testMap("toLookup",
+            "products.toLookup(p->p.category, p->p.name)",
+        exp14);
+    }
+
+    static String[] exp15 = {
+        "[book, 11.0]",
+        "[dvd, 8.0]",
+        "[cd, 6.5]"};
+
+    @Test
+    public void testMin() {
+        testIterable("min",
+            "products.groupBy(p->p.category).\n" +
+            "         select(g->[g.key, g.min(p->p,unitPrice)])",
+            exp15);
+    }
+
+    @Test
+    public void testDistinct() {
+        testIterable("distinct",
+           " ['a', 'b', 'b', 'c'].distinct()",
+           new String[] {"a", "b", "c"});
+    }
+
+    @Test
+    public void testUnion() {
+        testIterable("union",
+            "['a', 'b', 'b', 'c'].union(['b', 'c', 'd'])",
+            new String[] {"a", "b", "c", "d"});
+    }
+
+    @Test
+    public void testIntersect() {
+        testIterable("intersect",
+            "['a', 'b', 'b', 'c'].intersect(['b', 'c', 'd'])",
+            new String[] {"b", "c"});
+    }
+
+    @Test
+    public void testExcept() {
+        testIterable("except",
+            "['x', 'b', 'a', 'b', 'c'].except(['b', 'c', 'd'])",
+            new String[] {"x", "a"});
     }
 }
 

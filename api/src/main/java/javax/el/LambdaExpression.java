@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.ArrayList;
 
 /*
- * A lambda expression in EL is a ValueExpression with parameters.  This class
+ * A Lambda expression in EL is a ValueExpression with parameters.  This class
  * encapsulats such information.
  */
 
@@ -22,7 +22,7 @@ public class LambdaExpression {
     }
 
     /*
-     * Retrieves the formal parameters of the lambda expression
+     * Retrieves the formal parameters of the Lambda expression
      * @return The list of the parameters
      */
     public List<String> getFormalParameters() {
@@ -30,15 +30,19 @@ public class LambdaExpression {
     }
 
     /*
-     * Invoke the lambda expression.  The supplied arguments are matched, in
+     * <p>Invoke the Lambda expression.  The supplied arguments are matched, in
      * the same order, to the formal parameters.  If there are more arguments
      * than the formal parameters, the extra arguments are ignored.  If there
-     * are less arguments than the formal parameters, a ELException
-     * is thrown.
+     * are less arguments than the formal parameters, an ELException
+     * is thrown.</p>
+     *
+     * <p>The actual Lambda arguments are added to the ELContext and are
+     * available during the evaluation of the Lambda expression.  They are
+     * removed after the evluation.</p>
      *
      * @param elContext The ELContext used for the evaluation of the expression
-     * @param args The arguments for the lambda expression
-     * @return The result of the lambda expression
+     * @param args The arguments for the Lambda expression
+     * @return The result of invoking the Lambda expression
      */
     public Object invoke(ELContext elContext, Object... args) 
             throws ELException {

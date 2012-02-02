@@ -9,18 +9,23 @@ class SkipWhile extends QueryOperator {
     public Iterable<Object> invoke(final ELContext context,
                                    final Iterable<Object> base,
                                    final Object[] params) {
-        final LambdaExpression predicate = getLambda("takeWhile", params, 0);
+        final LambdaExpression predicate = getLambda("skipWhile", params, 0);
         return new Iterable<Object>() {
             @Override
             public Iterator<Object> iterator() {
                 return new BaseIterator(base) {
+                    boolean testedFalse = false;
                     @Override
                     void doItem(Object item) {
-                        if (!(Boolean)predicate.invoke(context, item, index)) {
+                        if (testedFalse) {
                             yield(item);
-                        } else {
-                            yieldBreak();
+                            return;
                         }
+                        if ((Boolean)predicate.invoke(context, item, index)) {
+                            return;
+                        }
+                        testedFalse = true;
+                        yield(item);
                     }
                 };
             }

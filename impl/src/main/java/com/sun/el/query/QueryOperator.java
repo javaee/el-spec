@@ -35,9 +35,9 @@ public abstract class QueryOperator {
         operators.put("thenByDescending", new ThenByDescending());
         operators.put("reverse", new Reverse());
         operators.put("groupBy", new GroupBy());
-        operators.put("distinc", new Distinct());
+        operators.put("distinct", new Distinct());
         operators.put("union", new Union());
-        operators.put("interset", new Intersect());
+        operators.put("intersect", new Intersect());
         operators.put("except", new Except());
         operators.put("toArray", new ToArray());
         operators.put("toList", new ToList());

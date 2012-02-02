@@ -28,7 +28,7 @@ class GroupBy extends QueryOperator {
 
         for (Object element: base) {
             Object key = keySelector.invoke(context, element);
-            Object dest = key;
+            Object dest = element;
             if (elementSelector != null) {
                 dest = elementSelector.invoke(context, element);
             }

@@ -339,7 +339,6 @@ public abstract class ExpressionFactory {
      * See EL.x.x for detailed descriptions on the arguments types, and the
      * return values of these operators.
      *
-     * The support for the Query Operators is optional in EL 3.0.
      * @Returns The ELResolver that implements the Query Operators.  If null,
      *     the query operators are not support by this implementation.
      *

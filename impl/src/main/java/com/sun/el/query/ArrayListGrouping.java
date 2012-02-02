@@ -24,8 +24,14 @@ public class ArrayListGrouping<K, T> extends ArrayList<T>
      * Return the key for the collection
      * @return The key for the collection.
      */
+    @Override
     public K getKey() {
         return key;
+    }
+
+    @Override
+    public String toString() {
+        return key.toString() + ": " + super.toString();
     }
 }
 
