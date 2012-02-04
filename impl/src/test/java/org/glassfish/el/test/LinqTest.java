@@ -295,8 +295,23 @@ public class LinqTest {
     public void testMin() {
         testIterable("min",
             "products.groupBy(p->p.category).\n" +
-            "         select(g->[g.key, g.min(p->p,unitPrice)])",
+            "         select(g->[g.key, g.min(p->p.unitPrice)])",
             exp15);
+    }
+
+    static String[] exp16 = {
+        "[book, History of Golf]",
+        "[dvd, Coming Home]",
+        "[cd, Greatest Hits]" };
+
+    @Test
+    public void testAggregate() {
+        testIterable("aggregate",
+            "products.groupBy(p->p.category).\n" +
+            "         select(g->[g.key,\n" +
+            "                    g.select(p->p.name).\n" +
+            "                      aggregate((s,t)->t.length()>s.length()?t:s)])",
+            exp16);
     }
 
     @Test
