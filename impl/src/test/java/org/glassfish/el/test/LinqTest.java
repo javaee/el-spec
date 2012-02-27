@@ -16,7 +16,7 @@ public class LinqTest {
     ELProcessor elp;
 
     @Before
-    public void setUP() {
+    public void setup() {
         Manager manager = Manager.getManager();
         manager.setupDB();
         elp = manager.getElp();
@@ -26,8 +26,8 @@ public class LinqTest {
         System.out.println(msg);
     }
 
-    /*
-     * Test a Lingq query that returns a Map
+    /**
+     * Test a Ling query that returns a Map
      * @param name of the test
      * @param query The EL query string
      * @param expected The expected result of the Map. The element of the
@@ -54,7 +54,7 @@ public class LinqTest {
         assertTrue(indx == expected.length);
     }
 
-    /*
+    /**
      * Test a Linq query that returns an Iterable.
      * @param name of the test
      * @param query The EL query string

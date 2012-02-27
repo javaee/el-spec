@@ -11,26 +11,26 @@ class Aggregate extends QueryOperator {
                                    final Object[] params) {
         int curArg = 0;
         // Get the seed and set it to the accumulator
-        Object accumulator = getArgument("aggregate", params, curArg);
+        Object accumulator = getArgument("aggregate", params, curArg++);
         LambdaExpression func;
         if (accumulator instanceof LambdaExpression) {
             func = (LambdaExpression) accumulator;
             accumulator = null;
         } else {
-            curArg++;
             func = getLambda("aggregate", params, curArg++);
         }
         LambdaExpression resultSelector =
                 getLambda("aggregate", params, curArg, true);
         Iterator<Object> iter = base.iterator();
 
+        boolean first = true;
         while (iter.hasNext()) {
             Object element = iter.next();
-            if (accumulator == null) {
+            if (accumulator == null && first) {
                 accumulator = element;
-            } else {
-                accumulator = func.invoke(context, accumulator, element);
             }
+            first = false;
+            accumulator = func.invoke(context, accumulator, element);
         }
         if (resultSelector == null) {
             return accumulator;

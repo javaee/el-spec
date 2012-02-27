@@ -12,7 +12,7 @@ import javax.el.Grouping;
 
 class ToLookup extends QueryOperator {
     @Override
-    public Map<Object, ArrayListGrouping<Object,Object>> invoke(
+    public Map<Object, GroupingImpl<Object,Object>> invoke(
                                    final ELContext context,
                                    final Iterable<Object> base,
                                    final Object[] params) {
@@ -25,8 +25,8 @@ class ToLookup extends QueryOperator {
         }
         final Comparator cmp = getComparator("toLookup", params, indexC, true);
 
-        Map<Object, ArrayListGrouping<Object,Object>> map =
-                    new HashMap<Object, ArrayListGrouping<Object,Object>>();
+        Map<Object, GroupingImpl<Object,Object>> map =
+                    new HashMap<Object, GroupingImpl<Object,Object>>();
 
         for (Object element: base) {
             Object key = keySelector.invoke(context, element);
@@ -39,16 +39,16 @@ class ToLookup extends QueryOperator {
         return map;
     }
 
-    private void addToGroup(Map<Object, ArrayListGrouping<Object,Object>> map,
+    private void addToGroup(Map<Object, GroupingImpl<Object,Object>> map,
                             Object key, Object value) {
         if (key == null || value == null) {
             return;
         }
 
-        ArrayListGrouping<Object, Object> g;
+        GroupingImpl<Object, Object> g;
         g = map.get(key);
         if (g == null) {
-            g = new ArrayListGrouping<Object,Object>(key);
+            g = new GroupingImpl<Object,Object>(key);
             map.put(key, g);
         }
         g.add(value);
