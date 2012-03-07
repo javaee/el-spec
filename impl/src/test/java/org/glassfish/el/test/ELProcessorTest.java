@@ -19,7 +19,7 @@ public class ELProcessorTest {
 
     @Test
     public void testGetValue() {
-        Object result = elp.getValue("10 + 1");
+        Object result = elp.eval("10 + 1");
         assertEquals(result.toString(), "11");
         result = elp.getValue("10 + 2", String.class);
         assertEquals(result, "12");
@@ -31,6 +31,6 @@ public class ELProcessorTest {
         Object result = elp.getValue("xx + 11", String.class);
         assertEquals(result, "111");
         elp.setVariable("xx", null);
-        assertEquals(elp.getValue("xx"), null);
+        assertEquals(elp.eval("xx"), null);
     }
 }

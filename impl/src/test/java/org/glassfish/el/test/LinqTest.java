@@ -36,7 +36,7 @@ public class LinqTest {
     void testMap(String name, String query, String[] expected) {
         p("=== Test " + name + "===");
         p(query);
-        Map map = (Map)elp.getValue(query);
+        Map map = (Map)elp.eval(query);
         p(" = returns =");
         int indx = 0;
         while (indx < expected.length) {
@@ -64,7 +64,7 @@ public class LinqTest {
     void testIterable(String name, String query, String[] expected) {
         p("=== Testing " + name + " ===");
         p(query);
-        Object ret = elp.getValue(query);
+        Object ret = elp.eval(query);
         int indx = 0;
         p(" = returns =");
         for (Object item: (Iterable) ret) {
