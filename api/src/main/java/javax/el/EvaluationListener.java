@@ -1,6 +1,13 @@
 package javax.el;
 
-interface EvaluationListener extends java.util.EventListener {
+/**
+ * The listener interface for receiving notification when an
+ * EL expression is evaluated.
+ *
+ * @see EvaluationEvent
+ * @since EL 3.0
+ */
+public interface EvaluationListener extends java.util.EventListener {
 
     /**
      * Receives notification before an EL expression is evaluated
@@ -8,7 +15,7 @@ interface EvaluationListener extends java.util.EventListener {
     void beforeEvaluation(EvaluationEvent ee);
 
     /**
-     * Receives notification before an EL expression is evaluated
+     * Receives notification after an EL expression is evaluated
      */
     void afterEvaluation(EvaluationEvent ee);
 

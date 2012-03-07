@@ -58,13 +58,24 @@
 
 package javax.el;
 
+import java.util.Properties;
+
 /**
- * Parses a <code>String</code> into a {@link ValueExpression} or
- * {@link MethodExpression} instance for later evaluation.
+ * Provides an implementation for creating and evaluating EL expressions.
  *
  * <p>Classes that implement the EL expression language expose their
- * functionality via this abstract class.
- * The {@link #newInstance} method can be used to obtain an
+ * functionality via this abstract class.  An implementation supports the
+ * following functionalities.
+ * <ul>
+ *   <li>
+ *     Parses a <code>String</code> into a {@link ValueExpression} or
+ *     {@link MethodExpression} instance for later evaluation.
+ *   </li>
+ *   <li>Implements an <code>ELResolver</code> for query operators</li>
+ *   <li>Provides a default type coercion</li>
+ * </ul>
+ * </p>
+ * <p>The {@link #newInstance} method can be used to obtain an
  * instance of the implementation.
  * Technologies such as
  * JavaServer Pages and JavaServer Faces provide access to an
@@ -74,10 +85,6 @@ package javax.el;
  * that evaluate to values (both l-values and r-values are supported).
  * The {@link #createMethodExpression} method is used to parse expressions
  * that evaluate to a reference to a method on an object.</p>
- *
- * <p>Unlike previous incarnations of this API, there is no way to parse
- * and evaluate an expression in one single step. The expression needs to first
- * be parsed, and then evaluated.</p>
  *
  * <p>Resolution of model objects is performed at evaluation time, via the
  * {@link ELResolver} associated with the {@link ELContext} passed to
@@ -129,8 +136,6 @@ package javax.el;
  *
  * @since JSP 2.1
  */
-
-import java.util.Properties;
 
 public abstract class ExpressionFactory {
     
@@ -328,23 +333,26 @@ public abstract class ExpressionFactory {
             Class<?> targetType);
     
     /**
-     * Retrieves an ELResolver that implements the Query Operators in
-     * LINQ, .NET Language Integrated Query.  For detail, see
-     * http://msdn.microsoft.com/en-us/library/bb394939.aspx
-     * See also EL.x.x for details about how to use these operators in EL.
+     * Retrieves an ELResolver that implements the Query Operators
+     * as described in Chapter 2 of the specification.
      *
-     * This ELResolver relosves the method invocation on (base, property)
-     * when base is an Iterable and property is the name of the operator,
-     * so they acts like built-in methods of Iterables.
-     * See EL.x.x for detailed descriptions on the arguments types, and the
-     * return values of these operators.
+     * <p>This ELResolver relsoves the method invocation on the pair
+     * (<code>base</code>, <code>property</code>) when <code>base</code> is
+     * an <code>Iterable</code> and <code>property</code> is the name of the
+     * operator.  Therefore, the operators behave like built-in methods of
+     * <code>Iterable</code>s.</p>
+     * <p>See EL.2 for detailed descriptions of these operators, the
+     * arguments, and the return values.</p>
      *
-     * @Returns The ELResolver that implements the Query Operators.  If null,
-     *     the query operators are not support by this implementation.
+     * @return The <code>ELResolver</code> that implements the Query Operators.
+     *    If <code>null</code>, the query operators are not support by this
+     *    implementation.
      *
      * @since EL 3.0
      */
-    public abstract ELResolver getQueryOperatorELResolver();
+    public ELResolver getQueryOperatorELResolver() {
+        return null;
+    }
 }
 
 

@@ -379,7 +379,9 @@ public class MapELResolver extends ELResolver {
                 descriptor.setExpert(false);
                 descriptor.setHidden(false);
                 descriptor.setPreferred(true);
-                descriptor.setValue("type", key==null? null: key.getClass());
+                if (key != null) {
+                    descriptor.setValue("type", key.getClass());
+                }
                 descriptor.setValue("resolvableAtDesignTime", Boolean.TRUE);
                 list.add(descriptor);
             }

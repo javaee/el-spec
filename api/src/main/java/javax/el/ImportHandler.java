@@ -8,8 +8,8 @@ import java.util.ArrayList;
 /**
  * Handles imports of class names and package names.  An imported package
  * name implicitly imports all the classes in the package.  A class that has
- * been imported can be used without its package name in the syntax element
- * T(name).  The name is resolved to its full (package and class) name
+ * been imported can be used without its package name.
+ * The name is resolved to its full (package and class) name
  * at evaluation time.
  */
 public class ImportHandler {

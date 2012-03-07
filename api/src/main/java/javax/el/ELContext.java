@@ -67,23 +67,25 @@ import java.util.Locale;
 import java.util.EventListener;
 
 /**
- * Context information for expression evaluation.
+ * Context information for expression parsing and evaluation.
  *
- * <p>To evaluate an {@link Expression}, an <code>ELContext</code> must be
- * provided.  The <code>ELContext</code> holds:
+ * <p>To parse or evaluate an {@link Expression}, an <code>ELContext</code>
+ * must be provided.  The <code>ELContext</code> holds:
  * <ul>
+ *   <li>a reference to {@link FunctionMapper} that will be used
+ *       to resolve EL Functions.  This is used only in parsing.</li>
+ *   <li>a reference to {@link VariableMapper} that will be used
+ *       to resolve EL Variables.  This is used only in parsing.</li>
  *   <li>a reference to the base {@link ELResolver} that will be consulted
  *       to resolve model objects and their properties</li>
- *   <li>a reference to {@link ImportHandler} that will be consulted to
- *       to resolve classes that has been imported</li>
- *   <li>a reference to {@link FunctionMapper} that will be used
- *       to resolve EL Functions.
- *   <li>a reference to {@link VariableMapper} that will be used
- *       to resolve EL Variables.
  *   <li>a collection of all the relevant context objects for use by 
  *       <code>ELResolver</code>s</li>
  *   <li>state information during the evaluation of an expression, such as
  *       whether a property has been resolved yet</li>
+ *   <li>a reference to {@link ImportHandler} that will be consulted to
+ *       to resolve classes that have been imported</li>
+ *   <li>a reference to the arguments for the active {@link LambdaExpression}s</li>
+ *   <li>a reference to the list of registered listeners</li>
  * </ul></p>
  *
  * <p>The collection of context objects is necessary because each 
@@ -92,12 +94,17 @@ import java.util.EventListener;
  * {@link javax.servlet.jsp.JspContext} and a
  * {@link javax.faces.context.FacesContext}, respectively.</p>
  *
- * <p>Creation of <code>ELContext</code> objects is controlled through 
+ * <p>When used in a web container, the creation of
+ * <code>ELContext</code> objects is controlled through 
  * the underlying technology.  For example, in JSP the
  * <code>JspContext.getELContext()</code> factory method is used.
  * Some technologies provide the ability to add an {@link ELContextListener}
  * so that applications and frameworks can ensure their own context objects
  * are attached to any newly created <code>ELContext</code>.</p>
+ *
+ * <p>When used in a stand-alone environment, {@link StandardELContext}
+ * provides a default <code>ELContext</code>, which is managed and be modified
+ * by {@link ELManager}.
  *
  * <p>Because it stores state during expression evaluation, an 
  * <code>ELContext</code> object is not thread-safe.  Care should be taken
@@ -109,8 +116,11 @@ import java.util.EventListener;
  * @see ELResolver
  * @see FunctionMapper
  * @see VariableMapper
+ * @see ImportHandler
+ * @see LambdaExpression
+ * @see StandardELContext
  * @see javax.servlet.jsp.JspContext
- * @since JSP 2.1
+ * @since EL 2.1 and EL 3.0
  */
 public abstract class ELContext {
 
@@ -250,7 +260,7 @@ public abstract class ELContext {
     }
 
     /**
-     * Set the <code>Locale</code> for this instance.  This method may be 
+     * Sets the <code>Locale</code> for this instance.  This method may be 
      * called by the party creating the instance, such as JavaServer
      * Faces or JSP, to enable the EL implementation to provide localized
      * messages to the user.  If no <code>Locale</code> is set, the implementation
@@ -306,7 +316,7 @@ public abstract class ELContext {
     }
 
     /**
-     * Retrieve the Lambda argument associated with a formal parameter.
+     * Retrieves the Lambda argument associated with a formal parameter.
      * If the Lambda expression is nested within other Lambda expressions, the
      * arguments for the current Lambda expression is first searched, and if
      * not found, the arguments for the immediate nesting Lambda expression
@@ -333,7 +343,7 @@ public abstract class ELContext {
     }
 
     /**
-     * Install a Lambda argument map, in preparation for the evaluation
+     * Installs a Lambda argument map, in preparation for the evaluation
      * of a Lambda expression.  The arguments in the map will be in scope
      * during the evaluation of the Lambda expression.
      * @param args The Lambda arguments map
@@ -347,8 +357,9 @@ public abstract class ELContext {
     }
 
     /**
-     * Exit the Lambda expression evaluation. The Lambda argument map that
+     * Exits the Lambda expression evaluation. The Lambda argument map that
      * was previously installed is removed.
+     * @since EL 3.0
      */
     public void exitLambdaScope() {
         if (lambdaArgs != null) {

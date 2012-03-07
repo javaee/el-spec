@@ -4,8 +4,8 @@ import java.util.Map;
 import java.util.HashMap;
 import java.lang.reflect.Method;
 
-/*
- * A stadard ELContext suitable for use in stand alone EL.
+/**
+ * A stadard ELContext suitable for use in a stand alone environment.
  * This class provides a default implementation of an ELResolver, FunctionMapper
  * and a VariableMapper.  
  *
@@ -26,7 +26,7 @@ public class StandardELContext extends ELContext {
     private CompositeELResolver customResolvers;
 
     /*
-     * The optional ELResolver implementing the query operators.
+     * The ELResolver implementing the query operators.
      */
     private ELResolver queryOperatorELResolver;
 
@@ -63,14 +63,17 @@ public class StandardELContext extends ELContext {
     private Map<String, Object> beans = new HashMap<String, Object>();
 
     /**
-     * Default Constructor
+     * Construct a default ELContext for a stand-alone environment.
+     * @param queryOperatorELResolver The ELResolver for implementing the
+     *     LINQ query operators.  A null indicates that the implementation
+     *     is not supported
      */
     public StandardELContext(ELResolver queryOperatorELResolver) {
         this.queryOperatorELResolver = queryOperatorELResolver;
     }
 
     /**
-     * Construct a StandardELContext from another ELContext
+     * Construct a StandardELContext from another ELContext.
      * @param context The ELContext that acts as a delegate in most cases
      */
     public StandardELContext(ELContext context) {
@@ -107,8 +110,22 @@ public class StandardELContext extends ELContext {
     }
 
     /**
-     * Construct (if needed) and return a default ELResolver
-     * Retrieves the <code>ELResolver</code> associated with this context.
+     * Construct (if needed) and return a default ELResolver.
+     * <p>Retrieves the <code>ELResolver</code> associated with this context.
+     * This is a <code>CompositeELResover</code> consists of an ordered list of
+     * <code>ELResolver</code>s.
+     * <ol>
+     * <li>A {@link BeanNameELResolver} for beans defined locally</li>
+     * <li>Any custom <code>ELResolver</code>s</li>
+     * <li>An <code>ELResolver</code> implementing the Linq query operators</li>
+     * <li>A {@link StaticFieldELResolver} for resolving static fields</li>
+     * <li>A {@link MapELResolver} for resolving Map properties</li>
+     * <li>A {@link ResourceBundleELResolver} for resolving ResourceBundle properties</li>
+     * <li>A {@link ListELResolver} for resolving List properties</li>
+     * <li>An {@link ArrayELResolver} for resolving array properties</li>
+     * <li>A {@link BeanELResolver} for resolving bean properties</li>
+     * </ol>
+     * </p>
      * @return The ELResolver for this context.
      */
     @Override
@@ -144,7 +161,7 @@ public class StandardELContext extends ELContext {
     }
 
     /**
-     * Construct (if need) and return an ImportHandler {
+     * Construct (if need) and return an ImportHandler
      */
     public ImportHandler getImportHandler() {
         if (importHandler == null) {
@@ -157,7 +174,7 @@ public class StandardELContext extends ELContext {
      * Get the local bean repository
      * @return the bean repository
      */
-    public Map<String, Object> getBeans() {
+    Map<String, Object> getBeans() {
         return beans;
     } 
 
@@ -198,7 +215,7 @@ public class StandardELContext extends ELContext {
     }
 
     /**
-     * Construct (if needed) and return a default TypeConverter() {
+     * Construct (if needed) and return a default TypeConverter.
      */
     @Override
     public TypeConverter getTypeConverter() {

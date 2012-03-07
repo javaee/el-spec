@@ -3,26 +3,52 @@ package javax.el;
 import java.lang.reflect.Method;
 
 /**
- * This class provides an API for using EL stand-alone, outside of a web
- * container.  It provides a direct and simple interface for creating and
- * evaluating EL expressions, while hiding low level details from the users.
- * This API is not indenpendent from the EL 2.2 API, but rather builds
- * on top of it.  
+ * <p>Provides an API for using EL in a stand-alone environment.</p>
  * 
- * This API operates on a level higher that those provided in EL 2.2, in that
- * it hides implementation details (such as ELResolver and ValueExpression)
- * from the users.
+ * <p>This class provides a direct and simple interface for
+ * <ul>
+ *   <li>Evaluating EL expressions.</li>
+ *   <li>Assigning values to beans or setting a bean property.</li>
+ *   <li>Setting a {@link ValueExpression} to a EL variable.</li>
+ *   <li>Defining a static mathod as an EL function.</li>
+ *   <li>Defining an object instance as an EL name.
+ * </ul>
+ * 
+ * <p>This API is not a replacement for the APIs in EL 2.2.  Containers that
+ * maintains EL environments can continue to do so, without using this API.</p>
+ * 
+ * <p>For EL users who want to manipulate EL environments, like adding custom
+ * {@link ELResolver}s, {@link ELManager} can be used.</p>
  *
- * The EL processing environment is handled by the use of ELManager.
+ * <h3>Scope and Life Cycle</h3>
+ * <p>Since it maintains the state of the EL environments,
+ * <code>ELProcessor</code> is not thread safe.  In the simplest case,
+ * an instance can be created and destroyed before and after evaluating
+ * EL expressions.  In a more realistic usage, an instance of
+ * <code>ELProcessor</code> can be created and the initialized by an
+ * administrator, and passed to multiple users, on a read-only basis.</p>
  *
- * The EL expressions allowed in the methods getValue, setValue, and 
- * setVariable are limited to non-composite expressions, i.e. expressions
- * of the form ${...} or #{...}.  Also, it is not necessary (in fact not
+ * <h3>Automatic Bracketing of Expressions</h3>
+ * <p>A note about the EL expressions strings used in the class.  The strings
+ * allowed in the methods {@link ELProcessor#getValue},
+ * {@link ELProcessor#setValue}, and {@link ELProcessor#setVariable} are
+ * limited to non-composite expressions, i.e. expressions
+ * of the form ${...} or #{...} only.  Also, it is not necessary (in fact not
  * allowed) to bracket the expression strings with ${ or #{ and } in these
  * methods: they will be automatically bracketed.  This reduces the visual
- * cluster, without lost of functionalities (thanks to the addition of the
+ * cluster, without any lost of functionalities (thanks to the addition of the
  * concatenation operator).
  *
+ * <h3>Example</h3>
+ * The following code snippet illustrates the use of ELProcessor to define
+ * a bean and evaluate its property.
+ * <blockquote>
+ * <pre>
+ *   ELProcessor elp = new ELProcessor();
+ *   elp.defineBean("employee", new Employee("Charlie Brown"));
+ *   String name = elp.eval("employee.name");
+ * </pre>
+ * </blockquote>
  * @since EL 3.0
  */
 
@@ -39,17 +65,17 @@ public class ELProcessor {
         return elManager;
     }
 
-    /*
-     * Evaluate an EL expression, without coercion.
+    /**
+     * Evaluates an EL expression.
      * @param expression The EL expression to be evaluated.
      * @return The result of the expression evaluation.
      */
-    public Object getValue(String expression) {
+    public Object eval(String expression) {
         return getValue(expression, Object.class);
     }
 
-    /*
-     * Evaluate an EL expression, with coercion.
+    /**
+     * Evaluates an EL expression, and coerces the result to the specified type.
      * @param expression The EL expression to be evaluated.
      * @param exprectedType Specifies the type that the resultant evaluation
      *        will be coerced to.
@@ -62,10 +88,13 @@ public class ELProcessor {
         return exp.getValue(elManager.getELContext());
     }
 
-    /*
-     * Evaluates the expression, and sets the result to the provided value.
-     * @param expression The expression, to be evaluated.  
-     * @param value The new value to be set.
+    /**
+     * Sets an expression with a new value. 
+     * The target expression is evaluated, up to the last property resolution,
+     * and the resultant (base, property) pair is set to the provided value.
+     *
+     * @param expression The target expression
+     * @param value The new value to set.
      * @throws PropertyNotFoundException if one of the property
      *     resolutions failed because a specified variable or property
      *     does not exist or is not readable.
@@ -85,10 +114,11 @@ public class ELProcessor {
     }
 
     /**
-     * Assign an EL expression to an EL variable, without evaluation, and
-     * replace any previously assign expression to the same variable.
-     * The assignment for the variable is removed if
-     * the expression is <code>null</code>.
+     * Assign an EL expression to an EL variable.  The expression is parsed,
+     * but not evaluated, and the parsed expression is mapped to the EL
+     * variable in the local variable map.
+     * Any previously assigned expression to the same variable will be replaced.
+     * If the expression is <code>null</code>, the variable will be removed.
      * @param var The name of the variable.
      * @param expression The EL expression to be assigned to the variable.
      */
@@ -99,25 +129,26 @@ public class ELProcessor {
         elManager.setVariable(var, exp);
     }
 
-    /*
-     * Define an EL function.
-     * @param function The name of the function, with optional namespace prefix
-     *    (e.g. "func" or "ns:func").  Can be null or empty (""), in which case
-     *    the method name is used as the function name.
-     * @param className The name of the Java class that implements the function
+    /**
+     * Define an EL function in the local function mapper.
+     * @param prefix The namespace for the function or "" for no namesapce.
+     * @param function The name of the function.
+     *    If empty (""), the method name is used as the function name.
+     * @param className The full Java class name that implements the function.
      * @param method The name (specified without parenthesis) or the signature 
-     *    (as in the Java Language Spec) of the method that implements the
-     *    function.  If the name (e.g. "sum") is given, the first declared
+     *    (as in the Java Language Spec) of the static method that implements
+     *    the function.  If the name (e.g. "sum") is given, the first declared
      *    method in class that matches the name is selected.  If the signature
      *    (e.g. "int sum(int, int)" ) is given, then the declared method
      *    with the signature is selected.
      *    
+     * @throws NullPointerException if any of the arguements is null.
      * @throws ClassNoFoundException if the specified class does not exists.
      * @throws NoSuchMethodException if the method (with or without the
      *    signature) is not a declared method of the class, or if the method
      *    signature is not valid.
      */
-    public void defineFunction(String function,
+    public void defineFunction(String prefix, String function,
                                String className,
                                String method)
             throws ClassNotFoundException, NoSuchMethodException {
@@ -158,25 +189,34 @@ public class ELProcessor {
             }
             meth = klass.getDeclaredMethod(methodName, paramTypes);
         }
-        elManager.mapFunction(function, meth);
+        if (function.equals("")) {
+            function = method;
+        }
+        elManager.mapFunction(prefix, function, meth);
     }
 
     /**
-     * Define an EL function
-     * @param function The name of the function, with optional namespace prefix
-     *    (e.g. "func" or "ns:func").  Can be null or empty (""), in which case
-     *    the method name is used as the function name.
-     * @param method The java.lang.reflect.Method instance of the method that
-     *    implements the function.
+     * Define an EL function in the local function mapper.
+     * @param prefix The namespace for the function or "" for no namesapce.
+     * @param function The name of the function.
+     *    If empty (""), the method name is used as the function name.
+     * @param method The <code>java.lang.reflect.Method</code> instance of
+     *    the method that implements the function.
+     * @throws NullPointerException if any of the arguements is null.
      */
-    public void defineFunction(String function, Method method) {
-        elManager.mapFunction(function, method);
+    public void defineFunction(String prefix, String function, Method method) {
+        if (function.equals("")) {
+            function = method.getName();
+       }
+        elManager.mapFunction(prefix, function, method);
     }
 
     /**
-     * Define a bean in a local bean repository
+     * Define a bean in a local bean repository, hiding other beans of the
+     * same name.  
      * @param name The name of the bean
-     * @param bean The bean instance to be defined
+     * @param bean The bean instance to be defined.  If <code>null</code>,
+     *   the name will be removed from the local bean repository.
      */
     public void defineBean(String name, Object bean) {
         elManager.defineBean(name, bean);

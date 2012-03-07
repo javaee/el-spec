@@ -2,13 +2,10 @@ package javax.el;
 
 import java.lang.reflect.Method;
 
-/*
- * Manages EL parsing and evaluation enviroment.  The ELManager maintains an
- * instance of ELContext and ExpressionFactory, for parsing and evaluating EL
- * expressions.  Both can be replaced.
- *
- * The ELManager manages the EL vironment and handles adding an ELResolver,
- * defining a function, and setting of a variable.
+/**
+ * <p>Manages EL parsing and evaluation enviroment.  The ELManager maintains an
+ * instance of ExpressionFactory and StandardELContext, for
+ * parsing and evaluating EL expressions.</p>
  *
  * @since EL 3.0
  */
@@ -18,7 +15,8 @@ public class ELManager {
     private StandardELContext elContext;
 
     /**
-     * Return the ExpressionFactory instance used for EL evaluations
+     * Return the ExpressionFactory instance used for EL evaluations.  If
+     * there is currently no ExpressionFactory, an instance is created.
      * @return The ExpressionFactory
      */
     public ExpressionFactory getExpressionFactory() {
@@ -30,6 +28,9 @@ public class ELManager {
 
     /**
      * Return the ELContext used for parsing and evaluating EL expressions.
+     * If there is currently no ELContext, a default instance of
+     * StandardELContext is returned.
+     *
      * @return The ELContext used for parsing and evaluating EL expressions..
      */
     public StandardELContext getELContext() {
@@ -42,7 +43,8 @@ public class ELManager {
 
     /**
      * Set the ELContext used for parsing and evaluating EL expressions.
-     * The supplied EL will not be modified, except for the context object map.
+     * The supplied ELContext will not be modified, except for the context
+     * object map.
      * @param context The new ELContext.
      * @return The previous ELContext, null if none.
      */
@@ -54,8 +56,9 @@ public class ELManager {
 
     /**
      * Register a BeanNameResolver.
-     * Implicitly adds a BeanNameELResolver to the list of ELResolvers
-     * Once reigstered, it cannot be removed.
+     * Construct a BeanNameELResolver with the BeanNameResolver and add it
+     * to the list of ELResolvers.
+     * Once reigstered, the BeanNameResolver cannot be removed.
      * @param bnr The BeanNameResolver to be registered.
      */
     public void addBeanNameResolver(BeanNameResolver bnr) {
@@ -63,36 +66,32 @@ public class ELManager {
     }
 
     /**
-     * Add an user defined ELResolver to the currect list of ELResolvers
-     * Can be called multiple times with additive effect.
+     * Add an user defined ELResolver to the list of ELResolvers.
+     * Can be called multiple times.  The new ELResolver is
+     * placed ahead of the default ELResolvers.  The list of the ELResolvers
+     * added this way are ordered chronologically.
+     * 
      * @param elr The ELResolver to be added to the list of ELResolvers in
      *     ELContext.
+     * @see StandardELResolver#addELResolver
      */
     public void addELResolver(ELResolver elr) {
         getELContext().addELResolver(elr);
     }
 
     /**
-     * Maps a static method to an EL function
-     * @param function The name of the function
+     * Maps a static method to an EL function.
+     * @param prefix The namespace of the functions, can be "".
+     * @param function The name of the function.  
      * @param meth The static method to be invoked when the function is used.
      */
-    public void mapFunction(String function, Method meth) {
-        int i = function.indexOf(':');
-        String prefix, localName;
-        if (i < 0) {
-            prefix = "";
-            localName = function;
-        } else {
-            prefix = function.substring(0, i);
-            localName = function.substring(i+1);
-        }
-        getELContext().getFunctionMapper().mapFunction(prefix, localName, meth);
+    public void mapFunction(String prefix, String function, Method meth) {
+        getELContext().getFunctionMapper().mapFunction(prefix, function, meth);
     }
 
     /** 
      * Assign a ValueExpression to an EL variable, replacing
-     * any previously assignment to the same variable.
+     * any previous assignment to the same variable.
      * The assignment for the variable is removed if
      * the expression is <code>null</code>.
      *
@@ -105,7 +104,8 @@ public class ELManager {
     }
 
     /**
-     * Import a class.
+     * Import a class.  The imported class must be loadable from the
+     * classloader, at class resolution time.
      * @param className The full class name of the class to be imported
      * @throws ELException if the name is not a full class name.
      */
@@ -114,7 +114,10 @@ public class ELManager {
     }
 
     /**
-     * Import all the classes in a package.
+     * Import a package.  At the class resolution time, the imported package
+     * name will be used to construct the full class name, which will then be
+     * used to load the class.  Inherently, this is less efficient than
+     * importing a class.
      * @param packageName The package name to be imported
      */
     public void importPackage(String packageName) {
@@ -144,7 +147,8 @@ public class ELManager {
     }
 
     /**
-     * Register a listener.
+     * Register a listener.  Used only for {@link EvaluationListener}s in
+     * 3.0, but possibly to used for other listeners.
      *
      * @param listener The listener to be added.
      */

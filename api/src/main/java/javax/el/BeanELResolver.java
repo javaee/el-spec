@@ -121,7 +121,7 @@ public class BeanELResolver extends ELResolver {
     /*
      * Defines a property for a bean.
      */
-    protected final static class BeanProperty {
+    final static class BeanProperty {
 
         private Method readMethod;
         private Method writeMethod;
@@ -154,7 +154,7 @@ public class BeanELResolver extends ELResolver {
     /*
      * Defines the properties for a bean.
      */
-    protected final static class BeanProperties {
+    final static class BeanProperties {
 
         private final Map<String, BeanProperty> propertyMap =
             new HashMap<String, BeanProperty>();

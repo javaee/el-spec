@@ -3,9 +3,23 @@ package javax.el;
 import java.util.Iterator;
 import java.beans.FeatureDescriptor;
 
-/*
- * An ELResolver for resolving user or container managed beans.
- *
+/**
+ * <p>An <code>ELResolver</code> for resolving user or container managed beans.</p>
+ * <p>A {@link BeanNameResolver} is required for its proper operation.
+ * The following example creates an <code>ELResolver</code> that 
+ * reoslves the name "bean" to an instance of MyBean.
+ * <blockquote>
+ * <pre>
+ * ELResovler elr = new BeanNameELResolver(new BeanNameResolver {
+ *    public Object getBean(String beanName) {
+ *       if ("bean".equals(beanName))
+ *          return new MyBean();
+ *       return null;
+ *    }
+ * });
+ * </pre>
+ * </blockquote>
+ * </p>
  * @since EL 3.0
  */
 public class BeanNameELResolver extends ELResolver {
@@ -14,7 +28,7 @@ public class BeanNameELResolver extends ELResolver {
 
     /**
      * Constructor
-     * @param beanNameResolver The beanNameResolver that resolve a bena name.
+     * @param beanNameResolver The {@link BeanNameResolver} that resolves a bean name.
      */
     public BeanNameELResolver(BeanNameResolver beanNameResolver) {
         this.beanNameResolver = beanNameResolver;
@@ -90,6 +104,10 @@ public class BeanNameELResolver extends ELResolver {
         }
 
         if (base == null && property instanceof String) {
+            if (beanNameResolver.isReadOnly((String) property)) {
+                throw new PropertyNotWritableException("The bean " +
+                    property + " is not writable.");
+            }
             Object bean = beanNameResolver.getBean((String) property);
             if (bean != null) {
                 context.setPropertyResolved(true);
