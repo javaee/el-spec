@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2012 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -56,6 +56,7 @@ import com.sun.el.lang.ELSupport;
 
 /**
  * @author Jacob Hookom [jacob@hookom.net]
+ * @author Kin-man Chung
  * @version $Change: 181177 $$DateTime: 2001/06/26 08:45:09 $$Author: kchung $
  */
 public final class AstIdentifier extends SimpleNode {
