@@ -93,7 +93,6 @@ class GroupBy extends QueryOperator {
         GroupingImpl<Object, Object> g = new GroupingImpl<Object,Object>(key);
         g.add(value);
         groups.add(g);
-        return;
     }
 }
 

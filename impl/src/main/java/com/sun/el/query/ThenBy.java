@@ -57,11 +57,9 @@ class ThenBy extends QueryOperator {
         final LambdaExpression keySelector = getLambda("thenBy", params, 0);
         final Comparator<Object> cmp = getComparator("thenBy", params, 1, true);
 
-        if (!(base instanceof OrderIterable)) {
-            return base;
+        if (base instanceof OrderIterable) {
+            ((OrderIterable) base).addOrder(keySelector, cmp, false);
         }
-
-        ((OrderIterable) base).addOrder(keySelector, cmp, false);
         return base;
     }
 }

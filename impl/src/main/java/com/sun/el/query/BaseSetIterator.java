@@ -52,7 +52,6 @@ abstract class BaseSetIterator implements Iterator<Object> {
     private Iterator<Object> iter;
     private Object current;
     private boolean yielded;
-    private boolean yieldBreak;
     private int state = 1;
 
     BaseSetIterator(Iterable<Object> first, Iterable<Object> second){

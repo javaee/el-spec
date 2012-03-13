@@ -57,11 +57,9 @@ class ThenByDescending extends QueryOperator {
         final LambdaExpression keySelector = getLambda("thenByDescending", params, 0);
         final Comparator<Object> cmp = getComparator("thenByDescending", params, 1, true);
 
-        if (!(base instanceof OrderIterable)) {
-            return base;
+        if (base instanceof OrderIterable) {
+            ((OrderIterable) base).addOrder(keySelector, cmp, true);
         }
-
-        ((OrderIterable) base).addOrder(keySelector, cmp, true);
         return base;
     }
 }
