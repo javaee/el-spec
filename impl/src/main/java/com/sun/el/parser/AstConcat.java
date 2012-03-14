@@ -43,7 +43,10 @@ package com.sun.el.parser;
 import javax.el.ELException;
 import com.sun.el.lang.EvaluationContext;
 
-public
+/**
+ * @author Kin-man Chung
+ */
+public final
 class AstConcat extends SimpleNode {
     public AstConcat(int id) {
         super(id);

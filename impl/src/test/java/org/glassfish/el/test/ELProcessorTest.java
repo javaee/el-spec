@@ -33,4 +33,12 @@ public class ELProcessorTest {
         elp.setVariable("xx", null);
         assertEquals(elp.eval("xx"), null);
     }
+
+    @Test
+    public void testConcat() {
+        Object result = elp.eval("'10' + 1");
+        assertEquals(result.toString(), "101");
+        result = elp.eval("10 cat '1'");
+        assertEquals(result.toString(), "101");
+    }
 }
