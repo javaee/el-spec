@@ -43,6 +43,9 @@ package com.sun.el.lang;
 import javax.el.ValueExpression;
 import javax.el.VariableMapper;
 
+/**
+ * Creates a VariableMapper for the variables used in the expression.
+ */
 public class VariableMapperFactory extends VariableMapper {
 
     private final VariableMapper target;

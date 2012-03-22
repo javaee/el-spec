@@ -341,5 +341,13 @@ public class LinqTest {
             "['x', 'b', 'a', 'b', 'c'].except(['b', 'c', 'd'])",
             new String[] {"x", "a"});
     }
+
+    @Test
+    public void testForEach() {
+        elp.defineBean("lst", new java.util.ArrayList());
+        testIterable("forEach",
+            "products.forEach(p->lst.add(p.name)); lst", exp2);
+    }
+            
 }
 

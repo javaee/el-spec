@@ -70,7 +70,6 @@ class AstLambdaExpression extends SimpleNode {
                                     this.children[0],
                                     ctx.getFunctionMapper(),
                                     ctx.getVariableMapper(),
-                                    ctx.getTargetVariableMapper(),
                                     null);
         LambdaExpression lambda = new LambdaExpression(parameters, expr);
         Object ret = lambda;

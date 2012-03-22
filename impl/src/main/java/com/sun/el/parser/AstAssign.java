@@ -63,20 +63,19 @@ class AstAssign extends SimpleNode {
     public Object getValue(EvaluationContext ctx)
             throws ELException {
         if (children[0] instanceof AstIdentifier) {
-            // if the target is an EL variable or if it cannot be resolvered
-            // by a ELResolver, set the variable to the fhs expression
             String name = ((AstIdentifier)children[0]).image;
-            VariableMapper varMapper = ctx.getTargetVariableMapper();
-            if (varMapper != null && varMapper.resolveVariable(name) != null ||
-                        !canResolve(ctx, name)) {
-                // set the variable to the new expression
-                varMapper.setVariable(name, new ValueExpressionImpl(
-                    "assignment operator",
-                    children[1],
-                    ctx.getFunctionMapper(),
-                    ctx.getVariableMapper(),
-                    varMapper,
-                    null));
+            if (!canResolve(ctx, name)) {
+                // If the target name cannot be resolvered by a ELResolver, set
+                // the the lhs expression to an EL variable with the name.
+                VariableMapper varMapper = ctx.getVariableMapper();
+                if (varMapper != null) {
+                    varMapper.setVariable(name, new ValueExpressionImpl(
+                        "assignment operator",
+                        children[1],
+                        ctx.getFunctionMapper(),
+                        varMapper,
+                        null));
+                }
                 return children[1].getValue(ctx);
             }
         }

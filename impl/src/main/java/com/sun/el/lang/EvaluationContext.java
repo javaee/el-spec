@@ -50,6 +50,11 @@ import javax.el.FunctionMapper;
 import javax.el.VariableMapper;
 import javax.el.TypeConverter;
 
+/**
+ * The context for EL expression evaluation.  This wrapper ELContext captures
+ * the function mapper and the variable mapper at the point when the epxression
+ * is parsed, and only for those functions and variable used in the expression.
+ */
 public final class EvaluationContext extends ELContext {
 
     private final ELContext elContext;
@@ -57,14 +62,12 @@ public final class EvaluationContext extends ELContext {
     private final FunctionMapper fnMapper;
 
     private final VariableMapper varMapper;
-    private final VariableMapper targetVarMapper;
 
     public EvaluationContext(ELContext elContext, FunctionMapper fnMapper,
-            VariableMapper varMapper, VariableMapper targetVarMapper) {
+            VariableMapper varMapper) {
         this.elContext = elContext;
         this.fnMapper = fnMapper;
         this.varMapper = varMapper;
-        this.targetVarMapper = targetVarMapper;
     }
 
     public ELContext getELContext() {
@@ -77,10 +80,6 @@ public final class EvaluationContext extends ELContext {
 
     public VariableMapper getVariableMapper() {
         return this.varMapper;
-    }
-
-    public VariableMapper getTargetVariableMapper() {
-        return this.targetVarMapper;
     }
 
     public Object getContext(Class key) {

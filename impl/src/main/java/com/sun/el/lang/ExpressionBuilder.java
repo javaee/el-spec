@@ -140,7 +140,6 @@ public final class ExpressionBuilder implements NodeVisitor {
                 new SoftConcurrentHashMap();
     private FunctionMapper fnMapper;
     private VariableMapper varMapper;
-    private VariableMapper targetVarMapper;
     private String expression;
 
     /**
@@ -158,7 +157,6 @@ public final class ExpressionBuilder implements NodeVisitor {
         }
         if (ctxVar != null) {
             this.varMapper = new VariableMapperFactory(ctxVar);
-            this.targetVarMapper = ctxVar;
         }
     }
 
@@ -217,6 +215,13 @@ public final class ExpressionBuilder implements NodeVisitor {
         return n;
     }
 
+    /**
+     * Scan the expression nodes and captures the functions and variables used
+     * in this expression.  This ensures that any changes to the functions or
+     * variables mappings during the expression will not affect the evaluation
+     * of this expression, as the functions and variables are bound and
+     * resolved at parse time, as specified in the spec.
+     */
     private void prepare(Node node) throws ELException {
         node.accept(this);
         if (this.fnMapper instanceof FunctionMapperFactory) {
@@ -274,7 +279,7 @@ public final class ExpressionBuilder implements NodeVisitor {
             throws ELException {
         Node n = this.build();
         return new ValueExpressionImpl(this.expression, n, this.fnMapper,
-                this.varMapper, this.targetVarMapper, expectedType);
+                this.varMapper, expectedType);
     }
 
     public MethodExpression createMethodExpression(Class expectedReturnType,
@@ -282,7 +287,7 @@ public final class ExpressionBuilder implements NodeVisitor {
         Node n = this.build();
         if (n instanceof AstValue || n instanceof AstIdentifier) {
             return new MethodExpressionImpl(expression, n,
-                    this.fnMapper, this.varMapper, this.targetVarMapper,
+                    this.fnMapper, this.varMapper,
                     expectedReturnType, expectedParamTypes);
         } else if (n instanceof AstLiteralExpression) {
             return new MethodExpressionLiteral(expression, expectedReturnType,
