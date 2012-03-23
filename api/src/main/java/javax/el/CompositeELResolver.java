@@ -397,6 +397,21 @@ public class CompositeELResolver extends ELResolver {
         }
     }
 
+    public void assignValue(ELContext context,
+                         Object base,
+                         Object property,
+                         Object val) {
+
+        context.setPropertyResolved(false);
+
+        for (int i = 0; i < size; i++) {
+            elResolvers[i].assignValue(context, base, property, val);
+            if (context.isPropertyResolved()) {
+                return;
+            }
+        }
+    }
+
     /**
      * For a given <code>base</code> and <code>property</code>, attempts to
      * determine whether a call to {@link #setValue} will always fail. The
