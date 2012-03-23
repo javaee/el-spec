@@ -168,6 +168,11 @@ public abstract class SimpleNode extends ELSupport implements Node {
         throw new PropertyNotWritableException(MessageFactory.get("error.syntax.set"));
     }
 
+    public void assignValue(EvaluationContext ctx, Object value)
+            throws ELException {
+        throw new UnsupportedOperationException();
+    }
+
     public void accept(NodeVisitor visitor) throws ELException {
         visitor.visit(this);
         if (this.children != null && this.children.length > 0) {

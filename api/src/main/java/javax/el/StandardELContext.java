@@ -331,6 +331,11 @@ public class StandardELContext extends ELContext {
         public boolean isReadOnly(String beanName) {
             return false;
         }
+
+        @Override
+        public boolean createBean(String beanName) {
+            return true;
+        }
     }
 }
   

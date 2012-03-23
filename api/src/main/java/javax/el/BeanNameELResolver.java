@@ -143,17 +143,40 @@ public class BeanNameELResolver extends ELResolver {
         }
 
         if (base == null && property instanceof String) {
-            if (beanNameResolver.isReadOnly((String) property)) {
+            String beanName = (String) property;
+            if (beanNameResolver.isReadOnly(beanName)) {
                 throw new PropertyNotWritableException("The bean " +
-                    property + " is not writable.");
+                    beanName + " is not writable.");
             }
-            Object bean = beanNameResolver.getBean((String) property);
+            Object bean = beanNameResolver.getBean(beanName);
             if (bean != null) {
                 context.setPropertyResolved(true);
-                beanNameResolver.setBeanValue((String) property, value);
+                beanNameResolver.setBeanValue(beanName, value);
             }
         }
     }
+
+    public void assignValue(ELContext context,
+                            Object base,
+                            Object property,
+                            Object value) {
+
+        if (context == null) {
+            throw new NullPointerException();
+        }
+        if (base == null && property instanceof String) {
+            String beanName = (String) property;
+            if (beanNameResolver.isReadOnly(beanName)) {
+                throw new PropertyNotWritableException("The bean " +
+                    beanName + " is not writable.");
+            }
+            if (beanNameResolver.createBean(beanName)) {
+                context.setPropertyResolved(true);
+                beanNameResolver.setBeanValue(beanName, value);
+            }
+        }
+    }
+
 
     /**
      * If the base is null and the property is a name resolvable by

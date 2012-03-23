@@ -220,6 +220,26 @@ public final class AstValue extends SimpleNode {
         }
     }
 
+    public void assignValue(EvaluationContext ctx, Object value)
+            throws ELException {
+        Target t = getTarget(ctx);
+        if (t.isMethodCall()) {
+            throw new PropertyNotWritableException(
+                        MessageFactory.get("error.syntax.set"));
+        }
+        Object property = t.suffixNode.getValue(ctx);
+        ctx.setPropertyResolved(false);
+        ELResolver elResolver = ctx.getELResolver();
+        if (value != null) {
+            value = ELSupport.coerceToType(value,
+                        elResolver.getType(ctx, t.base, property));
+        }
+        elResolver.assignValue(ctx, t.base, property, value);
+        if (! ctx.isPropertyResolved()) {
+            ELSupport.throwUnhandled(t.base, property);
+        }
+    }
+
     public MethodInfo getMethodInfo(EvaluationContext ctx, Class[] paramTypes)
             throws ELException {
         Target t = getTarget(ctx);

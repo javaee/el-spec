@@ -62,7 +62,7 @@ public abstract class BeanNameResolver {
     /**
      * Sets a value to an existing bean of the given name.
      * @param beanName The name of the bean
-     * @param value The new bean for the given name.
+     * @param value The value to set the bean to.
      * @throws PropertyNotWritableException if setting a new bean for the given
      *    name is not allowed.
      */
@@ -74,10 +74,20 @@ public abstract class BeanNameResolver {
     /**
      * Indicates if the bean of the given name is read-only or writable
      * @param beanName The name of the bean
-     * @return <code>true</code> if a new bean can be set for the given name.
+     * @return <code>true</code> if the bean can be set to a new value.
      *    <code>false</code> otherwise.
      */
     public boolean isReadOnly(String beanName) {
         return true;
+    }
+
+    /**
+     * Creates a bean of the given name if it does not exist.
+     * @param beanName The name of the bean
+     * @return <code>true</code> if bean creation is supported
+     *    <code>false</code> otherwise.
+     */
+    public boolean createBean(String beanName) {
+        return false;
     }
 }

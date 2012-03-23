@@ -344,7 +344,8 @@ public class LinqTest {
 
     @Test
     public void testForEach() {
-        elp.defineBean("lst", new java.util.ArrayList());
+ //       elp.defineBean("lst", new java.util.ArrayList());
+        elp.eval("lst = []");
         testIterable("forEach",
             "products.forEach(p->lst.add(p.name)); lst", exp2);
     }

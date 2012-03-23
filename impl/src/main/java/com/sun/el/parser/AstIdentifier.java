@@ -168,6 +168,34 @@ public final class AstIdentifier extends SimpleNode {
         }
     }
 
+    public void assignValue(EvaluationContext ctx, Object value)
+            throws ELException {
+        // First check if this is a lambda argument
+        Object argValue = ctx.getELContext().getLambdaArgument(this.image);
+        if (argValue != null) {
+            // Lambda arguments are read only
+            return;
+        }
+        VariableMapper varMapper = ctx.getVariableMapper();
+        if (varMapper != null) {
+            ValueExpression expr = varMapper.resolveVariable(this.image);
+            if (expr != null) {
+                expr.setValue(ctx.getELContext(), value);
+                return;
+            }
+        }
+        ctx.setPropertyResolved(false);
+        ELResolver elResolver = ctx.getELResolver();
+        if (value != null) {
+            value = ELSupport.coerceToType(value,
+                        elResolver.getType(ctx, null, this.image));
+        }
+        elResolver.assignValue(ctx, null, this.image, value);
+        if (! ctx.isPropertyResolved()) {
+            ELSupport.throwUnhandled(null, this.image);
+        }
+    }
+
     private final Object invokeTarget(EvaluationContext ctx, Object target,
             Object[] paramValues) throws ELException {
         if (target instanceof MethodExpression) {

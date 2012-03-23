@@ -72,4 +72,9 @@ public final class AstDynamicExpression extends SimpleNode {
             throws ELException {
         this.children[0].setValue(ctx, value);
     }
+
+    public void assignValue(EvaluationContext ctx, Object value)
+            throws ELException {
+        this.children[0].assignValue(ctx, value);
+    }
 }
