@@ -215,6 +215,15 @@ public class ResourceBundleELResolver extends ELResolver {
     }
 
     /**
+     * Behaves exactly the same as {@link #setValue}.
+     */
+    @Override
+    public void assignValue(ELContext context, Object base, Object property,
+            Object value) {
+        setValue(context, base, property, value);
+    }
+
+    /**
      * If the base object is not null and an instanceof {@link ResourceBundle},
      * return <code>true</code>.
      * 

@@ -311,11 +311,11 @@ public abstract class ELResolver {
      * <p>If the (base, property) pair is handled by this
      * <code>ELResolver</code>, and the property does not exists, it can
      * support the assignment operation by "creating" the property and
-     * set it to the given value, 
-     * so that a call to <code>getValue</code> on the (base, property) will
+     * set it to the given value, so that
+     * a subsequent call to <code>getValue</code> on the (base, property) will
      * be resolved to the given value.</p>
      *
-     * <p>If this ELResolver cannot provide the assignment operation,
+     * <p>If this ELResolver does not provide the assignment operation,
      * it should return without setting the <code>propertyResolved<code>
      * property.</p>
      *

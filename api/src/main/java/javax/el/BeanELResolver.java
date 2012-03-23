@@ -458,6 +458,25 @@ public class BeanELResolver extends ELResolver {
     }
 
     /**
+     * Attempts to assign the value to the given <code>property</code>
+     * object on the given <code>base</code> object.
+     * <p>Behaves exactly the same as {@link #setValue}, except when the
+     * specified property is not a property of the base object, in which
+     * case it just returns without setting the <code>propertyResolved</code>
+     * property</p>.
+     */
+    public void assignValue(ELContext context,
+                            Object base,
+                            Object property,
+                            Object val) {
+        try {
+            setValue(context, base, property, val);
+        } catch (PropertyNotFoundException ex) {
+        }
+    }
+
+
+    /**
      * If the base object is not <code>null</code>, invoke the method, with
      * the given parameters on this bean.  The return value from the method
      * is returned.

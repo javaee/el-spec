@@ -267,6 +267,26 @@ public class ArrayELResolver extends ELResolver {
         }
     }
 
+    /** 
+     * If the base object is a Java language array, attempts to set the
+     * value at the given index with the given value.
+     *
+     * <p>Behaves exactly the same as {@link #setValue}, except when the
+     * specified index (property coerced to an integer) is out of bound,
+     * in which case it just returns without setting the
+     * <code>propertyResolved</code> property.</p>
+     */
+    @Override
+    public void assignValue(ELContext context,
+                            Object base,
+                            Object property,
+                            Object val) {
+        try {
+            setValue(context, base, property, val);
+        } catch (PropertyNotFoundException ex) {
+        }
+    }
+
     /**
      * If the base object is a Java language array, returns whether a call to 
      * {@link #setValue} will always fail.

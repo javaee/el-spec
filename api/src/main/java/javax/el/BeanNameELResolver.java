@@ -144,18 +144,36 @@ public class BeanNameELResolver extends ELResolver {
 
         if (base == null && property instanceof String) {
             String beanName = (String) property;
-            if (beanNameResolver.isReadOnly(beanName)) {
-                throw new PropertyNotWritableException("The bean " +
-                    beanName + " is not writable.");
-            }
             Object bean = beanNameResolver.getBean(beanName);
             if (bean != null) {
+                if (beanNameResolver.isReadOnly(beanName)) {
+                    throw new PropertyNotWritableException("The bean " +
+                        beanName + " is not writable.");
+                }
                 context.setPropertyResolved(true);
                 beanNameResolver.setBeanValue(beanName, value);
             }
         }
     }
 
+    /**
+     * If the base object is null, attempts to set the given value to the
+     * bean given by the name (property).  If the name does not exist,
+     * attempts to create one, if bean creation is supportted by the
+     * <code>BeanNameResolver</code>.
+     * <p>If the name is resolvable or created by the BeanNameResolver,
+     * the <code>propertyResolved</code> property of the
+     * <code>ELContext</code> object must be set to <code>true</code>
+     * by the resolver, before returning. If this property is not
+     * <code>true</code> after this method is called, the caller can
+     * safely assume no value has been set.</p>
+     *
+     * @param context The context of this evaluation.
+     * @param base <code>null</code>
+     * @param property The name of the bean
+     * @param value The value to set the bean with the given name to.
+     * @throws NullPointerException if context is <code>null</code>
+     */
     public void assignValue(ELContext context,
                             Object base,
                             Object property,
@@ -166,11 +184,11 @@ public class BeanNameELResolver extends ELResolver {
         }
         if (base == null && property instanceof String) {
             String beanName = (String) property;
-            if (beanNameResolver.isReadOnly(beanName)) {
-                throw new PropertyNotWritableException("The bean " +
-                    beanName + " is not writable.");
-            }
             if (beanNameResolver.createBean(beanName)) {
+                if (beanNameResolver.isReadOnly(beanName)) {
+                    throw new PropertyNotWritableException("The bean " +
+                        beanName + " is not writable.");
+                }
                 context.setPropertyResolved(true);
                 beanNameResolver.setBeanValue(beanName, value);
             }

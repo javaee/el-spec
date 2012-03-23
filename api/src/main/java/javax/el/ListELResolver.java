@@ -291,6 +291,27 @@ public class ListELResolver extends ELResolver {
         }
     }
 
+    /**
+     * If the base object is a list, attempts to set the value at the
+     * given index with the given value.
+     *
+     * <p>Behaves exactly the same as {@link #setValue}, except when the
+     * specified index (property coerced to an integer) is out of bound,
+     * in which case it just returns without setting the
+     * <code>propertyResolved</code> property.</p>
+     */
+    @Override
+    public void assignValue(ELContext context,
+                            Object base,
+                            Object property,
+                            Object val) {
+        try {
+            setValue(context, base, property, val);
+        } catch (PropertyNotFoundException ex) {
+        }
+    }
+
+
     static private Class<?> theUnmodifiableListClass =
         Collections.unmodifiableList(new ArrayList<Object>()).getClass();
 

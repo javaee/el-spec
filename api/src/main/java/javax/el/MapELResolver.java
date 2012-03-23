@@ -272,6 +272,17 @@ public class MapELResolver extends ELResolver {
     }
 
     /**
+     * Behaves exactly the same as {@link #setValue}, as it already allows
+     * creation of new map entries.
+     */
+    public void assignValue(ELContext context,
+                            Object base,
+                            Object property,
+                            Object val) {
+        setValue(context, base, property, val);
+    }
+
+    /**
      * If the base object is a map, returns whether a call to 
      * {@link #setValue} will always fail.
      *

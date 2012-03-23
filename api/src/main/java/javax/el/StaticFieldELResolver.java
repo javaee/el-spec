@@ -147,6 +147,15 @@ public class StaticFieldELResolver extends ELResolver {
     }
 
     /**
+     * Behaves exactly the same as {@link #setValue}.
+     */
+    @Override
+    public void assignValue(ELContext context, Object base, Object property,
+            Object value) {
+        setValue(context, base, property, value);
+    }
+
+    /**
      * <p>Invokes a public static method or the constructor for a class.</p>
      *
      * If the base object is an instance of <code>ELClass</code> and the
