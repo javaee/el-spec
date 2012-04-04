@@ -45,6 +45,9 @@ import java.lang.reflect.Method;
 
 import javax.el.ELException;
 import javax.el.FunctionMapper;
+import javax.el.LambdaExpression;
+import javax.el.ValueExpression;
+import javax.el.VariableMapper;
 
 import com.sun.el.lang.EvaluationContext;
 import com.sun.el.util.MessageFactory;
@@ -68,7 +71,7 @@ public final class AstFunction extends SimpleNode {
     }
 
     public String getOutputName() {
-        if (this.prefix == null) {
+        if (this.prefix.length() == 0) {
             return this.localName;
         } else {
             return this.prefix + ":" + this.localName;
@@ -96,8 +99,49 @@ public final class AstFunction extends SimpleNode {
         return m.getReturnType();
     }
 
+    private Object findValue(EvaluationContext ctx, String name) {
+        Object value;
+        // First check if this is a Lambda argument
+        value = ctx.getELContext().getLambdaArgument(name);
+        if (value != null) {
+            return value;
+        }
+        // Next check if this an EL variable
+        VariableMapper varMapper = ctx.getVariableMapper();
+        if (varMapper != null) {
+            ValueExpression expr = varMapper.resolveVariable(name);
+            if (expr != null) {
+                return expr.getValue(ctx.getELContext());
+            }
+        }
+        // Check if this is resolvable by an ELResolver
+        ctx.setPropertyResolved(false);
+        Object ret = ctx.getELResolver().getValue(ctx, null, name);
+        if (ctx.isPropertyResolved()) {
+            return ret;
+        }
+        return null;
+    }
+
+    private Object invokeLambda(EvaluationContext ctx, LambdaExpression lambda){
+        Object[] params = new Object[this.children.length];
+        for (int i = 0; i < params.length; i++) {
+            params[i] = this.children[i].getValue(ctx);
+        }
+        return lambda.invoke(ctx, params);
+    }
+        
     public Object getValue(EvaluationContext ctx)
             throws ELException {
+
+        // Check to see if a function is a bean that is a Lambdaexpression.
+        // If so, then invoke it.
+        if (prefix.length() == 0) {
+            Object val = findValue(ctx, this.localName);
+            if (val != null && val instanceof LambdaExpression) {
+                return invokeLambda(ctx, (LambdaExpression) val);
+            }
+        }
         
         FunctionMapper fnMapper = ctx.getFunctionMapper();
         

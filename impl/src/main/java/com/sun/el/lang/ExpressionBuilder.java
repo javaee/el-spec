@@ -258,6 +258,10 @@ public final class ExpressionBuilder implements NodeVisitor {
             Method m = fnMapper.resolveFunction(funcNode.getPrefix(), funcNode
                     .getLocalName());
             if (m == null) {
+                if (funcNode.getPrefix().length() == 0){
+                    // This can be a call to a LambdaExpression
+                    return;
+                }
                 throw new ELException(MessageFactory.get(
                         "error.fnMapper.method", funcNode.getOutputName()));
             }

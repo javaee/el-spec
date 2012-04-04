@@ -116,12 +116,11 @@ void DynamicExpression() #DynamicExpression : {}
 
 /*
  * Expression
- * EL Expression Language Root, goes to assignment
+ * EL Expression Language Root
  */
 void Expression() : {}
 {
-        LOOKAHEAD(3) LambdaExpression()
-        | SemiColon()
+        SemiColon()
 }
 
 /*
@@ -129,7 +128,7 @@ void Expression() : {}
  */
 void SemiColon() : {}
 {
-        Assignment() ( <SEMICOLON> Assignment() #SemiColon(2) )*
+        Assignment() (<SEMICOLON> Assignment() #SemiColon(2) )*
 }
 
 /*
@@ -147,7 +146,8 @@ void Assignment() : {}
  */
 void Choice() : {}
 {
-	Or() (<QUESTIONMARK> Choice() <COLON> Choice() #Choice(3))?
+        LOOKAHEAD(3) LambdaExpression()
+	| Or() (<QUESTIONMARK> Choice() <COLON> Choice() #Choice(3))?
 }
 
 /*
@@ -323,16 +323,27 @@ void LambdaExpression() #LambdaExpression : { Token t = null; }
                 )?
               <RPAREN>
             )
-       ) <ARROW> Expression()
+       ) <ARROW> Choice()
 }
 
 /*
-* NonLiteral
-* For Grouped Operations, Identifiers, and Functions
-*/
+ * Parenthesized Lambda Expression, with optional invokation
+ */
+void LambdaExpressionOrCall() #LambdaExpressionOrCall : {}
+
+{
+    <LPAREN> LambdaExpression() <RPAREN>
+    (MethodArguments())?
+}
+
+/*
+ * NonLiteral
+ * For Grouped Operations, Identifiers, and Functions
+ */
 void NonLiteral() : {}
 {
- 	<LPAREN> Expression() <RPAREN>
+        LOOKAHEAD(4) LambdaExpressionOrCall()
+ 	| <LPAREN> Expression() <RPAREN>
  	| LOOKAHEAD(4) Function()
 	| Identifier()
         | Type()

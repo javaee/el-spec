@@ -51,15 +51,6 @@ class AstAssign extends SimpleNode {
         super(id);
     }
 
-    /*
-     * Return true if the identifier can be resolved by a ELResolver.
-     */
-    private boolean canResolve(EvaluationContext ctx, String name) {
-        ctx.setPropertyResolved(false);
-        ctx.getELResolver().getValue(ctx, null, name);
-        return ctx.isPropertyResolved();
-    }
-
     public Object getValue(EvaluationContext ctx)
             throws ELException {
 
