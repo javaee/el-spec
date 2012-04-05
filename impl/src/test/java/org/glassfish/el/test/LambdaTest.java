@@ -14,11 +14,11 @@ public class LambdaTest {
 
     @Before
     public void setUp() {
-        System.out.println("=== Testing Lambda Expressions ===");
         elp = Manager.getManager().getElp();
     }
 
-    void testExpr(String expr, Long expected) {
+    void testExpr(String testname, String expr, Long expected) {
+        System.out.println("=== Test Lambda Expression:" + testname + " ===");
         System.out.println(" ** " + expr);
         Object result = elp.eval(expr);
         System.out.println("    returns " + result);
@@ -27,21 +27,27 @@ public class LambdaTest {
 
     @Test
     public void testImmediate() {
-        testExpr("(x->x+1)(10)", 11L);
-        testExpr("(((x,y)->x+y)(3,4))", 7L);
+        testExpr("immediate", "(x->x+1)(10)", 11L);
+        testExpr("immediate 2", "(((x,y)->x+y)(3,4))", 7L);
     }
 
     @Test
     public void testAssignInvoke() {
-        testExpr("func = x->x+1; func(10)", 11L);
-        testExpr("func = (x,y)->x+y; func(3,4)", 7L);
+        testExpr("assign", "func = x->x+1; func(10)", 11L);
+        testExpr("assign 2", "func = (x,y)->x+y; func(3,4)", 7L);
     }
 
     @Test
     public void testConditional() {
         elp.eval("cond = true");
-        testExpr("(x->cond? x+1: x+2)(10)", 11L);
+        testExpr("conditional", "(x->cond? x+1: x+2)(10)", 11L);
         elp.eval("cond = false");
-        testExpr("func = cond? (x->x+1): (x->x+2); func(10)", 12L);
+        testExpr("conditional 2",
+                 "func = cond? (x->x+1): (x->x+2); func(10)", 12L);
+    }
+
+    @Test
+    public void testFact() {
+        testExpr("factorial", "fact = n->n==0? 1: n*fact(n-1); fact(5)", 120L);
     }
 }
