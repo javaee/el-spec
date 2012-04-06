@@ -260,6 +260,10 @@ public final class ExpressionBuilder implements NodeVisitor {
             if (m == null) {
                 if (funcNode.getPrefix().length() == 0){
                     // This can be a call to a LambdaExpression
+                    // If the target of the call is a variable, this can
+                    // be a potential Lambda Expression, capture this name in the
+                    // variable mapper
+                    this.varMapper.resolveVariable(funcNode.getLocalName());
                     return;
                 }
                 throw new ELException(MessageFactory.get(

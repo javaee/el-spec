@@ -50,4 +50,10 @@ public class LambdaTest {
     public void testFact() {
         testExpr("factorial", "fact = n->n==0? 1: n*fact(n-1); fact(5)", 120L);
     }
+
+    @Test
+    public void testVar() {
+        elp.setVariable("v", "x->x+1");
+        testExpr("assignment to variable", "v(10)", 11L);
+    }
 }
