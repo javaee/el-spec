@@ -315,7 +315,7 @@ public abstract class ELResolver {
      * a subsequent call to <code>getValue</code> on the (base, property) will
      * be resolved to the given value.</p>
      *
-     * <p>If this ELResolver does not provide the assignment operation,
+     * <p>If this ELResolver does not support the assignment operation,
      * it should return without setting the <code>propertyResolved<code>
      * property.</p>
      *
