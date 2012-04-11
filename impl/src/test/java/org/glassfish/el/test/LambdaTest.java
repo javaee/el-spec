@@ -29,6 +29,7 @@ public class LambdaTest {
     public void testImmediate() {
         testExpr("immediate", "(x->x+1)(10)", 11L);
         testExpr("immediate 2", "(((x,y)->x+y)(3,4))", 7L);
+        testExpr("immediate 3", "(x->(y=x)+1)(10) + y", 21L);
     }
 
     @Test

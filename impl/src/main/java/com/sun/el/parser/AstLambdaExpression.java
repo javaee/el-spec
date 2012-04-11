@@ -41,7 +41,6 @@
 package com.sun.el.parser;
 
 import java.util.List;
-import java.util.ArrayList;
 import javax.el.ELException;
 import javax.el.ValueExpression;
 import javax.el.LambdaExpression;
@@ -49,28 +48,32 @@ import com.sun.el.lang.EvaluationContext;
 import com.sun.el.ValueExpressionImpl;
 
 /**
- * @author Kin-man
+ * @author Kin-man Chung
  */
 public
 class AstLambdaExpression extends SimpleNode {
-    private List<String> parameters = new ArrayList<String>();
 
     public AstLambdaExpression(int id) {
       super(id);
-    }
-
-    public void addParam(String param) {
-        parameters.add(param);
     }
 
     public Object getValue(EvaluationContext ctx) throws ELException {
         // Create a lambda expression
         ValueExpression expr =
             new ValueExpressionImpl("#{Lambda Expression}",
-                                    this.children[0],
+                                    this.children[1],
                                     ctx.getFunctionMapper(),
                                     ctx.getVariableMapper(),
                                     null);
-        return new LambdaExpression(parameters, expr);
+        List<String>parameters =
+            ((AstLambdaParameters) this.children[0]).getParameters();
+        LambdaExpression lambda = new LambdaExpression(parameters, expr);
+        if (this.jjtGetNumChildren() <= 2) {
+            return lambda;
+        }
+
+        // There are arguments following the lambda exprn, invoke it now.
+        AstMethodArguments args = (AstMethodArguments) this.children[2];
+        return lambda.invoke(ctx, args.getParameters(ctx));
     }
 }

@@ -10,30 +10,30 @@ public interface ELParserTreeConstants
   public int JJTVOID = 4;
   public int JJTSEMICOLON = 5;
   public int JJTASSIGN = 6;
-  public int JJTCHOICE = 7;
-  public int JJTOR = 8;
-  public int JJTAND = 9;
-  public int JJTEQUAL = 10;
-  public int JJTNOTEQUAL = 11;
-  public int JJTLESSTHAN = 12;
-  public int JJTGREATERTHAN = 13;
-  public int JJTLESSTHANEQUAL = 14;
-  public int JJTGREATERTHANEQUAL = 15;
-  public int JJTCONCAT = 16;
-  public int JJTPLUS = 17;
-  public int JJTMINUS = 18;
-  public int JJTMULT = 19;
-  public int JJTDIV = 20;
-  public int JJTMOD = 21;
-  public int JJTNEGATIVE = 22;
-  public int JJTNOT = 23;
-  public int JJTEMPTY = 24;
-  public int JJTVALUE = 25;
-  public int JJTDOTSUFFIX = 26;
-  public int JJTBRACKETSUFFIX = 27;
-  public int JJTMETHODARGUMENTS = 28;
-  public int JJTLAMBDAEXPRESSION = 29;
-  public int JJTLAMBDAEXPRESSIONORCALL = 30;
+  public int JJTLAMBDAEXPRESSION = 7;
+  public int JJTLAMBDAPARAMETERS = 8;
+  public int JJTCHOICE = 9;
+  public int JJTOR = 10;
+  public int JJTAND = 11;
+  public int JJTEQUAL = 12;
+  public int JJTNOTEQUAL = 13;
+  public int JJTLESSTHAN = 14;
+  public int JJTGREATERTHAN = 15;
+  public int JJTLESSTHANEQUAL = 16;
+  public int JJTGREATERTHANEQUAL = 17;
+  public int JJTCONCAT = 18;
+  public int JJTPLUS = 19;
+  public int JJTMINUS = 20;
+  public int JJTMULT = 21;
+  public int JJTDIV = 22;
+  public int JJTMOD = 23;
+  public int JJTNEGATIVE = 24;
+  public int JJTNOT = 25;
+  public int JJTEMPTY = 26;
+  public int JJTVALUE = 27;
+  public int JJTDOTSUFFIX = 28;
+  public int JJTBRACKETSUFFIX = 29;
+  public int JJTMETHODARGUMENTS = 30;
   public int JJTMAPDATA = 31;
   public int JJTMAPENTRY = 32;
   public int JJTLISTDATA = 33;
@@ -56,6 +56,8 @@ public interface ELParserTreeConstants
     "void",
     "SemiColon",
     "Assign",
+    "LambdaExpression",
+    "LambdaParameters",
     "Choice",
     "Or",
     "And",
@@ -78,8 +80,6 @@ public interface ELParserTreeConstants
     "DotSuffix",
     "BracketSuffix",
     "MethodArguments",
-    "LambdaExpression",
-    "LambdaExpressionOrCall",
     "MapData",
     "MapEntry",
     "ListData",
@@ -94,4 +94,4 @@ public interface ELParserTreeConstants
     "Null",
   };
 }
-/* JavaCC - OriginalChecksum=47d82b014c61459433adb056370f7122 (do not edit this line) */
+/* JavaCC - OriginalChecksum=d8b1a46e82b8e5d40cb40350260012ae (do not edit this line) */

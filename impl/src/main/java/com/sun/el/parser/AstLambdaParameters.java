@@ -40,32 +40,26 @@
 
 package com.sun.el.parser;
 
-import javax.el.LambdaExpression;
-import javax.el.ELException;
-import com.sun.el.lang.EvaluationContext;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
- * @author Kin-man
+ * @author Kin-man Chung
  */
 
 public
-class AstLambdaExpressionOrCall extends SimpleNode {
-    public AstLambdaExpressionOrCall(int id) {
+class AstLambdaParameters extends SimpleNode {
+    public AstLambdaParameters(int id) {
         super(id);
     }
 
-    public Object getValue(EvaluationContext ctx) throws ELException {
-
-        // The Lambda expression is the first child.
-        Object lambda = this.children[0].getValue(ctx);
-
-        if (this.jjtGetNumChildren() == 1) {
-            return lambda;
+    List<String> getParameters() {
+        List<String> parameters = new ArrayList<String>();
+        if (children != null) {
+            for (Node child: children) {
+                parameters.add(child.getImage());
+            }
         }
-
-        // There are arguments following the lambda exprn, invoke it now.
-        AstMethodArguments args = (AstMethodArguments) this.children[1];
-        return ((LambdaExpression)lambda).invoke(ctx, args.getParameters(ctx));
+        return parameters;
     }
 }
-

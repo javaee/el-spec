@@ -259,10 +259,11 @@ public final class ExpressionBuilder implements NodeVisitor {
                     .getLocalName());
             if (m == null) {
                 if (funcNode.getPrefix().length() == 0){
-                    // This can be a call to a LambdaExpression
-                    // If the target of the call is a variable, this can
-                    // be a potential Lambda Expression, capture this name in the
-                    // variable mapper
+                    // This can be a call to a LambdaExpression.  The target
+                    // of the call is a bean or an EL variable.  Capture
+                    // the variable name in the variable mapper if it is an
+                    // variable.  The decision to invoke the static method or
+                    // the LambdaExpression will be made at runtime.
                     this.varMapper.resolveVariable(funcNode.getLocalName());
                     return;
                 }

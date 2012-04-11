@@ -69,6 +69,8 @@ public class OperatorTest {
         elp.eval("vv = 100");
         testExpr("assign 2", "vv", 100L);
         testExpr("assign 3", "x = vv = vv+1; x + vv", 202L);
+        elp.eval("map = {'one':100, 'two':200}");
+        testExpr("assign 4", "map.two = 201; map.two", 201L);
     }
     
     @Test

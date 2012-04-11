@@ -133,11 +133,28 @@ void SemiColon() : {}
 
 /*
  * Assignment
- * For '=', then Choice
+ * For '=', right associatve, then LambdaExpression or Choice or Assignment
  */
 void Assignment() : {}
 {
+        LOOKAHEAD(3) LambdaExpression() |
         Choice() (<ASSIGN> Assignment() #Assign(2) )?
+}
+
+/*
+ * LambdaExpression
+ */
+void LambdaExpression() #LambdaExpression : {}
+{
+       LambdaParameters() <ARROW> Choice()
+}
+
+void LambdaParameters() #LambdaParameters: {}
+{
+       Identifier()
+       | <LPAREN>
+            (Identifier() (<COMMA> Identifier())*)?
+         <RPAREN>
 }
 
 /*
@@ -146,8 +163,7 @@ void Assignment() : {}
  */
 void Choice() : {}
 {
-        LOOKAHEAD(3) LambdaExpression()
-	| Or() (<QUESTIONMARK> Choice() <COLON> Choice() #Choice(3))?
+	Or() (<QUESTIONMARK> Choice() <COLON> Choice() #Choice(3))?
 }
 
 /*
@@ -302,6 +318,7 @@ void BracketSuffix() #BracketSuffix : {}
         (MethodArguments())?
 }
 
+
 /*
  * MethodArguments
  */
@@ -311,28 +328,14 @@ void MethodArguments() #MethodArguments : {}
 }
 
 /*
- * LambdaExpression
- */
-void LambdaExpression() #LambdaExpression : { Token t = null; }
-{
-       ( t = <IDENTIFIER> {jjtThis.addParam(t.image);}
-          | ( <LPAREN>  
-                (
-                    t = <IDENTIFIER> { jjtThis.addParam(t.image); }
-                    ( <COMMA> t = <IDENTIFIER> { jjtThis.addParam(t.image); })*
-                )?
-              <RPAREN>
-            )
-       ) <ARROW> Choice()
-}
-
-/*
  * Parenthesized Lambda Expression, with optional invokation
  */
-void LambdaExpressionOrCall() #LambdaExpressionOrCall : {}
+void LambdaExpressionOrCall() #LambdaExpression : {}
 
 {
-    <LPAREN> LambdaExpression() <RPAREN>
+    <LPAREN>
+        LambdaParameters() <ARROW> Choice()
+    <RPAREN>
     (MethodArguments())?
 }
 
