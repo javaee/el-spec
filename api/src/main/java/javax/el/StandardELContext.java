@@ -41,7 +41,7 @@
 package javax.el;
 
 import java.util.Map;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.lang.reflect.Method;
 
 /**
@@ -100,7 +100,7 @@ public class StandardELContext extends ELContext {
     /**
      * A bean repository local to this context
      */
-    private Map<String, Object> beans = new HashMap<String, Object>();
+    private Map<String, Object> beans = new ConcurrentHashMap<String, Object>();
 
     /**
      * Construct a default ELContext for a stand-alone environment.
@@ -281,7 +281,7 @@ public class StandardELContext extends ELContext {
         @Override
         public void mapFunction(String prefix, String localName, Method meth){
             if (functions == null) {
-                functions = new HashMap<String, Method>();
+                functions = new ConcurrentHashMap<String, Method>();
             }
             functions.put(prefix + ":" + localName, meth);
         }
@@ -303,7 +303,7 @@ public class StandardELContext extends ELContext {
         public ValueExpression setVariable(String variable,
                                            ValueExpression expression) {
             if (variables == null) {
-                variables = new HashMap<String, ValueExpression>();
+                variables = new ConcurrentHashMap<String, ValueExpression>();
             }
             ValueExpression prev = null;
             if (expression == null) {

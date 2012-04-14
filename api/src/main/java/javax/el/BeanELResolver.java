@@ -464,6 +464,19 @@ public class BeanELResolver extends ELResolver {
      * specified property is not a property of the base object, in which
      * case it just returns without setting the <code>propertyResolved</code>
      * property</p>.
+     *
+     * @param context The context of this evaluation.
+     * @param base The bean on which to set the property.
+     * @param property The name of the property to set. Will be coerced to
+     *     a <code>String</code>.
+     * @param val The value to be associated with the specified key.
+     * @throws NullPointerException if context is <code>null</code>.
+     * @throws PropertyNotWritableException if this resolver was constructed
+     *     in read-only mode, or if there is no setter for the property.
+     * @throws ELException if an exception was thrown while performing
+     *     the property or variable resolution. The thrown exception
+     *     must be included as the cause property of this exception, if
+     *     available.
      */
     public void assignValue(ELContext context,
                             Object base,

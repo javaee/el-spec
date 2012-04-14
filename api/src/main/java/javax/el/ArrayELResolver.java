@@ -275,6 +275,25 @@ public class ArrayELResolver extends ELResolver {
      * specified index (property coerced to an integer) is out of bound,
      * in which case it just returns without setting the
      * <code>propertyResolved</code> property.</p>
+     *
+     * @param context The context of this evaluation.
+     * @param base The array to be modified. Only bases that are Java language
+     *     arrays are handled by this resolver.
+     * @param property The index of the value to be set. Will be coerced
+     *     into an integer.
+     * @param val The value to be set at the given index.
+     * @throws ClassCastException if the class of the specified element
+     *     prevents it from being added to this array.
+     * @throws NullPointerException if context is <code>null</code>.
+     * @throws IllegalArgumentException if the property could not be coerced
+     *     into an integer, or if some aspect of the specified element
+     *     prevents it from being added to this array.
+     * @throws PropertyNotWritableException if this resolver was constructed
+     *     in read-only mode.
+     * @throws ELException if an exception was thrown while performing
+     *     the property or variable resolution. The thrown exception
+     *     must be included as the cause property of this exception, if
+     *     available.
      */
     @Override
     public void assignValue(ELContext context,
