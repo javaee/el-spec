@@ -99,6 +99,10 @@ public final class AstFunction extends SimpleNode {
         return m.getReturnType();
     }
 
+    /*
+     * Find the object associated with the given name.  Return null if the
+     * there is no such object.
+     */
     private Object findValue(EvaluationContext ctx, String name) {
         Object value;
         // First check if this is a Lambda argument
@@ -123,23 +127,31 @@ public final class AstFunction extends SimpleNode {
         return null;
     }
 
-    private Object invokeLambda(EvaluationContext ctx, LambdaExpression lambda){
-        Object[] params = new Object[this.children.length];
-        for (int i = 0; i < params.length; i++) {
-            params[i] = this.children[i].getValue(ctx);
-        }
-        return lambda.invoke(ctx, params);
-    }
-        
     public Object getValue(EvaluationContext ctx)
             throws ELException {
 
         // Check to see if a function is a bean that is a Lambdaexpression.
-        // If so, then invoke it.
+        // If so, invoke it.  Also allow for the case that a Lambda expression
+        // can return another Lambda expression.
         if (prefix.length() == 0) {
             Object val = findValue(ctx, this.localName);
-            if (val != null && val instanceof LambdaExpression) {
-                return invokeLambda(ctx, (LambdaExpression) val);
+            int i = 0;
+            for (; i < this.children.length; i++) {
+                if (val == null || !(val instanceof LambdaExpression)) {
+                    break;
+                }
+                Object[] params = ((AstMethodArguments)this.children[i]).
+                                                             getParameters(ctx);
+                val = ((LambdaExpression)val).invoke(ctx, params);
+            }
+            if (i == 0 && (i == this.children.length-1)) {
+                // Possibly a function call
+            } else if (i > 0 && (i == this.children.length)) {
+                // Lambda invokes
+                return val;
+            } else {
+                throw new ELException(MessageFactory.get(
+                            "error.function.syntax", getOutputName()));
             }
         }
         
@@ -156,16 +168,12 @@ public final class AstFunction extends SimpleNode {
         }
 
         Class[] paramTypes = m.getParameterTypes();
-        Object[] params = null;
+        Object[] params =
+            ((AstMethodArguments)this.children[0]).getParameters(ctx);
         Object result = null;
-        int numParams = this.jjtGetNumChildren();
-        if (numParams > 0) {
-            params = new Object[numParams];
+        for (int i = 0; i < params.length; i++) {
             try {
-                for (int i = 0; i < numParams; i++) {
-                    params[i] = this.children[i].getValue(ctx);
-                    params[i] = coerceToType(params[i], paramTypes[i]);
-                }
+                params[i] = coerceToType(params[i], paramTypes[i]);
             } catch (ELException ele) {
                 throw new ELException(MessageFactory.get("error.function", this
                         .getOutputName()), ele);

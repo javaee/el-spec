@@ -57,4 +57,9 @@ public class LambdaTest {
         elp.setVariable("v", "x->x+1");
         testExpr("assignment to variable", "v(10)", 11L);
     }
+
+    @Test
+    public void testLambda() {
+        testExpr("Lambda in Lambda", "f = x->y->x+y; f(100)(1)", 101L);
+    }
 }

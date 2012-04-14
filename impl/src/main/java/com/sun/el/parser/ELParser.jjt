@@ -146,7 +146,8 @@ void Assignment() : {}
  */
 void LambdaExpression() #LambdaExpression : {}
 {
-       LambdaParameters() <ARROW> Choice()
+       LambdaParameters() <ARROW>
+       (LOOKAHEAD(3) LambdaExpression() | Choice() )
 }
 
 void LambdaParameters() #LambdaParameters: {}
@@ -413,7 +414,7 @@ void Function() #Function :
 			jjtThis.setLocalName(t0.image);
 		}
 	}
-	<LPAREN> (Expression() (<COMMA> Expression())*)? <RPAREN>
+        (MethodArguments())+
 }
 
 

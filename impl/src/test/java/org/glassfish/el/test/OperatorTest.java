@@ -79,6 +79,6 @@ public class OperatorTest {
         elp.eval("x = 10; 20");
         testExpr("semi 2", "x", 10L);
         testExpr("semi 3", "(x = 10; 20) + (x ; x+1)", 31L);
-        testExpr("semi 4", "(x; y) = 11; x + y", 21L);
+        testExpr("semi 4", "(x = 10; nn) = 11; x + nn", 21L);
     }
 }
