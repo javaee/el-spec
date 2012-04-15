@@ -13,13 +13,21 @@ import javax.el.ELProcessor;
 
 public class LinqTest {
 
-    ELProcessor elp;
-
+    static ELProcessor elp;
+    static DataBase database = null;
+    
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        elp = new ELProcessor();
+        database = new DataBase();
+        database.init();
+        elp.defineBean("customers", database.getCustomers());
+        elp.defineBean("products", database.getProducts());
+        elp.defineBean("orders", database.getOrders());
+    }
+    
     @Before
     public void setup() {
-        Manager manager = Manager.getManager();
-        manager.setupDB();
-        elp = manager.getElp();
     }
 
     void p(String msg) {

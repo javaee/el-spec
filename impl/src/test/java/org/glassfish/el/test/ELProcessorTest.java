@@ -10,11 +10,15 @@ import javax.el.ELProcessor;
 
 public class ELProcessorTest {
 
-    ELProcessor elp;
-
+    static ELProcessor elp;
+    
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        elp = new ELProcessor();
+    }
+    
     @Before
     public void setUp() {
-        elp = Manager.getManager().getElp();
     }
 
     @Test
