@@ -46,6 +46,7 @@ import javax.el.ValueExpression;
 import javax.el.LambdaExpression;
 import com.sun.el.lang.EvaluationContext;
 import com.sun.el.ValueExpressionImpl;
+import com.sun.el.util.MessageFactory;
 
 /**
  * @author Kin-man Chung
@@ -68,12 +69,23 @@ class AstLambdaExpression extends SimpleNode {
         List<String>parameters =
             ((AstLambdaParameters) this.children[0]).getParameters();
         LambdaExpression lambda = new LambdaExpression(parameters, expr);
-        if (this.jjtGetNumChildren() <= 2) {
+        if (this.children.length <= 2) {
             return lambda;
         }
 
         // There are arguments following the lambda exprn, invoke it now.
-        AstMethodArguments args = (AstMethodArguments) this.children[2];
-        return lambda.invoke(ctx, args.getParameters(ctx));
+        Object ret = null;
+        for (int i = 2; i < this.children.length; i++) {
+            if (ret != null) {
+                if (!(ret instanceof LambdaExpression)) {
+                    throw new ELException(MessageFactory.get(
+                        "error.lambda.call"));
+                }
+                lambda = (LambdaExpression) ret;
+            }
+            AstMethodArguments args = (AstMethodArguments) this.children[i];
+            ret = lambda.invoke(ctx, args.getParameters(ctx));
+        }
+        return ret;
     }
 }

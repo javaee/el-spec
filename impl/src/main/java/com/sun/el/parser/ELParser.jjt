@@ -335,9 +335,10 @@ void LambdaExpressionOrCall() #LambdaExpression : {}
 
 {
     <LPAREN>
-        LambdaParameters() <ARROW> Choice()
+        LambdaParameters() <ARROW>
+        (LOOKAHEAD(3) LambdaExpression() | Choice() )
     <RPAREN>
-    (MethodArguments())?
+    (MethodArguments())*
 }
 
 /*
