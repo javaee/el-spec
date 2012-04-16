@@ -333,7 +333,7 @@ public class StandardELContext extends ELContext {
         }
 
         @Override
-        public boolean createBean(String beanName) {
+        public boolean canCreateBean(String beanName) {
             return true;
         }
     }

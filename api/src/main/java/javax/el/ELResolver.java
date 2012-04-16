@@ -108,8 +108,7 @@ import java.beans.FeatureDescriptor;
  * are combined together using {@link CompositeELResolver}s, to define
  * rich semantics for evaluating an expression.</p>
  *
- * <p>For the {@link #getValue}, {@link #getType}, {@link #setValue},
- * {@link #assignValue}, and
+ * <p>For the {@link #getValue}, {@link #getType}, {@link #setValue}, and
  * {@link #isReadOnly} methods, an <code>ELResolver</code> is not
  * responsible for resolving all possible (base, property) pairs. In fact,
  * most resolvers will only handle a <code>base</code> of a single type.
@@ -300,49 +299,6 @@ public abstract class ELResolver {
                                   Object property,
                                   Object value);
 
-    /**
-     * Attempts to assign the value to the given <code>property</code> 
-     * object on the given <code>base</code> object.
-     *
-     * <p>If the (base, property) pair is handled by this
-     * <code>ELResolver</code>, and the property exists, the property
-     * is set to the given value, just like {@link #setValue}.</p>
-     *
-     * <p>If the (base, property) pair is handled by this
-     * <code>ELResolver</code>, and the property does not exists, it can
-     * support the assignment operation by "creating" the property and
-     * set it to the given value, so that
-     * a subsequent call to <code>getValue</code> on the (base, property) will
-     * be resolved to the given value.</p>
-     *
-     * <p>If this ELResolver does not support the assignment operation,
-     * it should return without setting the <code>propertyResolved<code>
-     * property.</p>
-     *
-     * <p>To support the EL assignment operator, there should be one
-     * <code>ELResolver</code> in the <code>ELResolver</code> chain that
-     * supports the assignment operation.   Otherwise, a
-     * <code>ProperNotWritbleException</code> will be thrown.</p>
-     *
-     * @param context The context of this evaluation.
-     * @param base The base object whose property value is to be assigned,
-     *     or <code>null</code> to assign a top-level variable.
-     * @param property The property or variable to be assigned.
-     * @param value The value to assign the property or variable to.
-     *
-     * @throws NullPointerException if context is <code>null</code>
-     * @throws ELException if an exception was thrown while attempting to
-     *     set the property or variable. The thrown exception
-     *     must be included as the cause property of this exception, if
-     *     available.
-     *
-     * @since EL 3.0
-     */ 
-    public void assignValue(ELContext context,
-                            Object base,
-                            Object property,
-                            Object value) {
-    }
 
     /**
      * For a given <code>base</code> and <code>property</code>, attempts to
