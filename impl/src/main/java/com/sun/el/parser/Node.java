@@ -84,7 +84,6 @@ public interface Node {
   
   public Object getValue(EvaluationContext ctx) throws ELException;
   public void setValue(EvaluationContext ctx, Object value) throws ELException;
-  public void assignValue(EvaluationContext ctx, Object value) throws ELException;
   public Class getType(EvaluationContext ctx) throws ELException;
   public ValueReference getValueReference(EvaluationContext ctx)
              throws ELException;

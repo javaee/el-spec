@@ -55,7 +55,7 @@ class AstAssign extends SimpleNode {
             throws ELException {
 
         Object value = children[1].getValue(ctx);
-        children[0].assignValue(ctx, value);
+        children[0].setValue(ctx, value);
         return value;
     }
 }

@@ -63,10 +63,4 @@ class AstSemiColon extends SimpleNode {
         this.children[0].getValue(ctx);
         this.children[1].setValue(ctx, value);
     }
-
-    public void assignValue(EvaluationContext ctx, Object value)
-            throws ELException {
-        this.children[0].getValue(ctx);
-        this.children[1].assignValue(ctx, value);
-    }
 }
