@@ -55,6 +55,7 @@ public class LambdaTest {
     public void testFact() {
         ELProcessor elp = new ELProcessor();        
         testExpr(elp, "factorial", "fact = n->n==0? 1: n*fact(n-1); fact(5)", 120L);
+        testExpr(elp, "fibonacci", "f = n->n==0? 0: n==1? 1: f(n-1)+f(n-2); f(10)", 55L);
     }
 
     @Test
