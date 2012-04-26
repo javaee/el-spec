@@ -117,7 +117,7 @@ public class ELProcessor {
     /**
      * Evaluates an EL expression, and coerces the result to the specified type.
      * @param expression The EL expression to be evaluated.
-     * @param exprectedType Specifies the type that the resultant evaluation
+     * @param expectedType Specifies the type that the resultant evaluation
      *        will be coerced to.
      * @return The result of the expression evaluation.
      */

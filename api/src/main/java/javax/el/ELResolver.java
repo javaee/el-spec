@@ -62,8 +62,8 @@ import java.util.Iterator;
 import java.beans.FeatureDescriptor;
 
 /**
- * Enables customization of variable, property and method call resolution
- * behavior for EL expression evaluation.
+ * Enables customization of variable, property, method call, and type
+ * conversion resolution behavior for EL expression evaluation.
  *
  * <p>While evaluating an expression, the <code>ELResolver</code> associated
  * with the {@link ELContext} is consulted to do the initial resolution of 
@@ -95,12 +95,16 @@ import java.beans.FeatureDescriptor;
  * the variable resolution for <code>x</code>.</p>
  *
  * <p>In the case of method call resolution, the <code>base</code> parameter
- * indentifies the base object and the <code>method</code> parameter identifies
+ * identifies the base object and the <code>method</code> parameter identifies
  * a method on that base.  In the case of overloaded methods, the <code>
  * paramTypes</code> parameter can be optionally used to identify a method.
  * The <code>params</code>parameter are the parameters for the method call,
  * and can also be used for resolving overloaded methods when the
  * <code>paramTypes</code> parameter is not specified.
+ *
+ * <p>In the case of type conversion resolution, the <code>obj</code> parameter
+ * identifies the source object and the <code>targetType</code> parameter
+ * identifies the target type the source to covert to.
  *
  * <p>Though only a single <code>ELResolver</code> is associated with an
  * <code>ELContext</code>, there are usually multiple resolvers considered
@@ -119,6 +123,11 @@ import java.beans.FeatureDescriptor;
  * must ignore the return value of the method if <code>propertyResolved</code>
  * is <code>false</code>.</p>
  *
+ * <p>Similarly, for the {@link #convertToType} method an
+ * <code>ELResolver</code>
+ * must set the <code>propertyResolved</code> to <code>true</code> to indicate
+ * that it handles the conversion of the object to the target type.</p>
+ * 
  * <p>The {@link #getFeatureDescriptors} and {@link #getCommonPropertyType}
  * methods are primarily designed for design-time tool support, but must
  * handle invocation at runtime as well. The 
@@ -425,5 +434,21 @@ public abstract class ELResolver {
      */
     public abstract Class<?> getCommonPropertyType(ELContext context,
                                                 Object base);
-                    
+
+    /**
+     * Converts an object to a specific type.
+     *
+     * <p>An <code>ELException</code> is thrown if an error occurs during
+     * the conversion.</p>
+     *
+     * @param context The context of this evaluation.
+     * @param obj The object to convert.
+     * @param targetType The target type for the convertion.
+     * @throws ELException thrown if errors occur.
+     */
+    public Object convertToType(ELContext context,
+                                Object obj,
+                                Class<?> targetType) {
+        return null;
+    }
 }

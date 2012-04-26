@@ -40,35 +40,77 @@
 
 package javax.el;
 
+import java.util.Iterator;
+import java.beans.FeatureDescriptor;
+
 /**
- * The abstract class coerces an object to a specific type.  The
- * {@link ELContext} contains an extension of this interface, and
- * is used for type coercion in expression evaluations.
+ * A convenient class for writing an ELResolver to do custom type conversions.
  *
- * <p>{@link StandardTypeConverter} extends this class to implement the
- * conversion rules specified in the specification and is used in
- * {@link StandardELContext}.  The easiest way to plug in a TypeConverter is to
- * subclass <code>StandardTypeConverter</code> to provide a conversion for a
- * specific source and target type, while leaving other conversions to its
- * super class.
+ * <p>For example, to convert a String to an instance of MyDate, one can write
+ * <blockquote><pre>
+ *     ELProcessor elp = new ELProcessor();
+ *     elp.getELManager().addELResolver(new TypeConverter {
+ *         Object convertToType(ELContext context, Object obj, Class<?> type) {
+ *             if (!(obj instanceof String) || type != MyDate.class) return;
+ *             context.propertyResoved = true;
+ *             return (obj == null)? null: new MyDate(obj.toString());
+ *         }
+ *      };
+ * </pre></blockquote>
  *
  * @since EL 3.0
  */
 
-public abstract class TypeConverter {
+public abstract class TypeConverter extends ELResolver {
+
+    public Object getValue(ELContext context,
+                           Object base,
+                           Object property) {
+        return null;
+    }
+
+    public Class<?> getType(ELContext context,
+                            Object base,
+                            Object property) {
+        return null;
+    }
+
+    public void setValue(ELContext context,
+                         Object base,
+                         Object property,
+                         Object value) {
+    }
+
+    public boolean isReadOnly(ELContext context,
+                              Object base,
+                              Object property){
+        return false;
+    }
+
+    public Iterator<FeatureDescriptor> getFeatureDescriptors(
+                                                   ELContext context,
+                                                   Object base) {
+        return null;
+    }
+
+    public Class<?> getCommonPropertyType(ELContext context,
+                                          Object base) {
+        return null;
+    }
 
     /**
-     * Coerces an object to a specific type.
+     * Converts an object to a specific type.
      *
-     * <p>An <code>ELException</code> is thrown if an error results from
-     * applying the conversion rules.
-     * </p>
+     * <p>An <code>ELException</code> is thrown if an error occurs during
+     * the conversion.</p>
      *
-     * @param obj The object to coerce.
-     * @param targetType The target type for the coercion.
-     * @throws ELException thrown if an error results from applying the
-     *     conversion rules.
+     * @param context The context of this evaluation.
+     * @param obj The object to convert.
+     * @param targetType The target type for the convertion.
+     * @throws ELException thrown if errors occur.
      */
-    public abstract <T> T coerceToType(Object obj, Class<T> targetType);
-
+    @Override
+    abstract public Object convertToType(ELContext context,
+                                Object obj,
+                                Class<?> targetType);
 }

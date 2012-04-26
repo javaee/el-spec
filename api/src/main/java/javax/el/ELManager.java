@@ -113,7 +113,7 @@ public class ELManager {
      * 
      * @param elr The ELResolver to be added to the list of ELResolvers in
      *     ELContext.
-     * @see StandardELResolver#addELResolver
+     * @see StandardELContext#addELResolver
      */
     public void addELResolver(ELResolver elr) {
         getELContext().addELResolver(elr);
@@ -174,16 +174,6 @@ public class ELManager {
         Object ret = getELContext().getBeans().get(name);
         getELContext().getBeans().put(name, bean);
         return ret;
-    }
-
-    /**
-     * Set the TypeConverter for expression evaluation
-     * @param typeConverter The TypeConverter to be used for expression 
-     *     evaluations.
-     * @return The previous TypeConverter
-     */
-    public TypeConverter setTypeConverter(TypeConverter typeConverter) {
-        return getELContext().setTypeConverter(typeConverter);
     }
 
     /**

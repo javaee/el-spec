@@ -61,7 +61,7 @@ package javax.el;
 /**
  * An <code>Expression</code> that refers to a method on an object.
  *
- * <p>The {@link ExpressionFactory#createMethodExpression} method
+ * <p>The {@link javax.el.ExpressionFactory#createMethodExpression} method
  * can be used to parse an expression string and return a concrete instance
  * of <code>MethodExpression</code> that encapsulates the parsed expression.
  * The {@link FunctionMapper} is used at parse time, not evaluation time, 
@@ -72,7 +72,8 @@ package javax.el;
  * expression each time they are called. The {@link ELResolver} in the 
  * <code>ELContext</code> is used to resolve the top-level variables and to 
  * determine the behavior of the <code>.</code> and <code>[]</code> 
- * operators. For any of the two methods, the {@link ELResolver#getValue} 
+ * operators. For any of the two methods, the
+ * {@link javax.el.ELResolver#getValue} 
  * method is used to resolve all properties up to but excluding the last 
  * one. This provides the <code>base</code> object on which the method
  * appears. If the <code>base</code> object is null, a 
@@ -167,7 +168,15 @@ public abstract class MethodExpression extends Expression
      *    parameters, <code>false</code> otherwise.
      * @since EL 2.2
      */
-    public boolean isParmetersProvided() {
+    public boolean isParametersProvided() {
         return false;
+    }
+
+    /**
+     * Use isParametersProvided instead.
+     */
+    @Deprecated
+    public boolean isParmetersProvided() {
+        return isParametersProvided();
     }
 }
