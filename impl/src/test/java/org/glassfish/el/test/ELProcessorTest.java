@@ -7,18 +7,44 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import javax.el.ELProcessor;
+import javax.el.ELManager;
+import javax.el.ExpressionFactory;
+import javax.el.MethodExpression;
+import javax.el.ELContext;
 
 public class ELProcessorTest {
 
     static ELProcessor elp;
+    static ELManager elm;
+    static ExpressionFactory factory;
     
     @BeforeClass
     public static void setUpClass() throws Exception {
         elp = new ELProcessor();
+        elm = elp.getELManager();
+        factory = elm.getExpressionFactory();
     }
     
     @Before
     public void setUp() {
+    }
+
+    @Test
+    public void testMethExpr() {
+        MethodExpression meth = null;
+        ELContext ctxt = elm.getELContext();
+        try {
+            meth = factory.createMethodExpression(
+                ctxt, "#{str.length}", Object.class, null);
+        } catch (NullPointerException ex){
+            // Do nothing
+        }
+        assertTrue(meth == null);
+        meth = factory.createMethodExpression(
+                ctxt, "#{'abc'.length()}", Object.class, null);
+        Object result = meth.invoke(ctxt, new Object[] {"abcde"});
+        System.out.println("'abc'.length() called, equals " + result);
+        assertEquals(result, new Integer(3));
     }
 
     @Test

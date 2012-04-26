@@ -83,7 +83,7 @@ public class ExpressionFactoryImpl extends ExpressionFactory {
         ExpressionBuilder builder = new ExpressionBuilder(expression, context);
         MethodExpression me = builder.createMethodExpression(expectedReturnType,
                 expectedParamTypes);
-        if (expectedParamTypes == null && !me.isParmetersProvided()) {
+        if (expectedParamTypes == null && !me.isParametersProvided()) {
             throw new NullPointerException(MessageFactory
                     .get("error.method.nullParms"));
         }

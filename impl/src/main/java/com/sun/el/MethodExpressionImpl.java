@@ -339,7 +339,7 @@ public final class MethodExpressionImpl extends MethodExpression implements
     }
 
     @Override
-    public boolean isParmetersProvided() {
+    public boolean isParametersProvided() {
         return this.getNode().isParametersProvided();
     }
 }

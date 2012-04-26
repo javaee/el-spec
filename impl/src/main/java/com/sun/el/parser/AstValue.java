@@ -262,7 +262,6 @@ public final class AstValue extends SimpleNode {
 
     @Override
     public boolean isParametersProvided() {
-        // XXX
-        return true;
+        return getArguments(this.children[this.jjtGetNumChildren()-1]) != null;
     }
 }
