@@ -381,6 +381,12 @@ public class ELSupport {
                 (obj != null && type.isAssignableFrom(obj.getClass()))) {
             return obj;
         }
+
+        // new to EL 3.0
+        if (obj == null && !type.isPrimitive()) {
+            return null;
+        }
+
         if (String.class.equals(type)) {
             return coerceToString(obj);
         }
@@ -397,9 +403,6 @@ public class ELSupport {
             return coerceToEnum(obj, type);
         }
 
-        // new to spec
-        if (obj == null)
-            return null;
         if (obj instanceof String) {
             if ("".equals(obj))
                 return null;

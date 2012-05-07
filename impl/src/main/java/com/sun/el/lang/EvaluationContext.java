@@ -102,10 +102,6 @@ public final class EvaluationContext extends ELContext {
         this.elContext.setPropertyResolved(resolved);
     }
 
-    public TypeConverter getTypeConverter() {
-        return this.elContext.getTypeConverter();
-    }
-
     public <T extends EventListener> void addListener(T listener) {
         this.elContext.addListener(listener);
     }
