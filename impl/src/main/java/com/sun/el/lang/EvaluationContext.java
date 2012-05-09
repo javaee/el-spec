@@ -102,23 +102,33 @@ public final class EvaluationContext extends ELContext {
         this.elContext.setPropertyResolved(resolved);
     }
 
+    @Override
     public <T extends EventListener> void addListener(T listener) {
         this.elContext.addListener(listener);
     }
 
+    @Override
     public List<EventListener> getListeners() {
         return this.elContext.getListeners();
     }
 
+    @Override
     public Object getLambdaArgument(String arg) {
         return this.elContext.getLambdaArgument(arg);
     }
 
+    @Override
     public void enterLambdaScope(Map<String,Object> args) {
         this.elContext.enterLambdaScope(args);
     }
 
+    @Override
     public void exitLambdaScope() {
         this.elContext.exitLambdaScope();
+    }
+
+    @Override
+    public Object convertToType(Object obj, Class<?> targetType) {
+         return this.elContext.convertToType(obj, targetType);
     }
 }

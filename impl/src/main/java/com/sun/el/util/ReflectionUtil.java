@@ -247,6 +247,7 @@ public class ReflectionUtil {
      * For now, find the first method that matches the name and the parameter
      * count.
      */
+/*
     public static Method findMethod(Object base, Object property,
                              Object[] params) throws ELException {
 
@@ -260,11 +261,14 @@ public class ReflectionUtil {
         }
         throw new ELException("Method " + methodName + " not Found");
     }
+*/
         
     /**
      * Invoke a method with parameters.
      */
-    public static Object invokeMethod(Object base, Object property,
+/*
+    public static Object invokeMethod(ELContext context,
+                               Object base, Object property,
                                Object[] params) throws ELException {
 
         Method m = findMethod(base, property, params);
@@ -276,8 +280,8 @@ public class ReflectionUtil {
             } else {
                 parameters = new Object[parameterTypes.length];
                 for (int i = 0; i < parameterTypes.length; i++) {
-                    parameters[i] = ELSupport.coerceToType(params[i],
-                                                           parameterTypes[i]);
+                    parameters[i] = context.convertToType(params[i],
+                                                          parameterTypes[i]);
                 }
             }
         }
@@ -289,4 +293,5 @@ public class ReflectionUtil {
             throw new ELException(ite.getCause());
         }
     }
+*/
 }

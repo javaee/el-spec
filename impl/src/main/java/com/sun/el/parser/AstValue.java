@@ -210,10 +210,10 @@ public final class AstValue extends SimpleNode {
         Object property = t.suffixNode.getValue(ctx);
         ctx.setPropertyResolved(false);
         ELResolver elResolver = ctx.getELResolver();
-        if (value != null) {
-            value = ELSupport.coerceToType(value,
+        
+        value = ctx.convertToType(value,
                         elResolver.getType(ctx, t.base, property));
-        }
+
         elResolver.setValue(ctx, t.base, property, value);
         if (! ctx.isPropertyResolved()) {
             ELSupport.throwUnhandled(t.base, property);

@@ -45,6 +45,7 @@ import java.beans.PropertyEditorManager;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+import javax.el.ELContext;
 import javax.el.ELException;
 import javax.el.PropertyNotFoundException;
 
@@ -54,6 +55,7 @@ import com.sun.el.util.MessageFactory;
  * A helper class that implements the EL Specification
  * 
  * @author Jacob Hookom [jacob@hookom.net]
+ * @author Kin-man Chung
  * @version $Change: 181177 $$DateTime: 2001/06/26 08:45:09 $$Author: kchung $
  */
 public class ELSupport {
@@ -346,7 +348,8 @@ public class ELSupport {
      */
     public final static String coerceToString(final Object obj) {
         if (obj == null) {
-            return "";
+            // EL 3.0 change
+            return null;
         } else if (obj instanceof String) {
             return (String) obj;
         } else if (obj instanceof Enum) {

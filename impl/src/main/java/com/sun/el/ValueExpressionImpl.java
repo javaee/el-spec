@@ -224,7 +224,7 @@ public final class ValueExpressionImpl extends ValueExpression implements
         Object value = this.getNode().getValue(ctx);
         if (this.expectedType != null) {
             try {
-                value = ELSupport.coerceToType(value, this.expectedType);
+                value = context.convertToType(value, this.expectedType);
             } catch (IllegalArgumentException ex) {
                 throw new ELException(ex);
             }
