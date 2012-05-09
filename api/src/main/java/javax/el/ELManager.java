@@ -51,19 +51,14 @@ import java.lang.reflect.Method;
  */
 public class ELManager {
 
-    private ExpressionFactory expressionFactory;
     private StandardELContext elContext;
 
     /**
-     * Return the ExpressionFactory instance used for EL evaluations.  If
-     * there is currently no ExpressionFactory, an instance is created.
+     * Return the ExpressionFactory instance used for EL evaluations.
      * @return The ExpressionFactory
      */
-    public ExpressionFactory getExpressionFactory() {
-        if (expressionFactory == null) {
-            expressionFactory = ExpressionFactory.newInstance();
-        }
-        return expressionFactory;
+    public static ExpressionFactory getExpressionFactory() {
+        return ELUtil.getExpressionFactory();
     }
 
     /**
@@ -76,7 +71,7 @@ public class ELManager {
     public StandardELContext getELContext() {
         if (elContext == null) {
             elContext = new StandardELContext(
-                            expressionFactory.getQueryOperatorELResolver());
+                            getExpressionFactory().getQueryOperatorELResolver());
         }
         return elContext;
     }

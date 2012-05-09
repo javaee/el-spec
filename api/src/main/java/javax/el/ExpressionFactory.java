@@ -317,7 +317,8 @@ public abstract class ExpressionFactory {
     
     /**
      * Coerces an object to a specific type according to the
-     * EL type conversion rules.
+     * EL type conversion rules.  The custom type conversions in the
+     * <code>ELResolver</code>s are not considered.
      *
      * <p>An <code>ELException</code> is thrown if an error results from
      * applying the conversion rules.

@@ -206,11 +206,11 @@ public class StaticFieldELResolver extends ELResolver {
         if ("<init>".equals(name)) {
             Constructor<?> constructor =
                 ELUtil.findConstructor(klass, paramTypes, params);
-            ret = ELUtil.invokeConstructor(constructor, params);
+            ret = ELUtil.invokeConstructor(context, constructor, params);
         } else {
             Method meth =
                 ELUtil.findMethod(klass, name, paramTypes, params, true);
-            ret = ELUtil.invokeMethod(meth, null, params);
+            ret = ELUtil.invokeMethod(context, meth, null, params);
         }
         context.setPropertyResolved(true);
         return ret;

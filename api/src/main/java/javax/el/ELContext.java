@@ -354,6 +354,36 @@ public abstract class ELContext {
         }
     }
 
+    /**
+     * Converts an object to a specific type.  If a custom converter in the
+     * <code>ELResolver</code> handles this conversion, it is used.  Otherwise
+     * the standard coercions is applied.
+     *
+     * <p>An <code>ELException</code> is thrown if an error occurs during
+     * the conversion.</p>
+     *
+     * @param obj The object to convert.
+     * @param targetType The target type for the convertion.
+     * @throws ELException thrown if errors occur.
+     *
+     * @since EL 3.0
+     */
+    public Object convertToType(Object obj,
+                                Class<?> targetType) {
+        try {
+            setPropertyResolved(false);
+            Object res = getELResolver().convertToType(this, obj, targetType);
+            if (isPropertyResolved()) {
+                return res;
+            }
+        } catch (ELException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            throw new ELException(ex);
+        }
+        return ELUtil.getExpressionFactory().coerceToType(obj, targetType);
+    }
+
     private boolean resolved;
     private HashMap<Class<?>, Object> map = new HashMap<Class<?>, Object>();
     private transient List<EventListener> listeners =

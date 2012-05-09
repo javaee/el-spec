@@ -542,6 +542,36 @@ public class CompositeELResolver extends ELResolver {
         return commonPropertyType;
     }
 
+    /**
+     * Converts an object to a specific type.
+     *
+     * <p>An <code>ELException</code> is thrown if an error occurs during
+     * the conversion.</p>
+     *
+     * @param context The context of this evaluation.
+     * @param obj The object to convert.
+     * @param targetType The target type for the convertion.
+     * @throws ELException thrown if errors occur.
+     *
+     * @since EL 3.0
+     */
+    @Override
+    public Object convertToType(ELContext context,
+                                Object obj,
+                                Class<?> targetType) {
+
+        context.setPropertyResolved(false);
+
+        Object value = null;
+        for (int i = 0; i < size; i++) {
+            value = elResolvers[i].convertToType(context, obj, targetType);
+            if (context.isPropertyResolved()) {
+                return value;
+            }
+        }
+        return null;
+    }
+
     private ELResolver[] elResolvers;
     private int size;
 

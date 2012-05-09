@@ -526,7 +526,7 @@ public class BeanELResolver extends ELResolver {
         }
         Method m = ELUtil.findMethod(base.getClass(), method.toString(),
                                     paramTypes,params, false);
-        Object ret = ELUtil.invokeMethod(m, base, params);
+        Object ret = ELUtil.invokeMethod(context, m, base, params);
         context.setPropertyResolved(true);
         return ret;
     }

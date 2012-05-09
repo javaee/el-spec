@@ -49,11 +49,13 @@ import java.beans.FeatureDescriptor;
  * <p>For example, to convert a String to an instance of MyDate, one can write
  * <blockquote><pre>
  *     ELProcessor elp = new ELProcessor();
- *     elp.getELManager().addELResolver(new TypeConverter {
+ *     elp.getELManager().addELResolver(new TypeConverter() {
  *         Object convertToType(ELContext context, Object obj, Class<?> type) {
- *             if (!(obj instanceof String) || type != MyDate.class) return;
- *             context.propertyResoved = true;
- *             return (obj == null)? null: new MyDate(obj.toString());
+ *             if (obj instanceof String) && type == MyDate.class) {
+ *                 context.setPropertyResoved(true);
+ *                 return (obj == null)? null: new MyDate(obj.toString());
+ *             }
+ *             return null;
  *         }
  *      };
  * </pre></blockquote>

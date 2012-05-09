@@ -79,6 +79,7 @@ import java.util.ResourceBundle;
  * are implementation private.</p>
  *
  * @author edburns
+ * @author Kin-man Chung
  */
 class ELUtil {
     
@@ -89,6 +90,9 @@ class ELUtil {
     private ELUtil() {
     }
     
+    public static ExpressionFactory exprFactory =
+        ExpressionFactory.newInstance();
+
     /**
      * <p>The <code>ThreadLocal</code> variable used to record the
      * {@link javax.faces.context.FacesContext} instance for each
@@ -212,6 +216,10 @@ class ELUtil {
         
         return result;
     }
+
+    static ExpressionFactory getExpressionFactory() {
+        return exprFactory;
+    }
         
     static Constructor<?> findConstructor(Class<?> klass,
                                   Class<?>[] paramTypes,
@@ -239,18 +247,19 @@ class ELUtil {
                      klass +  " not found");
     }
 
-    static Object invokeConstructor(Constructor<?> c, Object[] params) {
+    static Object invokeConstructor(ELContext context,
+                                    Constructor<?> c,
+                                    Object[] params) {
         Class[] parameterTypes = c.getParameterTypes();
         Object[] parameters = null;
         if (parameterTypes.length > 0) {
-            ExpressionFactory exprFactory = ExpressionFactory.newInstance();
             if (c.isVarArgs()) {
                 // TODO
             } else {
                 parameters = new Object[parameterTypes.length];
                 for (int i = 0; i < parameterTypes.length; i++) {
-                    parameters[i] = exprFactory.coerceToType(params[i],
-                                                           parameterTypes[i]);
+                    parameters[i] = context.convertToType(params[i],
+                                                          parameterTypes[i]);
                 }
             }
         }
@@ -297,19 +306,19 @@ class ELUtil {
         throw new MethodNotFoundException("Method " + method + " not found");
     }
 
-    static Object invokeMethod(Method m, Object base, Object[] params) {
+    static Object invokeMethod(ELContext context,
+                               Method m, Object base, Object[] params) {
 
         Class[] parameterTypes = m.getParameterTypes();
         Object[] parameters = null;
         if (parameterTypes.length > 0) {
-            ExpressionFactory exprFactory = ExpressionFactory.newInstance();
             if (m.isVarArgs()) {
                 // TODO
             } else {
                 parameters = new Object[parameterTypes.length];
                 for (int i = 0; i < parameterTypes.length; i++) {
-                    parameters[i] = exprFactory.coerceToType(params[i],
-                                                           parameterTypes[i]);
+                    parameters[i] = context.convertToType(params[i],
+                                                          parameterTypes[i]);
                 }
             }
         }
