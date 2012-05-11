@@ -43,6 +43,7 @@ package com.sun.el.parser;
 import javax.el.ELException;
 import javax.el.ELResolver;
 import javax.el.ELClass;
+import javax.el.ELContext;
 import javax.el.PropertyNotFoundException;
 
 import com.sun.el.lang.EvaluationContext;
@@ -78,20 +79,48 @@ class AstType extends SimpleNode {
             Class<?>[] paramTypes = args.getParamTypes();
             Object[] params = args.getParameters(ctx);
             ctx.setPropertyResolved(false);
-            return resolver.invoke(ctx, new ELClass(this.image),
+            Class<?> klass = getClass(ctx, this.image);
+            return resolver.invoke(ctx, new ELClass(klass),
                                    "<init>", paramTypes, params);
         }
 
         if (jjtGetParent() instanceof AstValue) {
-            return new ELClass(this.image);
+            Class<?> klass = getClass(ctx, this.image);
+            return new ELClass(klass);
         }
 
         try {
+            // XXX Should be error ?
             return Class.forName(this.image, false,
-                                 getClass().getClassLoader());
+                                 this.getClass().getClassLoader());
         } catch (ClassNotFoundException ex) {
             throw new ELException(MessageFactory.get("error.class.notfound",
                           this.image));
+        }
+    }
+
+    /**
+     * Return the Class object for the specified class.  If the name is
+     * specified without a package, use the context's ImportHandler to check
+     * if the name has been imported.
+     */
+    private Class<?> getClass(ELContext context, String className) {
+
+        if (className.indexOf('.') < 0) {
+            // No package, assume it has been imported
+            Class<?> c = context.getImportHandler().resolve(className);
+            if (c == null) {
+                throw new PropertyNotFoundException(
+                        MessageFactory.get("error.class.notfound", className));
+            }
+            return c;
+        }
+
+        try {
+            return Class.forName(className, false, getClass().getClassLoader());
+        } catch (ClassNotFoundException ex) {
+            throw new PropertyNotFoundException(
+                    MessageFactory.get("error.class.notfound", className));
         }
     }
 }

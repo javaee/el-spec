@@ -86,7 +86,6 @@ public class ConvertTest {
 
     @Test
     public void testCustom() {
-        elp.defineBean("bean", new MyBean());
         elp.getELManager().addELResolver(new TypeConverter() {
             @Override
             public Object convertToType(ELContext context, Object obj, Class<?> type) {

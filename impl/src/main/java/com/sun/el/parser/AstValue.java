@@ -47,6 +47,7 @@ import javax.el.ELException;
 import javax.el.ELResolver;
 import javax.el.MethodInfo;
 import javax.el.ValueReference;
+import javax.el.ELClass;
 import javax.el.PropertyNotFoundException;
 import javax.el.PropertyNotWritableException;
 
@@ -144,9 +145,21 @@ public final class AstValue extends SimpleNode {
         return value;
     }
 
+    private final Object getBase(EvaluationContext ctx) {
+        // First check if the base is an imported class
+        if (this.children[0] instanceof AstIdentifier) {
+            String name = ((AstIdentifier) this.children[0]).image;
+            Class<?> c = ctx.getImportHandler().resolve(name);
+            if (c != null) {
+                return new ELClass(c);
+            }
+        }
+        return this.children[0].getValue(ctx);
+    }
+
     private final Target getTarget(EvaluationContext ctx) throws ELException {
         // evaluate expr-a to value-a
-        Object base = this.children[0].getValue(ctx);
+        Object base = getBase(ctx);
 
         // if our base is null (we know there are more properites to evaluate)
         if (base == null) {
@@ -176,7 +189,7 @@ public final class AstValue extends SimpleNode {
     }
 
     public Object getValue(EvaluationContext ctx) throws ELException {
-        Object base = this.children[0].getValue(ctx);
+        Object base = getBase(ctx);
         int propCount = this.jjtGetNumChildren();
         int i = 1;
         while (base != null && i < propCount) {

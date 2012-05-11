@@ -48,6 +48,7 @@ import javax.el.FunctionMapper;
 import javax.el.LambdaExpression;
 import javax.el.ValueExpression;
 import javax.el.VariableMapper;
+import javax.el.ELClass;
 
 import com.sun.el.lang.EvaluationContext;
 import com.sun.el.util.MessageFactory;
@@ -134,6 +135,16 @@ public final class AstFunction extends SimpleNode {
         // If so, invoke it.  Also allow for the case that a Lambda expression
         // can return another Lambda expression.
         if (prefix.length() == 0) {
+            // First check if this is an imported class
+            Class<?> c = ctx.getImportHandler().resolve(this.localName);
+            if (c != null) {
+                // This is really a constructor call, use StaticFieldELResolver
+                // to invoke it.
+                Object[] params =
+                    ((AstMethodArguments)this.children[0]).getParameters(ctx);
+                return ctx.getELResolver().invoke(ctx, new ELClass(c),
+                                   "<init>", null, params);
+            }
             Object val = findValue(ctx, this.localName);
             int i = 0;
             for (; i < this.children.length; i++) {
@@ -173,7 +184,7 @@ public final class AstFunction extends SimpleNode {
         Object result = null;
         for (int i = 0; i < params.length; i++) {
             try {
-                params[i] = coerceToType(params[i], paramTypes[i]);
+                params[i] = ctx.convertToType(params[i], paramTypes[i]);
             } catch (ELException ele) {
                 throw new ELException(MessageFactory.get("error.function", this
                         .getOutputName()), ele);

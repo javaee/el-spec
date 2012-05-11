@@ -49,6 +49,7 @@ import javax.el.ELResolver;
 import javax.el.FunctionMapper;
 import javax.el.VariableMapper;
 import javax.el.TypeConverter;
+import javax.el.ImportHandler;
 
 /**
  * The context for EL expression evaluation.  This wrapper ELContext captures
@@ -130,5 +131,10 @@ public final class EvaluationContext extends ELContext {
     @Override
     public Object convertToType(Object obj, Class<?> targetType) {
          return this.elContext.convertToType(obj, targetType);
+    }
+
+    @Override
+    public ImportHandler getImportHandler() {
+        return this.elContext.getImportHandler();
     }
 }
