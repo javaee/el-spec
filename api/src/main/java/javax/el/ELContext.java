@@ -103,7 +103,7 @@ import java.util.EventListener;
  * are attached to any newly created <code>ELContext</code>.</p>
  *
  * <p>When used in a stand-alone environment, {@link StandardELContext}
- * provides a default <code>ELContext</code>, which is managed and be modified
+ * provides a default <code>ELContext</code>, which is managed and modified
  * by {@link ELManager}.
  *
  * <p>Because it stores state during expression evaluation, an 

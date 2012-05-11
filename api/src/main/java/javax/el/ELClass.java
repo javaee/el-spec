@@ -40,8 +40,8 @@
 package javax.el;
 
 /**
- * <p>A runtime representation of the sytax <code>T(full-class-Name)</code>
- * that encapsulates the name of the specified class.</p>
+ * <p>A runtime representation of a Class in the EL expressions.
+ * It encapsulates the java.lang.Class instance.</p>
  * 
  * <p>This class is used only in {@link StaticFieldELResolver} and will
  * probably only be of interest to EL implementors, and not EL users.
@@ -51,21 +51,21 @@ package javax.el;
 
 public class ELClass {
 
-    private String className;
+    private Class<?> klass;
 
     /**
      * Constructor
      * @param className The name of the class specified in <code>T(...)</code>.
      */
-    public ELClass(String className) {
-        this.className = className;
+    public ELClass(Class<?> klass) {
+        this.klass = klass;
     }
 
     /**
-     * Returns the class name for the specified class.
-     * @return The class name for the specified class.
+     * Returns the Class instance
+     * @return The Class instance
      */
-    public String getClassName() {
-        return className;
+    public Class<?> getKlass() {
+        return this.klass;
     }
 }

@@ -57,6 +57,10 @@ public class ImportHandler {
     private Map<String, String> map = new HashMap<String, String>();
     private List<String> packages = new ArrayList<String>();
 
+    {
+        importPackage("java.lang");
+    }
+
     /**
      * Import a class.
      * @param name The full class name of the class to be imported
@@ -91,7 +95,6 @@ public class ImportHandler {
      */
     public Class<?> resolve(String name) {
 
-        // TODO: Precomfig and optimize for java.lang.*
         String className = map.get(name);
         if (className != null) {
             return getClassFor(className);

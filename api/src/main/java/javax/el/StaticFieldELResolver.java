@@ -94,7 +94,7 @@ public class StaticFieldELResolver extends ELResolver {
         }
 
         if (base instanceof ELClass && property instanceof String) {
-            Class<?> klass = getClassClass(context, (ELClass)base);
+            Class<?> klass = ((ELClass)base).getKlass();
             String fieldName = (String) property;
             try {
                 context.setPropertyResolved(true);
@@ -137,7 +137,7 @@ public class StaticFieldELResolver extends ELResolver {
             throw new NullPointerException();
         }
         if (base instanceof ELClass  && property instanceof String) {
-            Class<?> klass = getClassClass(context, (ELClass)base);
+            Class<?> klass = ((ELClass)base).getKlass();
             String fieldName = (String) property;
             throw new PropertyNotWritableException(
                         ELUtil.getExceptionMessageString(context,
@@ -199,7 +199,7 @@ public class StaticFieldELResolver extends ELResolver {
             return null;
         }
 
-        Class<?> klass = getClassClass(context, (ELClass)base);
+        Class<?> klass = ((ELClass)base).getKlass();
         String name = (String) method;
 
         Object ret;
@@ -248,7 +248,7 @@ public class StaticFieldELResolver extends ELResolver {
         }
 
         if (base instanceof ELClass  && property instanceof String) {
-            Class<?> klass = getClassClass(context, (ELClass)base);
+            Class<?> klass = ((ELClass)base).getKlass();
             String fieldName = (String) property;
             try {
                 context.setPropertyResolved(true);
@@ -295,7 +295,7 @@ public class StaticFieldELResolver extends ELResolver {
         }
 
         if (base instanceof ELClass  && property instanceof String) {
-            Class<?> klass = getClassClass(context, (ELClass)base);
+            Class<?> klass = ((ELClass)base).getKlass();
             context.setPropertyResolved(true);
         }
         return true;
@@ -324,35 +324,5 @@ public class StaticFieldELResolver extends ELResolver {
     @Override
     public Class<?> getCommonPropertyType(ELContext context, Object base) {
         return String.class;
-    }
-
-    /**
-     * Return the Class object for the specified class.  If the name is
-     * specified without a package, use the context's ImportHandler to check
-     * if the name has been imported.
-     */
-    private Class<?> getClassClass(ELContext context, ELClass elClass) {
-
-        String className = elClass.getClassName();
-        if (className.indexOf('.') < 0) {
-            // No package, assume it has been imported
-            Class<?> c = context.getImportHandler().resolve(className);
-            if (c == null) {
-                throw new PropertyNotFoundException(
-                        ELUtil.getExceptionMessageString(context,
-                        "classNotFound",
-                        new Object[] {className}));
-            }
-            return c;
-        }
-
-        try {
-            return Class.forName(className, false, getClass().getClassLoader());
-        } catch (ClassNotFoundException ex) {
-            throw new PropertyNotFoundException(
-                        ELUtil.getExceptionMessageString(context,
-                        "classNotFound",
-                        new Object[] {className}));
-        }
     }
 }
