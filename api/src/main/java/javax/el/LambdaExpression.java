@@ -102,7 +102,7 @@ public class LambdaExpression {
      *
      * <p>The actual Lambda arguments are added to the ELContext and are
      * available during the evaluation of the Lambda expression.  They are
-     * removed after the evluation.</p>
+     * removed after the evaluation.</p>
      *
      * @param elContext The ELContext used for the evaluation of the expression
      * @param args The arguments for the Lambda expression

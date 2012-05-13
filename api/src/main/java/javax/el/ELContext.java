@@ -363,7 +363,7 @@ public abstract class ELContext {
      * the conversion.</p>
      *
      * @param obj The object to convert.
-     * @param targetType The target type for the convertion.
+     * @param targetType The target type for the conversion.
      * @throws ELException thrown if errors occur.
      *
      * @since EL 3.0

@@ -43,7 +43,7 @@ package javax.el;
 import java.lang.reflect.Method;
 
 /**
- * <p>Manages EL parsing and evaluation enviroment.  The ELManager maintains an
+ * <p>Manages EL parsing and evaluation environment.  The ELManager maintains an
  * instance of ExpressionFactory and StandardELContext, for
  * parsing and evaluating EL expressions.</p>
  *
@@ -93,7 +93,7 @@ public class ELManager {
      * Register a BeanNameResolver.
      * Construct a BeanNameELResolver with the BeanNameResolver and add it
      * to the list of ELResolvers.
-     * Once reigstered, the BeanNameResolver cannot be removed.
+     * Once registered, the BeanNameResolver cannot be removed.
      * @param bnr The BeanNameResolver to be registered.
      */
     public void addBeanNameResolver(BeanNameResolver bnr) {
@@ -162,7 +162,7 @@ public class ELManager {
     /**
      * Define a bean in the local bean repository
      * @param name The name of the bean
-     * @param bean The bean instance to be defined.  If null, the defination
+     * @param bean The bean instance to be defined.  If null, the definition
      *        of the bean is removed.
      */
     public Object defineBean(String name, Object bean) {

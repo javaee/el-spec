@@ -46,7 +46,7 @@ import java.beans.FeatureDescriptor;
  * <p>An <code>ELResolver</code> for resolving user or container managed beans.</p>
  * <p>A {@link BeanNameResolver} is required for its proper operation.
  * The following example creates an <code>ELResolver</code> that 
- * reoslves the name "bean" to an instance of MyBean.
+ * resolves the name "bean" to an instance of MyBean.
  * <blockquote>
  * <pre>
  * ELResovler elr = new BeanNameELResolver(new BeanNameResolver {

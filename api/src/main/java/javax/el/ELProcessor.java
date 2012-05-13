@@ -50,7 +50,7 @@ import java.lang.reflect.Method;
  *   <li>Evaluating EL expressions.</li>
  *   <li>Assigning values to beans or setting a bean property.</li>
  *   <li>Setting a {@link ValueExpression} to a EL variable.</li>
- *   <li>Defining a static mathod as an EL function.</li>
+ *   <li>Defining a static method as an EL function.</li>
  *   <li>Defining an object instance as an EL name.
  * </ul>
  * 
@@ -64,9 +64,9 @@ import java.lang.reflect.Method;
  * <p>Since it maintains the state of the EL environments,
  * <code>ELProcessor</code> is not thread safe.  In the simplest case,
  * an instance can be created and destroyed before and after evaluating
- * EL expressions.  In a more realistic usage, an instance of
- * <code>ELProcessor</code> can be created and the initialized by an
- * administrator, and passed to multiple users, on a read-only basis.</p>
+ * EL expressions.  A more general usage is to use an instance of
+ * <code>ELProcessor</code> for a session, so that the user can configure the
+ * EL evaluation environment for that session.</p>
  *
  * <h3>Automatic Bracketing of Expressions</h3>
  * <p>A note about the EL expressions strings used in the class.  The strings
@@ -182,7 +182,7 @@ public class ELProcessor {
      *    (e.g. "int sum(int, int)" ) is given, then the declared method
      *    with the signature is selected.
      *    
-     * @throws NullPointerException if any of the arguements is null.
+     * @throws NullPointerException if any of the arguments is null.
      * @throws ClassNoFoundException if the specified class does not exists.
      * @throws NoSuchMethodException if the method (with or without the
      *    signature) is not a declared method of the class, or if the method

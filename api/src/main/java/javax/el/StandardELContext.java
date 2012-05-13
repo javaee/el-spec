@@ -41,7 +41,7 @@
 package javax.el;
 
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashMap;
 import java.lang.reflect.Method;
 
 /**
@@ -95,7 +95,7 @@ public class StandardELContext extends ELContext {
     /**
      * A bean repository local to this context
      */
-    private Map<String, Object> beans = new ConcurrentHashMap<String, Object>();
+    private Map<String, Object> beans = new HashMap<String, Object>();
 
     /**
      * Construct a default ELContext for a stand-alone environment.
@@ -198,6 +198,7 @@ public class StandardELContext extends ELContext {
     /**
      * Construct (if need) and return an ImportHandler
      */
+    @Override
     public ImportHandler getImportHandler() {
         if (importHandler == null) {
             importHandler = new ImportHandler();
@@ -227,7 +228,7 @@ public class StandardELContext extends ELContext {
 
     /**
      * Construct (if needed) and return a default VariableMapper() {
-     * @return The defualt Variable
+     * @return The default Variable
      */
     @Override
     public VariableMapper getVariableMapper() {
@@ -253,7 +254,7 @@ public class StandardELContext extends ELContext {
         @Override
         public void mapFunction(String prefix, String localName, Method meth){
             if (functions == null) {
-                functions = new ConcurrentHashMap<String, Method>();
+                functions = new HashMap<String, Method>();
             }
             functions.put(prefix + ":" + localName, meth);
         }
@@ -275,7 +276,7 @@ public class StandardELContext extends ELContext {
         public ValueExpression setVariable(String variable,
                                            ValueExpression expression) {
             if (variables == null) {
-                variables = new ConcurrentHashMap<String, ValueExpression>();
+                variables = new HashMap<String, ValueExpression>();
             }
             ValueExpression prev = null;
             if (expression == null) {

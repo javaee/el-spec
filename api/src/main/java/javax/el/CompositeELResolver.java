@@ -613,7 +613,7 @@ public class CompositeELResolver extends ELResolver {
         public FeatureDescriptor next() {
             if (propertyIter == null || !propertyIter.hasNext()) {
                 while (index < size) {
-                    ELResolver elResolver = resolvers[index++];;
+                    ELResolver elResolver = resolvers[index++];
                     propertyIter = elResolver.getFeatureDescriptors(
                         context, base);
                     if (propertyIter != null) {

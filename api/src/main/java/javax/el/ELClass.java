@@ -55,7 +55,7 @@ public class ELClass {
 
     /**
      * Constructor
-     * @param className The name of the class specified in <code>T(...)</code>.
+     * @param klass The Class instance
      */
     public ELClass(Class<?> klass) {
         this.klass = klass;
