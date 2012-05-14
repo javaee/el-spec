@@ -160,7 +160,7 @@ void LambdaParameters() #LambdaParameters: {}
 
 /*
  * Choice
- * For Choice markup a ? b : c, then Or
+ * For Choice markup a ? b : c, right associative
  */
 void Choice() : {}
 {

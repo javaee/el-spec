@@ -62,6 +62,7 @@ import com.sun.el.lang.EvaluationContext;
 import com.sun.el.lang.ExpressionBuilder;
 import com.sun.el.parser.Node;
 import com.sun.el.util.ReflectionUtil;
+import com.sun.el.util.EvaluationListeners;
 
 /**
  * An <code>Expression</code> that refers to a method on an object.
@@ -299,7 +300,10 @@ public final class MethodExpressionImpl extends MethodExpression implements
             ELException {
         EvaluationContext ctx = new EvaluationContext(context, this.fnMapper,
                 this.varMapper);
-        return this.getNode().invoke(ctx, this.paramTypes, params);
+        EvaluationListeners.invokeBeforeEvaluationListeners(context, this.expr);
+        Object obj = this.getNode().invoke(ctx, this.paramTypes, params);
+        EvaluationListeners.invokeAfterEvaluationListeners(context, this.expr);
+        return obj;
     }
 
     /*

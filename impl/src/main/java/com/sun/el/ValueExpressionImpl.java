@@ -63,6 +63,7 @@ import com.sun.el.lang.ExpressionBuilder;
 import com.sun.el.parser.AstLiteralExpression;
 import com.sun.el.parser.Node;
 import com.sun.el.util.ReflectionUtil;
+import com.sun.el.util.EvaluationListeners;
 
 /**
  * An <code>Expression</code> that can get or set a value.
@@ -221,6 +222,7 @@ public final class ValueExpressionImpl extends ValueExpression implements
             ELException {
         EvaluationContext ctx = new EvaluationContext(context, this.fnMapper,
                 this.varMapper);
+        EvaluationListeners.invokeBeforeEvaluationListeners(context, this.expr);
         Object value = this.getNode().getValue(ctx);
         if (this.expectedType != null) {
             try {
@@ -229,6 +231,7 @@ public final class ValueExpressionImpl extends ValueExpression implements
                 throw new ELException(ex);
             }
         }
+        EvaluationListeners.invokeAfterEvaluationListeners(context, this.expr);
         return value;
     }
 
