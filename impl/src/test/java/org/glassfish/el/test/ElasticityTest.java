@@ -88,14 +88,14 @@ public class ElasticityTest {
 
         Metric m2 = new Metric(10);
         m2.getList().add(new Data(1, 80));
-        m2.getList().add(new Data(3, 80));
+        m2.getList().add(new Data(3, 82));
         m2.getList().add(new Data(7, 90));
         m2.getList().add(new Data(9, 140));
         m2.getList().add(new Data(15, 80));
 
         Metric m3 = new Metric(10);
         m3.getList().add(new Data(4, 100));
-        m3.getList().add(new Data(5, 80));
+        m3.getList().add(new Data(5, 81));
         m3.getList().add(new Data(6, 200));
         m3.getList().add(new Data(20, 80));
 
@@ -109,27 +109,27 @@ public class ElasticityTest {
     public void testElaticity() {
         init();
         Object obj;
-        obj = elp.eval("c.values().select(v->v.list)." +
-                                  "select(s->s.where(d->d.s>1 && d.s<10)." +
-                                               "average(d->d.d)).toList()");
+        
+        obj = elp.eval(
+            "c.values().select(" +
+                "v->v.list.where(d->d.s>1 && d.s<10)." +
+                          "average(d->d.d)).toList()");
 
         System.out.println(obj);
         obj = elp.eval(
-            "c.values().select(v->v.list)." +
-                       "select(s->s.where(d->d.s>1 && d.s<10)." +
-                                   "average(d->d.d) > 100).toList()");
+            "c.values().select(v->v.list." +
+                       "where(d->d.s>1 && d.s<10)." +
+                       "average(d->d.d) > 100).toList()");
         System.out.println(obj);
         obj = elp.eval(
-            "c.values().select(v->v.list)." +
-                       "select(s->s.where(d->d.s>1 && d.s<10)." +
-                                   "average(d->d.d) > 100).any()");
+            "c.values().select(v->v.list." +
+                       "where(d->d.s>1 && d.s<10)." +
+                       "average(d->d.d) > 100).any()");
         System.out.println(obj);
-/*
         obj = elp.eval(
             "c.entrySet().select(s->[s.key, s.value.list." +
-                       "select(t->t.where(d->d.s>1 && d.s<10)." +
-                                   "average(d->d.d))]");
+                       "where(d->d.s>1 && d.s<10)." +
+                       "average(d->d.d)]).toList()");
         System.out.println(obj);
-*/ 
     }
 }
