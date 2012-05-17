@@ -64,7 +64,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Locale;
-import java.util.EventListener;
 
 /**
  * Context information for expression parsing and evaluation.
@@ -83,9 +82,9 @@ import java.util.EventListener;
  *   <li>state information during the evaluation of an expression, such as
  *       whether a property has been resolved yet</li>
  *   <li>a reference to {@link ImportHandler} that will be consulted to
- *       to resolve classes that have been imported</li>
+ *       resolve classes that have been imported</li>
  *   <li>a reference to the arguments for the active {@link LambdaExpression}s</li>
- *   <li>a reference to the list of registered listeners</li>
+ *   <li>a reference to the list of registered evaluation listeners</li>
  * </ul></p>
  *
  * <p>The collection of context objects is necessary because each 
@@ -127,6 +126,8 @@ public abstract class ELContext {
     /**
      * Called to indicate that a <code>ELResolver</code> has successfully
      * resolved a given (base, property) pair.
+     * Use {@link #setPropertyResolved(Object, Object)} if
+     * resolved is true and to notify {@link EvaluationListener}s.
      *
      * <p>The {@link CompositeELResolver} checks this property to determine
      * whether it should consider or skip other component resolvers.</p>
@@ -137,6 +138,23 @@ public abstract class ELContext {
      */
     public void setPropertyResolved(boolean resolved) {
         this.resolved = resolved;
+    }
+
+    /**
+     * Called to indicate that a <code>ELResolver</code> has successfully
+     * resolved a given (base, property) pair and to notify the
+     * {@link EvaluationListener}s.
+     *
+     * <p>The {@link CompositeELResolver} checks this property to determine
+     * whether it should consider or skip other component resolvers.</p>
+     *
+     * @see CompositeELResolver
+     * @param base The base object
+     * @param property The property object
+     */
+    public void setPropertyResolved(Object base, Object property) {
+        this.resolved = true;
+        EvaluationListener.notifyPropertyResolved(this, base, property);
     }
 
     /**
@@ -282,23 +300,26 @@ public abstract class ELContext {
     public abstract VariableMapper getVariableMapper();
 
     /**
-     * Registers a listener to the ELContext.
+     * Registers an evaluation listener to the ELContext.
      *
      * @param listener The listener to be added.
      *
      * @since EL 3.0
      */
-    public <T extends EventListener> void addListener(T listener) {
+    public void addEvaluationListener(EvaluationListener listener) {
+        if (listeners == null) {
+            listeners = new ArrayList<EvaluationListener>();
+        }
         listeners.add(listener);
     }
 
     /**
-     * Returns the list of registered listeners.
-     * @return The list of registered listeners.
+     * Returns the list of registered evaluation listeners.
+     * @return The list of registered evaluation listeners.
      *
      * @since EL 3.0
      */
-    public List<EventListener> getListeners() {
+    public List<EvaluationListener> getEvaluationListeners() {
         return listeners;
     }
 
@@ -386,8 +407,7 @@ public abstract class ELContext {
 
     private boolean resolved;
     private HashMap<Class<?>, Object> map = new HashMap<Class<?>, Object>();
-    private transient List<EventListener> listeners =
-        new ArrayList<EventListener>();
+    private transient List<EvaluationListener> listeners = null;
     private Stack<Map<String,Object>> lambdaArgs;
 }
 

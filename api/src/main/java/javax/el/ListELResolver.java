@@ -197,7 +197,7 @@ public class ListELResolver extends ELResolver {
         }
 
         if (base != null && base instanceof List) {
-            context.setPropertyResolved(true);
+            context.setPropertyResolved(base, property);
             List list = (List) base;
             int index = toInteger(property);
             if (index < 0 || index >= list.size()) {
@@ -267,7 +267,7 @@ public class ListELResolver extends ELResolver {
         }
 
         if (base != null && base instanceof List) {
-            context.setPropertyResolved(true);
+            context.setPropertyResolved(base, property);
             // Safe cast
             @SuppressWarnings("unchecked")
             List<Object> list = (List) base;

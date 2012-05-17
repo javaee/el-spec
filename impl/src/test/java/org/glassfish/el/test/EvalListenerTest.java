@@ -7,8 +7,8 @@ package org.glassfish.el.test;
 
 import java.util.ArrayList;
 import javax.el.ELManager;
+import javax.el.ELContext;
 import javax.el.ELProcessor;
-import javax.el.EvaluationEvent;
 import javax.el.EvaluationListener;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -22,9 +22,6 @@ import static org.junit.Assert.*;
  * @author kichung
  */
 public class EvalListenerTest {
-
-    ELProcessor elp = new ELProcessor();
-    ELManager elm = elp.getELManager();
 
     public EvalListenerTest() {
     }
@@ -47,17 +44,19 @@ public class EvalListenerTest {
 
     @Test
     public void testEvalListener() {
+        ELProcessor elp = new ELProcessor();
+        ELManager elm = elp.getELManager();
         final ArrayList<String> msgs = new ArrayList<String>();
-        elm.addListener(new EvaluationListener() {
+        elm.addEvaluationListener(new EvaluationListener() {
             @Override
-            public void beforeEvaluation(EvaluationEvent ev) {
-                System.out.println("Before: " + ev.getExpressionString());
-                msgs.add("Before: " + ev.getExpressionString());
+            public void beforeEvaluation(ELContext ctxt, String expr) {
+                System.out.println("Before: " + expr);
+                msgs.add("Before: " + expr);
             }
             @Override
-            public void afterEvaluation(EvaluationEvent ev) {
-                System.out.println("After: " + ev.getExpressionString());
-                msgs.add("After: " + ev.getExpressionString());
+            public void afterEvaluation(ELContext ctxt, String expr) {
+                System.out.println("After: " + expr);
+                msgs.add("After: " + expr);
             }
         });
         elp.eval("100 + 10");
@@ -71,4 +70,30 @@ public class EvalListenerTest {
         }
     }
 
+    @Test
+    public void testResListener() {
+        ELProcessor elp = new ELProcessor();
+        ELManager elm = elp.getELManager();
+        final ArrayList<String> msgs = new ArrayList<String>();
+        elm.addEvaluationListener(new EvaluationListener() {
+            @Override
+            public void propertyResolved(ELContext ctxt, Object b, Object p) {
+                System.out.println("Resolved: " + b + " " + p);
+                msgs.add("Resolved: " + b + " " + p);
+            }
+        });
+        elp.eval("x = 10");
+        elp.eval("[1,2,3][2]");
+        elp.eval("'abcd'.length()");
+        elp.eval("'xyz'.class");
+        String[] expected = {
+            "Resolved: null x",
+            "Resolved: [1, 2, 3] 2",
+            "Resolved: abcd length",
+            "Resolved: xyz class"
+        };
+        for (int i = 0; i < expected.length; i++) {
+            assertEquals(expected[i], msgs.get(i));
+        }
+    }
 }

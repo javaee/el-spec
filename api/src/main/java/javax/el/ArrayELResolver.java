@@ -194,7 +194,7 @@ public class ArrayELResolver extends ELResolver {
         }
 
         if (base != null && base.getClass().isArray()) {
-            context.setPropertyResolved(true);
+            context.setPropertyResolved(base, property);
             int index = toInteger (property);
             if (index >= 0 && index < Array.getLength(base)) {
                 return Array.get(base, index);
@@ -251,7 +251,7 @@ public class ArrayELResolver extends ELResolver {
         }
 
         if (base != null && base.getClass().isArray()) {
-            context.setPropertyResolved(true);
+            context.setPropertyResolved(base, property);
             if (isReadOnly) {
                 throw new PropertyNotWritableException();
             }

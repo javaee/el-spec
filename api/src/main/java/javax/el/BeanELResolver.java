@@ -361,7 +361,7 @@ public class BeanELResolver extends ELResolver {
         Object value;
         try {
             value = method.invoke(base, new Object[0]);
-            context.setPropertyResolved(true);
+            context.setPropertyResolved(base, property);
         } catch (ELException ex) {
             throw ex;
         } catch (InvocationTargetException ite) {
@@ -440,7 +440,7 @@ public class BeanELResolver extends ELResolver {
 
         try {
             method.invoke(base, new Object[] {val});
-            context.setPropertyResolved(true);
+            context.setPropertyResolved(base, property);
         } catch (ELException ex) {
             throw ex;
         } catch (InvocationTargetException ite) {
@@ -527,7 +527,7 @@ public class BeanELResolver extends ELResolver {
         Method m = ELUtil.findMethod(base.getClass(), method.toString(),
                                     paramTypes,params, false);
         Object ret = ELUtil.invokeMethod(context, m, base, params);
-        context.setPropertyResolved(true);
+        context.setPropertyResolved(base, method);
         return ret;
     }
 

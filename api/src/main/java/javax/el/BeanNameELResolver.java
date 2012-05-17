@@ -104,7 +104,7 @@ public class BeanNameELResolver extends ELResolver {
         if (base == null && property instanceof String) {
             Object bean = beanNameResolver.getBean((String) property);
             if (bean != null) {
-                context.setPropertyResolved(true);
+                context.setPropertyResolved(base, property);
                 return bean;
             }
         }
@@ -148,7 +148,7 @@ public class BeanNameELResolver extends ELResolver {
             Object bean = beanNameResolver.getBean(beanName);
             if (bean != null || beanNameResolver.canCreateBean(beanName)) {
                 beanNameResolver.setBeanValue(beanName, value);
-                context.setPropertyResolved(true);
+                context.setPropertyResolved(base, property);
             }
         }
     }

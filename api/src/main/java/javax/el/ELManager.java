@@ -172,12 +172,11 @@ public class ELManager {
     }
 
     /**
-     * Register a listener.  Used only for {@link EvaluationListener}s in
-     * 3.0, but possibly to used for other listeners.
+     * Register an evaluation listener.
      *
-     * @param listener The listener to be added.
+     * @param listener The evaluation listener to be added.
      */
-    public <T extends java.util.EventListener> void addListener(T listener) {
-        getELContext().addListener(listener);
+    public void addEvaluationListener(EvaluationListener listener) {
+        getELContext().addEvaluationListener(listener);
     }
 }

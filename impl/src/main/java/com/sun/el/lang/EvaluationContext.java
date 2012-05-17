@@ -50,6 +50,7 @@ import javax.el.FunctionMapper;
 import javax.el.VariableMapper;
 import javax.el.TypeConverter;
 import javax.el.ImportHandler;
+import javax.el.EvaluationListener;
 
 /**
  * The context for EL expression evaluation.  This wrapper ELContext captures
@@ -75,42 +76,54 @@ public final class EvaluationContext extends ELContext {
         return this.elContext;
     }
 
+    @Override
     public FunctionMapper getFunctionMapper() {
         return this.fnMapper;
     }
 
+    @Override
     public VariableMapper getVariableMapper() {
         return this.varMapper;
     }
 
+    @Override
     public Object getContext(Class key) {
         return this.elContext.getContext(key);
     }
 
+    @Override
     public ELResolver getELResolver() {
         return this.elContext.getELResolver();
     }
 
+    @Override
     public boolean isPropertyResolved() {
         return this.elContext.isPropertyResolved();
     }
 
+    @Override
     public void putContext(Class key, Object contextObject) {
         this.elContext.putContext(key, contextObject);
     }
 
+    @Override
     public void setPropertyResolved(boolean resolved) {
         this.elContext.setPropertyResolved(resolved);
     }
 
     @Override
-    public <T extends EventListener> void addListener(T listener) {
-        this.elContext.addListener(listener);
+    public void setPropertyResolved(Object base, Object property) {
+        this.elContext.setPropertyResolved(base, property);
     }
 
     @Override
-    public List<EventListener> getListeners() {
-        return this.elContext.getListeners();
+    public void addEvaluationListener(EvaluationListener listener) {
+        this.elContext.addEvaluationListener(listener);
+    }
+
+    @Override
+    public List<EvaluationListener> getEvaluationListeners() {
+        return this.elContext.getEvaluationListeners();
     }
 
     @Override

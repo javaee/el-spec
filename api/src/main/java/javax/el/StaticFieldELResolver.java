@@ -97,7 +97,7 @@ public class StaticFieldELResolver extends ELResolver {
             Class<?> klass = ((ELClass)base).getKlass();
             String fieldName = (String) property;
             try {
-                context.setPropertyResolved(true);
+                context.setPropertyResolved(base, property);
                 if ("class".equals(fieldName)) {
                     return klass;
                 }
@@ -212,7 +212,7 @@ public class StaticFieldELResolver extends ELResolver {
                 ELUtil.findMethod(klass, name, paramTypes, params, true);
             ret = ELUtil.invokeMethod(context, meth, null, params);
         }
-        context.setPropertyResolved(true);
+        context.setPropertyResolved(base, method);
         return ret;
     }
 

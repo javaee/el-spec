@@ -194,7 +194,7 @@ public class MapELResolver extends ELResolver {
         }
 
         if (base != null && base instanceof Map) {
-            context.setPropertyResolved(true);
+            context.setPropertyResolved(base, property);
             Map map = (Map) base;
             return map.get(property);
         }
@@ -256,7 +256,7 @@ public class MapELResolver extends ELResolver {
         }
 
         if (base != null && base instanceof Map) {
-            context.setPropertyResolved(true);
+            context.setPropertyResolved(base, property);
             // The cast is safe
             @SuppressWarnings("unchecked")
             Map<Object, Object> map = (Map)base;
