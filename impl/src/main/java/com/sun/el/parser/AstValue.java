@@ -50,6 +50,7 @@ import javax.el.ValueReference;
 import javax.el.ELClass;
 import javax.el.PropertyNotFoundException;
 import javax.el.PropertyNotWritableException;
+import javax.el.ImportHandler;
 
 import com.sun.el.lang.EvaluationContext;
 import com.sun.el.lang.ELSupport;
@@ -149,9 +150,12 @@ public final class AstValue extends SimpleNode {
         // First check if the base is an imported class
         if (this.children[0] instanceof AstIdentifier) {
             String name = ((AstIdentifier) this.children[0]).image;
-            Class<?> c = ctx.getImportHandler().resolve(name);
-            if (c != null) {
-                return new ELClass(c);
+            ImportHandler importHandler = ctx.getImportHandler();
+            if (importHandler != null) {
+                Class<?> c = importHandler.resolve(name);
+                if (c != null) {
+                    return new ELClass(c);
+                }
             }
         }
         return this.children[0].getValue(ctx);

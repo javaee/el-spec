@@ -134,7 +134,7 @@ public final class AstFunction extends SimpleNode {
         // Check to see if a function is a bean that is a Lambdaexpression.
         // If so, invoke it.  Also allow for the case that a Lambda expression
         // can return another Lambda expression.
-        if (prefix.length() == 0) {
+        if (prefix.length() == 0 && ctx.getImportHandler() != null) {
             // First check if this is an imported class
             Class<?> c = ctx.getImportHandler().resolve(this.localName);
             if (c != null) {

@@ -45,6 +45,7 @@ import javax.el.ELResolver;
 import javax.el.ELClass;
 import javax.el.ELContext;
 import javax.el.PropertyNotFoundException;
+import javax.el.ImportHandler;
 
 import com.sun.el.lang.EvaluationContext;
 import com.sun.el.util.MessageFactory;
@@ -108,12 +109,15 @@ class AstType extends SimpleNode {
 
         if (className.indexOf('.') < 0) {
             // No package, assume it has been imported
-            Class<?> c = context.getImportHandler().resolve(className);
-            if (c == null) {
-                throw new PropertyNotFoundException(
+            ImportHandler importHandler = context.getImportHandler();
+            if (importHandler != null) {
+                Class<?> c = importHandler.resolve(className);
+                if (c == null) {
+                    throw new PropertyNotFoundException(
                         MessageFactory.get("error.class.notfound", className));
+                }
+                return c;
             }
-            return c;
         }
 
         try {
