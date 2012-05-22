@@ -46,15 +46,15 @@ import javax.el.ELContext;
 import javax.el.LambdaExpression;
 
 class ForEach extends QueryOperator {
-
     @Override
     public Object invoke(final ELContext context,
-                       final Iterable<Object> base,
-                       final Object[] params) {
-        final LambdaExpression func = getLambda("forEach", params, 0, false);
+                         final Iterable<Object> base,
+                         final Object[] params) {
 
-        for (Object item: base) {
-            func.invoke(context, item);
+        final LambdaExpression action = getLambda("forEach", params, 0, false);
+        int index = 0;
+        for (Object obj: base) {
+            action.invoke(context, obj, index);
         }
         return null;
     }

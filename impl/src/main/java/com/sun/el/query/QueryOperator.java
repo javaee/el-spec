@@ -103,8 +103,8 @@ public abstract class QueryOperator {
         operators.put("min", new Min());
         operators.put("max", new Max());
         operators.put("average", new Average());
-        operators.put("forEach", new ForEach());
         operators.put("aggregate", new Aggregate());
+        operators.put("forEach", new ForEach());
     }
 
     public abstract Object invoke(ELContext context,
