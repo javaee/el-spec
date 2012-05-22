@@ -354,6 +354,7 @@ public class LinqTest {
     public void testForEach() {
         testIterable("forEach",
             "lst = []; products.forEach(p->lst.add(p.name)); lst", exp2);
+        elp.eval("products.forEach((p,idx)->System.out.println(idx + \": \" + p.name))");
     }
 }
 

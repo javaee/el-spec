@@ -54,7 +54,7 @@ class ForEach extends QueryOperator {
         final LambdaExpression action = getLambda("forEach", params, 0, false);
         int index = 0;
         for (Object obj: base) {
-            action.invoke(context, obj, index);
+            action.invoke(context, obj, index++);
         }
         return null;
     }
