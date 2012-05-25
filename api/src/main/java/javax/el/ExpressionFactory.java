@@ -58,6 +58,9 @@
 
 package javax.el;
 
+import java.util.Map;
+import java.lang.reflect.Method;
+
 import java.util.Properties;
 
 /**
@@ -342,8 +345,8 @@ public abstract class ExpressionFactory {
      * an <code>Iterable</code> and <code>property</code> is the name of the
      * operator.  Therefore, the operators behave like built-in methods of
      * <code>Iterable</code>s.</p>
-     * <p>See EL.2 for detailed descriptions of these operators, the
-     * arguments, and the return values.</p>
+     * <p>See EL.2 for detailed descriptions of these operators, their
+     * arguments, and return values.</p>
      *
      * @return The <code>ELResolver</code> that implements the Query Operators.
      *    If <code>null</code>, the query operators are not support by this
@@ -352,6 +355,23 @@ public abstract class ExpressionFactory {
      * @since EL 3.0
      */
     public ELResolver getQueryOperatorELResolver() {
+        return null;
+    }
+
+    /**
+     * Retrieve a function map containing a pre-configured function
+     * mapping.  It should include, but not limited to the following
+     * functions.
+     * <ul>
+     * <li>linq:range</li>
+     * <li>linq:repeat</li>
+     * <li>linq:empty</li>
+     * </ul>
+     * @return A initial map for functions, null if there is none.
+     *
+     * @since EL 3.0
+     */
+    public Map<String, Method> getInitFunctionMap() {
         return null;
     }
 }

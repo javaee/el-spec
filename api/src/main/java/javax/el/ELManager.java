@@ -70,8 +70,7 @@ public class ELManager {
      */
     public StandardELContext getELContext() {
         if (elContext == null) {
-            elContext = new StandardELContext(
-                            getExpressionFactory().getQueryOperatorELResolver());
+            elContext = new StandardELContext(getExpressionFactory());
         }
         return elContext;
     }

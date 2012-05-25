@@ -99,6 +99,8 @@ public abstract class FunctionMapper {
    * @param meth The static method that is to be invoked, when the function is
    *     referenced.  The null value causes the function to be removed from the
    *     map.
+   *
+   * @Since EL 3.0
    */
   public void mapFunction(String prefix, String localName, Method meth) {
   }

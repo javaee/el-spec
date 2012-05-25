@@ -80,6 +80,7 @@ is logically partitioned as follows:
   <li><a href="#ExpressionObjects">Expression Objects</a></li>
   <li><a href="#ExpressionCreation">Creation of Expressions</a></li>
   <li><a href="#ExpressionEvaluation">Evaluation of Expressions</a></li>
+  <li><a href="#EvaluationListener">Evaluation Listeners</a></li>
   <li><a href="#Resolver">Resolution of Model Objects and their Properties</a></li>
   <li><a href="#Functions">EL Functions</a></li>
   <li><a href="#Variables">EL Variables</a></li>
@@ -175,6 +176,16 @@ encapsutae such a construct.  A <code>LambdaExpression</code> can be
 invoked by supplying the actual parameters at evaluation.  It plays
 an important role in the support for LINQ query operators.</p>
 
+<h3><a name="EvaluationListener">Evaluation Listeners</a></h3>
+<p>By registering {@link javax.el.EvaluationListener}s in ELContext, an user can
+receive notifications during the EL expression evaluations.  There are three
+events that trigger the notification:
+<ul>
+  <li>Before Evaluation</li>
+  <li>After Evalution</li>
+  <li>When (base, property) is resolved</li>
+</ul></p>
+
 <h3><a name="Resolver">Resolution of Model Objects and their Properties</a></h3>
 
 <p>Through the {@link javax.el.ELResolver} base class, the EL 
@@ -187,10 +198,6 @@ property resolution for common data types which include
 arrays ({@link javax.el.ArrayELResolver}), JavaBeans ({@link javax.el.BeanELResolver}), <code>List</code>s ({@link javax.el.ListELResolver}), 
 <code>Map</code>s ({@link javax.el.MapELResolver}), and <code>ResourceBundle</code>s ({@link javax.el.ResourceBundleELResolver}).</p>
 
-<p>In version 3.0, EL also supports the
-<a href=" http://msdn.microsoft.com/en-us/library/bb394939.aspx"
-LINQ query operators</a> by implementing an ELResolver that resolves methods
-calls to this operators.</p> 
 <p>Tools can easily obtain more information about resolvable model objects and their 
 resolvable properties by calling
 method <code>getFeatureDescriptors</code> on the <code>ELResolver</code>. This method exposes objects

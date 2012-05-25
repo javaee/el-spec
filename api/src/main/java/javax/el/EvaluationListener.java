@@ -76,7 +76,7 @@ public abstract class EvaluationListener {
     /**
      * Notifies the listeners before an EL expression is evaluated
      * @param context The ELContext
-     * @param expression The EL expression string to be evaluated
+     * @param expr The EL expression string to be evaluated
      */
     public static void notifyBeforeEvaluation(ELContext context, String expr) {
         if (context.getEvaluationListeners() == null)
@@ -89,7 +89,7 @@ public abstract class EvaluationListener {
     /**
      * Notifies the listeners after an EL expression is evaluated
      * @param context The ELContext
-     * @param expression The EL expression string that has been evaluated
+     * @param expr The EL expression string that has been evaluated
      */
     public static void notifyAfterEvaluation(ELContext context, String expr) {
         if (context.getEvaluationListeners() == null)

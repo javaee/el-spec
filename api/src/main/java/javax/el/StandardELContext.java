@@ -81,6 +81,11 @@ public class StandardELContext extends ELContext {
     private FunctionMapper functionMapper;
 
     /*
+     * The pre-confured init function map;
+     */
+    private Map<String, Method> initFunctionMap;
+
+    /*
      * The VariableMapper for this ELContext.
      */
     private VariableMapper variableMapper;
@@ -103,8 +108,9 @@ public class StandardELContext extends ELContext {
      *     LINQ query operators.  A null indicates that the implementation
      *     is not supported
      */
-    public StandardELContext(ELResolver queryOperatorELResolver) {
-        this.queryOperatorELResolver = queryOperatorELResolver;
+    public StandardELContext(ExpressionFactory factory) {
+        this.queryOperatorELResolver = factory.getQueryOperatorELResolver();
+        initFunctionMap = factory.getInitFunctionMap();
     }
 
     /**
@@ -221,7 +227,7 @@ public class StandardELContext extends ELContext {
     @Override
     public FunctionMapper getFunctionMapper() {
         if (functionMapper == null) {
-            functionMapper = new DefaultFunctionMapper();
+            functionMapper = new DefaultFunctionMapper(initFunctionMap);
         }
         return functionMapper;
     }
@@ -241,21 +247,21 @@ public class StandardELContext extends ELContext {
     private static class DefaultFunctionMapper extends FunctionMapper {
 
         private Map<String, Method> functions = null;
-        
+
+        DefaultFunctionMapper(Map<String, Method> initMap){
+            functions = (initMap == null)?
+                               new HashMap<String, Method>():
+                               new HashMap<String, Method>(initMap);
+        }
+
         @Override
         public Method resolveFunction(String prefix, String localName) {
-            if (functions == null) {
-                return null;
-            }
             return functions.get(prefix + ":" + localName);
         }
 
     
         @Override
         public void mapFunction(String prefix, String localName, Method meth){
-            if (functions == null) {
-                functions = new HashMap<String, Method>();
-            }
             functions.put(prefix + ":" + localName, meth);
         }
     }
