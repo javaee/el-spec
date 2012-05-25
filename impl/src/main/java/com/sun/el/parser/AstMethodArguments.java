@@ -56,7 +56,7 @@ class AstMethodArguments extends SimpleNode {
         return null;
     }
 
-    Object[] getParameters(EvaluationContext ctx) throws ELException {
+    public Object[] getParameters(EvaluationContext ctx) throws ELException {
 
         if (this.children == null)
             return new Object[] {};
@@ -66,6 +66,10 @@ class AstMethodArguments extends SimpleNode {
             obj[i] = this.children[i].getValue(ctx);
         }
         return obj;
+    }
+
+    public int getParameterCount() {
+        return this.children == null? 0: this.children.length;
     }
 
     @Override

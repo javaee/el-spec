@@ -66,6 +66,7 @@ import com.sun.el.parser.AstDynamicExpression;
 import com.sun.el.parser.AstFunction;
 import com.sun.el.parser.AstIdentifier;
 import com.sun.el.parser.AstLiteralExpression;
+import com.sun.el.parser.AstMethodArguments;
 import com.sun.el.parser.AstValue;
 import com.sun.el.parser.ELParser;
 import com.sun.el.parser.Node;
@@ -271,10 +272,11 @@ public final class ExpressionBuilder implements NodeVisitor {
                         "error.fnMapper.method", funcNode.getOutputName()));
             }
             int pcnt = m.getParameterTypes().length;
-            if (node.jjtGetNumChildren() != pcnt) {
+            int acnt = ((AstMethodArguments)node.jjtGetChild(0)).getParameterCount();
+            if (acnt != pcnt) {
                 throw new ELException(MessageFactory.get(
                         "error.fnMapper.paramcount", funcNode.getOutputName(),
-                        "" + pcnt, "" + node.jjtGetNumChildren()));
+                        "" + pcnt, "" + acnt));
             }
         } else if (node instanceof AstIdentifier && this.varMapper != null) {
             String variable = ((AstIdentifier) node).getImage();

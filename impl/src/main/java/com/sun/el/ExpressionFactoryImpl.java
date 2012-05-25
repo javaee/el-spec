@@ -40,6 +40,10 @@
 
 package com.sun.el;
 
+import java.util.Map;
+import java.util.HashMap;
+import java.lang.reflect.Method;
+
 import javax.el.ELContext;
 import javax.el.ELException;
 import javax.el.ExpressionFactory;
@@ -51,6 +55,7 @@ import com.sun.el.lang.ExpressionBuilder;
 import com.sun.el.lang.ELSupport;
 import com.sun.el.util.MessageFactory;
 import com.sun.el.query.QueryOperatorELResolver;
+import com.sun.el.query.Generation;
 
 /**
  * @see javax.el.ExpressionFactory
@@ -109,7 +114,25 @@ public class ExpressionFactoryImpl extends ExpressionFactory {
         return new ValueExpressionLiteral(instance, expectedType);
     }
 
+    @Override
     public ELResolver getQueryOperatorELResolver() {
         return new QueryOperatorELResolver();
+    }
+
+    @Override
+    public Map<String, Method> getInitFunctionMap() {
+        Map<String, Method> funcs = new HashMap<String, Method>();
+        Class<Generation> genClass = Generation.class;
+        try {
+            funcs.put("linq:range", genClass.getMethod("range",
+                    new Class<?>[] {Integer.TYPE, Integer.TYPE}));
+            funcs.put("linq:repeat", genClass.getMethod("repeat",
+                    new Class<?>[] {Object.class, Integer.TYPE}));
+            funcs.put("linq:_empty", genClass.getMethod("empty",
+                    new Class<?>[] {}));
+        } catch (NoSuchMethodException ex) {
+            // Should not happen
+        }
+        return funcs;
     }
 }

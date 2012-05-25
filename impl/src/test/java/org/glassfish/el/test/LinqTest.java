@@ -354,7 +354,17 @@ public class LinqTest {
     public void testForEach() {
         testIterable("forEach",
             "lst = []; products.forEach(p->lst.add(p.name)); lst", exp2);
-        elp.eval("products.forEach((p,idx)->System.out.println(idx + \": \" + p.name))");
+        elp.eval("products.forEach((p,idx)->System.out.println("
+                + "idx + \": \" + p.name + \", \" + p.unitPrice))");
+    }
+
+    @Test
+    public void testGen() {
+        testIterable("linq:rang", "linq:range(10, 5)()",
+                new String[]{"10", "11", "12", "13", "14"});
+        testIterable("linq:repeat", "linq:repeat(\"xyz\", 3)",
+                new String[]{"xyz", "xyz", "xyz"});
+        testIterable("linq:_empty", "linq:_empty()", new String[]{});
     }
 }
 
