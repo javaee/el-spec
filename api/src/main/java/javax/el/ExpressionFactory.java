@@ -349,8 +349,6 @@ public abstract class ExpressionFactory {
      * arguments, and return values.</p>
      *
      * @return The <code>ELResolver</code> that implements the Query Operators.
-     *    If <code>null</code>, the query operators are not support by this
-     *    implementation.
      *
      * @since EL 3.0
      */
@@ -360,12 +358,11 @@ public abstract class ExpressionFactory {
 
     /**
      * Retrieve a function map containing a pre-configured function
-     * mapping.  It should include, but not limited to the following
-     * functions.
+     * mapping.  It must include the following functions.
      * <ul>
      * <li>linq:range</li>
      * <li>linq:repeat</li>
-     * <li>linq:empty</li>
+     * <li>linq:_empty</li>
      * </ul>
      * @return A initial map for functions, null if there is none.
      *
