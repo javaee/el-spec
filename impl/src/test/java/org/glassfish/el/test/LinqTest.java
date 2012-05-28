@@ -360,8 +360,9 @@ public class LinqTest {
 
     @Test
     public void testGen() {
-        testIterable("linq:rang", "linq:range(10, 5)()",
+        testIterable("linq:range", "linq:range(10, 5)()",
                 new String[]{"10", "11", "12", "13", "14"});
+        System.out.println(elp.eval("linq:range(0,5).select(x->x*x).toList()"));
         testIterable("linq:repeat", "linq:repeat(\"xyz\", 3)",
                 new String[]{"xyz", "xyz", "xyz"});
         testIterable("linq:_empty", "linq:_empty()", new String[]{});
