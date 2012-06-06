@@ -60,7 +60,7 @@ import java.util.ArrayList;
  * an {@link javax.el.ELContext} and a list of the actual arguments.  The
  * evaluation of the <code>ValueExpression</code> in the body uses the
  * {@link ELContext} to resolve references to the parameters.
- * The result of the evaluation is returned.</p as the
+ * The result of the evaluation is returned.</p>
  * @see ELContext#getLambdaArgument
  * @see ELContext#enterLambdaScope
  * @see ELContext#exitLambdaScope
