@@ -158,10 +158,6 @@ public final class AstIdentifier extends SimpleNode {
         }
         ctx.setPropertyResolved(false);
         ELResolver elResolver = ctx.getELResolver();
-        if (value != null) {
-            value = ctx.convertToType(value,
-                        elResolver.getType(ctx, null, this.image));
-        }
         elResolver.setValue(ctx, null, this.image, value);
         if (! ctx.isPropertyResolved()) {
             ELSupport.throwUnhandled(null, this.image);
