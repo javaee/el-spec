@@ -85,10 +85,10 @@
     </scm>
 
     <properties>
-        <spec.version>2.99.01</spec.version>
+        <spec.version>2.2.99.01</spec.version>
         <extensionName>javax.el</extensionName>
         <bundle.symbolicName>org.glassfish.javax.el</bundle.symbolicName>
-        <bundle.version>2.99.b01</bundle.version>
+        <bundle.version>2.2.99.b01</bundle.version>
         <vendorName>Oracle Corporation</vendorName>
         <findbugs.version>2.3.1</findbugs.version>
         <findbugs.exclude />
