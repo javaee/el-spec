@@ -53,6 +53,7 @@ public class OperatorTest {
     
     @Test
     public void testConcat() {
+        testExpr("concat", "a = null; b = null; a + b", 0L);
         testExpr("add", "10 + 11", 21L);
         testExpr("concat", "'10' + 11", "1011");
         testExpr("concat 2", "11 + '10'", "1110");
