@@ -50,10 +50,21 @@ package javax.el;
  */
 public abstract class BeanNameResolver {
     /**
+     * Returns whether the given name is resolved by the BeanNameResolver
+     *
+     * @param beanName The name of the bean.
+     * @return true if the name is resolved by this BeanNameResolver; false
+     *     otherwise.
+     */
+    public boolean isNameResolved(String beanName) {
+        return false;
+    }
+
+    /**
      * Returns the bean known by its name.
      * @param beanName The name of the bean.
-     * @return The bean with the given name.  A <code>null</code> indicates
-     *     that a bean with the given name is not found.
+     * @return The bean with the given name.  Can be <code>null</code>.
+     *     
      */
     public Object getBean(String beanName) {
         return null;
@@ -65,7 +76,7 @@ public abstract class BeanNameResolver {
      * does not exist and if {@link #canCreateBean} is <code>true</code>,
      * one is created with the given value.
      * @param beanName The name of the bean
-     * @param value The value to set the bean to.
+     * @param value The value to set the bean to.  Can be <code>null</code>.
      * @throws PropertyNotWritableException if the bean cannot be
      *     modified or created.
      */

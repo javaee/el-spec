@@ -104,9 +104,7 @@ public class StandardELContext extends ELContext {
 
     /**
      * Construct a default ELContext for a stand-alone environment.
-     * @param queryOperatorELResolver The ELResolver for implementing the
-     *     LINQ query operators.  A null indicates that the implementation
-     *     is not supported
+     * @param factory The ExpressionFactory 
      */
     public StandardELContext(ExpressionFactory factory) {
         this.queryOperatorELResolver = factory.getQueryOperatorELResolver();
@@ -295,6 +293,11 @@ public class StandardELContext extends ELContext {
     }
 
     private class LocalBeanNameResolver extends BeanNameResolver {
+
+        @Override
+        public boolean isNameResolved(String beanName) {
+            return beans.containsKey(beanName);
+        }
 
         @Override
         public Object getBean(String beanName) {

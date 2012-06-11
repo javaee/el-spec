@@ -102,10 +102,9 @@ public class BeanNameELResolver extends ELResolver {
             throw new NullPointerException();
         }
         if (base == null && property instanceof String) {
-            Object bean = beanNameResolver.getBean((String) property);
-            if (bean != null) {
+            if (beanNameResolver.isNameResolved((String) property)) {
                 context.setPropertyResolved(base, property);
-                return bean;
+                return beanNameResolver.getBean((String) property);
             }
         }
         return null;
@@ -145,8 +144,8 @@ public class BeanNameELResolver extends ELResolver {
 
         if (base == null && property instanceof String) {
             String beanName = (String) property;
-            Object bean = beanNameResolver.getBean(beanName);
-            if (bean != null || beanNameResolver.canCreateBean(beanName)) {
+            if (beanNameResolver.isNameResolved(beanName) ||
+                    beanNameResolver.canCreateBean(beanName)) {
                 beanNameResolver.setBeanValue(beanName, value);
                 context.setPropertyResolved(base, property);
             }
@@ -184,10 +183,9 @@ public class BeanNameELResolver extends ELResolver {
         }
 
         if (base == null && property instanceof String) {
-            Object bean = beanNameResolver.getBean((String) property);
-            if (bean != null) {
+            if (beanNameResolver.isNameResolved((String) property)) {
                 context.setPropertyResolved(true);
-                return bean.getClass();
+                return beanNameResolver.getBean((String) property).getClass();
             }
         }
         return null;
@@ -224,8 +222,7 @@ public class BeanNameELResolver extends ELResolver {
         }
 
         if (base == null && property instanceof String) {
-            Object bean = beanNameResolver.getBean((String) property);
-            if (bean != null) {
+            if (beanNameResolver.isNameResolved((String) property)) {
                 context.setPropertyResolved(true);
                 return beanNameResolver.isReadOnly((String) property);
             }

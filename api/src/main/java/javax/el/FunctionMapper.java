@@ -100,7 +100,7 @@ public abstract class FunctionMapper {
    *     referenced.  The null value causes the function to be removed from the
    *     map.
    *
-   * @Since EL 3.0
+   * @since EL 3.0
    */
   public void mapFunction(String prefix, String localName, Method meth) {
   }
