@@ -50,10 +50,11 @@ import java.beans.FeatureDescriptor;
  * <blockquote>
  * <pre>
  * ELResovler elr = new BeanNameELResolver(new BeanNameResolver {
+ *    public boolean isNameResolved(String beanName) {
+ *       return "bean".equals(beanName)? true: false;
+ *    }
  *    public Object getBean(String beanName) {
- *       if ("bean".equals(beanName))
- *          return new MyBean();
- *       return null;
+ *       return "bean".equals(beanName)? new MyBean(): null;
  *    }
  * });
  * </pre>
