@@ -62,6 +62,9 @@ public class ELProcessorTest {
         assertEquals(result, "111");
         elp.setVariable("xx", null);
         assertEquals(elp.eval("xx"), null);
+        elp.setVariable("yy", "abc");
+        assertEquals(elp.eval("yy = 123; abc"), 123L);
+        assertEquals(elp.eval("abc = 456; yy"), 456L);
     }
 
     @Test

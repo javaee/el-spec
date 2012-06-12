@@ -49,9 +49,11 @@ import javax.el.ValueExpression;
 import javax.el.VariableMapper;
 import javax.el.ValueReference;
 import javax.el.PropertyNotFoundException;
+import javax.el.PropertyNotWritableException;
 
 import com.sun.el.lang.EvaluationContext;
 import com.sun.el.lang.ELSupport;
+import com.sun.el.util.MessageFactory;
 
 
 /**
@@ -145,8 +147,9 @@ public final class AstIdentifier extends SimpleNode {
         // First check if this is a lambda argument
         Object argValue = ctx.getELContext().getLambdaArgument(this.image);
         if (argValue != null) {
-            // Lambda arguments are read only
-            return;
+            throw new PropertyNotWritableException(
+                    MessageFactory.get("error.lambda.parameter.readonly",
+                        this.image));
         }
         VariableMapper varMapper = ctx.getVariableMapper();
         if (varMapper != null) {
