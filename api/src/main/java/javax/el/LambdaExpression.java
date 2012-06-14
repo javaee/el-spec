@@ -105,7 +105,8 @@ public class LambdaExpression {
      * removed after the evaluation.</p>
      *
      * @param elContext The ELContext used for the evaluation of the expression
-     * @param args The arguments for the Lambda expression
+     * @param args The arguments for the Lambda expression.  They cannot be
+     *    <code>null</code>
      * @return The result of invoking the Lambda expression
      * @throws ELException if not enough arguments are provided
      */
