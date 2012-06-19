@@ -87,11 +87,11 @@ public class ImportHandler {
     /**
      * Resolve a class name from its imports.
      *
-     * @param name The name of the class taken from the expression T(name).
+     * @param name The name of the class to be resolved.
      *     It is assumed that this is a name without a package.
-     * @return  If the class has been imported previously (either explicitly,
-     *     or as part of an imported package), then its Class instance.
-     *     Otherwise <code>null</code>.
+     * @return  If the class has been imported previously, with
+     *     {@link #importClass} or {@link #importPackage}, then its
+     *     Class instance. Otherwise <code>null</code>.
      */
     public Class<?> resolve(String name) {
 

@@ -45,9 +45,10 @@ import java.util.HashMap;
 import java.lang.reflect.Method;
 
 /**
- * A stadard ELContext suitable for use in a stand alone environment.
- * This class provides a default implementation of an ELResolver, FunctionMapper
- * and a VariableMapper.  
+ * A standard ELContext suitable for use in a stand alone environment.
+ * This class provides a default implementation of an ELResolver that contains
+ * a number of useful ELResolvers.  It also provides local repositories for
+ * the FunctionMapper, VariableMapper, and BeanNameResolver.  
  *
  * @since EL 3.0
  */

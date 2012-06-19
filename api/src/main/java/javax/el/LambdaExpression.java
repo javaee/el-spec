@@ -85,14 +85,6 @@ public class LambdaExpression {
     }
 
     /**
-     * Retrieves the formal parameters of the Lambda expression
-     * @return The list of the parameter names.
-     */
-    public List<String> getFormalParameters() {
-        return this.formalParameters;
-    }
-
-    /**
      * Invoke the encapsulated Lambda expression.
      * <p> The supplied arguments are matched, in
      * the same order, to the formal parameters.  If there are more arguments

@@ -51,7 +51,7 @@ import java.beans.FeatureDescriptor;
  * <pre>
  * ELResovler elr = new BeanNameELResolver(new BeanNameResolver {
  *    public boolean isNameResolved(String beanName) {
- *       return "bean".equals(beanName)? true: false;
+ *       return "bean".equals(beanName);
  *    }
  *    public Object getBean(String beanName) {
  *       return "bean".equals(beanName)? new MyBean(): null;
@@ -75,7 +75,7 @@ public class BeanNameELResolver extends ELResolver {
     }
 
     /**
-     * If the base object is <code>null</code>and the property is a name
+     * If the base object is <code>null</code> and the property is a name
      * that is resolvable by the BeanNameResolver, returns the value
      * resolved by the BeanNameResolver.
      *
