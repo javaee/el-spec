@@ -3,7 +3,7 @@
 
     DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-    Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+    Copyright (c) 1997-2012 Oracle and/or its affiliates. All rights reserved.
 
     The contents of this file are subject to the terms of either the GNU
     General Public License Version 2 only ("GPL") or the Common Development
@@ -109,27 +109,28 @@
 
     <build>
         <plugins>
-            <!-- Include API sources -->
+            <!-- Use this plugin to include dependent classes, i.e. EL API -->
+            <!-- Unfortunately, cannot do the same for sources and javadocs -->
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <version>1.4</version>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>1.7</version>
                 <executions>
-                  <execution>
-                    <id>add-api-source</id>
-                    <phase>generate-sources</phase>
-                    <goals>
-                      <goal>add-source</goal>
-                    </goals>
-                    <configuration>
-                      <sources>
-                          <source>../api/src</source>
-                      </sources>
-                    </configuration>
-                  </execution>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <artifactSet>
+                                <excludes>
+                                    <exclude>junit:junit</exclude>
+                                </excludes>
+                        </artifactSet>
+                        </configuration>
+                    </execution>
                 </executions>
-            </plugin>   
-
+            </plugin>
             <!-- Configure maven-bundle-plugin to generate OSGi manifest.
                  Please note: we use the manifest goal only and not the bundle goal.
                   The bundle goal can lead to very surprising results if the
@@ -218,16 +219,16 @@
                         <configuration>
                             <groups>
                                 <group>
-                                    <title>Expresion Language API Documentation</title>
-                                    <packages>javax.el</packages>
+                                    <title>Expresion Language 3.0 Implementation</title>
+                                    <packages>com.sun.el</packages>
                                 </group>
                             </groups>
-                            <bottom> Copyright (c) 1999-2011 Oracle and/or its affiliates. All Rights Reserved. Use is subject to license terms. </bottom>
+                            <bottom> Copyright (c) 1999-2012 Oracle and/or its affiliates. All Rights Reserved. Use is subject to license terms. </bottom>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
-<!--
+<!-- Use ant to manually inoke javacc, as this required is very infrequently
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>javacc-maven-plugin</artifactId>
@@ -258,13 +259,13 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>                           
-                <artifactId>maven-release-plugin</artifactId>                         
-                <configuration>                                                       
-                    <mavenExecutorId>forked-path</mavenExecutorId>                
-                    <useReleaseProfile>false</useReleaseProfile>                  
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <configuration>
+                    <mavenExecutorId>forked-path</mavenExecutorId>
+                    <useReleaseProfile>false</useReleaseProfile>
                     <arguments>${release.arguments}</arguments>
-                </configuration>                                                      
+                </configuration>
             </plugin>                    
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -287,13 +288,6 @@
         <resources>
             <resource>
                 <directory>src/main/java</directory>
-                <includes>
-                    <include>**/*.properties</include>
-                    <include>**/*.xml</include>
-                </includes>
-            </resource>
-            <resource>
-                <directory>../api/src/main/java</directory>
                 <includes>
                     <include>**/*.properties</include>
                     <include>**/*.xml</include>
@@ -330,6 +324,12 @@
             <artifactId>junit</artifactId>
             <version>4.8.2</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.el</groupId>
+            <artifactId>javax.el-api</artifactId>
+            <version>3.0-b01</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>
