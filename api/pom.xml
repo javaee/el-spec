@@ -45,14 +45,14 @@
     <parent>
         <groupId>net.java</groupId>
         <artifactId>jvnet-parent</artifactId>
-        <version>1</version>
+        <version>3</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>javax.el</groupId>
     <artifactId>javax.el-api</artifactId>
     <packaging>jar</packaging>
-    <version>3.0-b02-SNAPSHOT</version>
+    <version>3.0-b01-SNAPSHOT</version>
     <name>Expression Language API 3.0</name>
 
     <properties>
