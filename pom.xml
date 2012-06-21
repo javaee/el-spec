@@ -51,7 +51,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.glassfish</groupId>
     <artifactId>javax.el</artifactId>
-    <version>3.0-b02-SNAPSHOT</version>
+    <version>3.0-b01-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Expression Language 3.0</name>
 
@@ -79,8 +79,8 @@
         </mailingList>
     </mailingLists>
     <scm>
-        <connection>scm:svn:https://svn.java.net/svn/el-spec~source-code/trunk/impl</connection>
-        <developerConnection>scm:svn:https://svn.java.net/svn/el-spec~source-code/trunk/impl</developerConnection>
+        <connection>scm:svn:https://svn.java.net/svn/el-spec~source-code/trunk</connection>
+        <developerConnection>scm:svn:https://svn.java.net/svn/el-spec~source-code/trunk</developerConnection>
         <url>http://java.net/projects/el-spec/sources/source-code/show</url>
     </scm>
 
@@ -109,24 +109,23 @@
 
     <build>
         <plugins>
-            <!-- Use this plugin to include dependent classes, i.e. EL API -->
-            <!-- Unfortunately, cannot do the same for sources and javadocs -->
+            <!-- Use this to include both the api and impl sources -->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>1.7</version>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.1</version>
                 <executions>
                     <execution>
-                        <phase>package</phase>
+                        <id>add-source</id>
+                        <phase>generate-sources</phase>
                         <goals>
-                            <goal>shade</goal>
+                            <goal>add-source</goal>
                         </goals>
                         <configuration>
-                            <artifactSet>
-                                <excludes>
-                                    <exclude>junit:junit</exclude>
-                                </excludes>
-                        </artifactSet>
+                            <sources>
+                                <source>api/src/main/java</source>
+                                <source>impl/src/main/java</source>
+                            </sources>
                         </configuration>
                     </execution>
                 </executions>
@@ -217,6 +216,7 @@
                                 <goal>jar</goal>
                             </goals>
                         <configuration>
+                            <sourcepath>api/src;impl/src</sourcepath>
                             <groups>
                                 <group>
                                     <title>Expresion Language 3.0 Implementation</title>
@@ -287,7 +287,14 @@
         </plugins>
         <resources>
             <resource>
-                <directory>src/main/java</directory>
+                <directory>api/src/main/java</directory>
+                <includes>
+                    <include>**/*.properties</include>
+                    <include>**/*.xml</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>impl/src/main/java</directory>
                 <includes>
                     <include>**/*.properties</include>
                     <include>**/*.xml</include>
@@ -324,12 +331,6 @@
             <artifactId>junit</artifactId>
             <version>4.8.2</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>javax.el</groupId>
-            <artifactId>javax.el-api</artifactId>
-            <version>3.0-b01</version>
-            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>
