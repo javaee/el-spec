@@ -48,7 +48,6 @@ import javax.el.MethodNotFoundException;
 import javax.el.ValueExpression;
 import javax.el.VariableMapper;
 import javax.el.ValueReference;
-import javax.el.PropertyNotFoundException;
 import javax.el.PropertyNotWritableException;
 
 import com.sun.el.lang.EvaluationContext;
@@ -66,10 +65,10 @@ public final class AstIdentifier extends SimpleNode {
         super(id);
     }
 
+    @Override
     public Class getType(EvaluationContext ctx) throws ELException {
         // First check if this is a lambda argument
-        Object argValue = ctx.getELContext().getLambdaArgument(this.image);
-        if (argValue != null) {
+        if (ctx.isLambdaArgument(this.image)) {
             return Object.class;
         }
         VariableMapper varMapper = ctx.getVariableMapper();
@@ -102,9 +101,8 @@ public final class AstIdentifier extends SimpleNode {
     @Override
     public Object getValue(EvaluationContext ctx) throws ELException {
         // First check if this is a lambda argument
-        Object argValue = ctx.getELContext().getLambdaArgument(this.image);
-        if (argValue != null) {
-            return argValue;
+        if (ctx.isLambdaArgument(this.image)) {
+            return ctx.getLambdaArgument(this.image);
         }
         VariableMapper varMapper = ctx.getVariableMapper();
         if (varMapper != null) {
@@ -123,8 +121,7 @@ public final class AstIdentifier extends SimpleNode {
 
     public boolean isReadOnly(EvaluationContext ctx) throws ELException {
         // Lambda arguments are read only.
-        Object argValue = ctx.getELContext().getLambdaArgument(this.image);
-        if (argValue != null) {
+        if (ctx.isLambdaArgument(this.image)) {
             return true;
         }
         VariableMapper varMapper = ctx.getVariableMapper();
@@ -145,8 +142,7 @@ public final class AstIdentifier extends SimpleNode {
     public void setValue(EvaluationContext ctx, Object value)
             throws ELException {
         // First check if this is a lambda argument
-        Object argValue = ctx.getELContext().getLambdaArgument(this.image);
-        if (argValue != null) {
+        if (ctx.isLambdaArgument(this.image)) {
             throw new PropertyNotWritableException(
                     MessageFactory.get("error.lambda.parameter.readonly",
                         this.image));

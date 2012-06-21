@@ -324,6 +324,25 @@ public abstract class ELContext {
     }
 
     /**
+     * Inquires if the name is a LambdaArgument
+     * @param arg A possible Lambda formal parameter name
+     * @return true if arg is a LambdaArgument, false otherwise.
+     */
+    public boolean isLambdaArgument(String arg) {
+        if (lambdaArgs == null) {
+            return false;
+        }
+
+        for (int i = lambdaArgs.size() - 1; i >= 0; i--) {
+            Map<String, Object> lmap = lambdaArgs.elementAt(i);
+            if (lmap.containsKey(arg)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Retrieves the Lambda argument associated with a formal parameter.
      * If the Lambda expression is nested within other Lambda expressions, the
      * arguments for the current Lambda expression is first searched, and if
@@ -341,8 +360,8 @@ public abstract class ELContext {
         }
 
         for (int i = lambdaArgs.size() - 1; i >= 0; i--) {
-            Map<String, Object> map = lambdaArgs.elementAt(i);
-            Object v = map.get(arg);
+            Map<String, Object> lmap = lambdaArgs.elementAt(i);
+            Object v = lmap.get(arg);
             if (v != null) {
                 return v;
             }

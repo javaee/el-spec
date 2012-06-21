@@ -127,6 +127,11 @@ public final class EvaluationContext extends ELContext {
     }
 
     @Override
+    public boolean isLambdaArgument(String arg) {
+        return this.elContext.isLambdaArgument(arg);
+    }
+
+    @Override
     public Object getLambdaArgument(String arg) {
         return this.elContext.getLambdaArgument(arg);
     }

@@ -83,6 +83,7 @@ public final class AstFunction extends SimpleNode {
         return prefix;
     }
 
+    @Override
     public Class getType(EvaluationContext ctx)
             throws ELException {
         
@@ -107,10 +108,10 @@ public final class AstFunction extends SimpleNode {
     private Object findValue(EvaluationContext ctx, String name) {
         Object value;
         // First check if this is a Lambda argument
-        value = ctx.getELContext().getLambdaArgument(name);
-        if (value != null) {
-            return value;
+        if (ctx.isLambdaArgument(name)) {
+            return ctx.getLambdaArgument(name);
         }
+        
         // Next check if this an EL variable
         VariableMapper varMapper = ctx.getVariableMapper();
         if (varMapper != null) {
@@ -128,6 +129,7 @@ public final class AstFunction extends SimpleNode {
         return null;
     }
 
+    @Override
     public Object getValue(EvaluationContext ctx)
             throws ELException {
 
@@ -210,7 +212,7 @@ public final class AstFunction extends SimpleNode {
         this.prefix = prefix;
     }
     
-    
+    @Override
     public String toString()
     {
         return ELParserTreeConstants.jjtNodeName[id] + "[" + this.getOutputName() + "]";

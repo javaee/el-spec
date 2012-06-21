@@ -31,6 +31,7 @@ public class LambdaTest {
         ELProcessor elp = new ELProcessor();
         testExpr(elp, "immediate", "(x->x+1)(10)", 11L);
         testExpr(elp, "immediate0", "(()->1001)()", 1001L);
+        testExpr(elp, "immediate1", "((x,y)->x+y)(null, null)", 0L);
         testExpr(elp, "immediate 2", "(((x,y)->x+y)(3,4))", 7L);
         testExpr(elp, "immediate 3", "(x->(y=x)+1)(10) + y", 21L);
     }
