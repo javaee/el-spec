@@ -52,7 +52,7 @@
     <groupId>javax.el</groupId>
     <artifactId>javax.el-api</artifactId>
     <packaging>jar</packaging>
-    <version>3.0-b02-SNAPSHOT</version>
+    <version>3.0-b01-SNAPSHOT</version>
     <name>Expression Language 3.0 API</name>
 
     <url>http://uel-spec.java.net</url>
