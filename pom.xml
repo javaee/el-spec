@@ -49,13 +49,13 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.glassfish</groupId>
-    <artifactId>javax.el</artifactId>
-    <version>3.0-b02-SNAPSHOT</version>
+    <groupId>javax.el</groupId>
+    <artifactId>javax.el-api</artifactId>
     <packaging>jar</packaging>
-    <name>Expression Language 3.0</name>
+    <version>3.0-b02</version>
+    <name>Expression Language 3.0 API</name>
 
-    <url>http://el-spec.java.net</url>
+    <url>http://uel-spec.java.net</url>
     <organization>
         <name>GlassFish Community</name>
         <url>http://glassfish.org</url>
@@ -79,15 +79,15 @@
         </mailingList>
     </mailingLists>
     <scm>
-        <connection>scm:svn:https://svn.java.net/svn/el-spec~source-code/trunk</connection>
-        <developerConnection>scm:svn:https://svn.java.net/svn/el-spec~source-code/trunk</developerConnection>
-        <url>http://java.net/projects/el-spec/sources/source-code/show</url>
+        <connection>scm:svn:https://svn.java.net/svn/el-spec~source-code/tags/javax.el-api-3.0-b02</connection>
+        <developerConnection>scm:svn:https://svn.java.net/svn/el-spec~source-code/tags/javax.el-api-3.0-b02</developerConnection>
+        <url>http://java.net/projects/el-spec/sources/source-code/show/tags/javax.el-api-3.0-b02</url>
     </scm>
 
     <properties>
-        <spec.version>2.2.99.01</spec.version>
+        <spec.version>2.2.99.0</spec.version>
         <extensionName>javax.el</extensionName>
-        <bundle.symbolicName>org.glassfish.javax.el</bundle.symbolicName>
+        <bundle.symbolicName>javax.el-api</bundle.symbolicName>
         <bundle.version>2.2.99.b01</bundle.version>
         <vendorName>Oracle Corporation</vendorName>
         <findbugs.version>2.3.1</findbugs.version>
@@ -98,53 +98,29 @@
     <developers>
         <developer>
             <id>kchung</id>
-            <name>Kin-man Chung</name>
+            <name>Kin Man Chung</name>
             <url>http://blogs.sun.com/kchung/</url>
-            <organization>Sun Microsystems, Inc.</organization>
+            <organization>Oracle Corporation</organization>
             <roles>
                 <role>lead</role>
             </roles>
         </developer>
-    </developers>  
+    </developers>
 
     <build>
         <plugins>
-            <!-- Use this to include both the api and impl sources -->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <version>1.1</version>
-                <executions>
-                    <execution>
-                        <id>add-source</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>add-source</goal>
-                        </goals>
-                        <configuration>
-                            <sources>
-                                <source>api/src/main/java</source>
-                                <source>impl/src/main/java</source>
-                            </sources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <!-- Configure maven-bundle-plugin to generate OSGi manifest.
-                 Please note: we use the manifest goal only and not the bundle goal.
-                  The bundle goal can lead to very surprising results if the
-                  package names are not correctly specified. So,
-                  we use the jar plugin to generate the jar.-->
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
                 <version>1.4.3</version>
                 <configuration>
+                    <supportedProjectTypes>
+                        <supportedProjectType>jar</supportedProjectType>
+                    </supportedProjectTypes>
                     <instructions>
                         <Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
                         <Bundle-Description>
-                            Expression Language ${spec.version} API and Implementation
-                        
+                            Expression Language ${spec.version} API
                         </Bundle-Description>
                         <Bundle-Version>${bundle.version}</Bundle-Version>
                         <Extension-Name>${extensionName}</Extension-Name>
@@ -153,15 +129,8 @@
                         <Implementation-Version>${version}</Implementation-Version>
                         <Implementation-Vendor>${vendorName}</Implementation-Vendor>
                         <Export-Package>
-                            javax.el,
-                            com.sun.el
+                            javax.el
                         </Export-Package>
-                        <Private-Package>
-                            com.sun.el.lang,
-                            com.sun.el.parser,
-                            com.sun.el.util,
-                            com.sun.el.query
-                        </Private-Package>
                     </instructions>
                 </configuration>
                 <executions>
@@ -180,15 +149,18 @@
                     <archive>
                         <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
                     </archive>
+                    <excludes>
+                        <exclude>**/*.java</exclude>
+                    </excludes>
                 </configuration>
             </plugin>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                    <configuration>
-                        <source>1.6</source>
-                        <target>1.6</target>
-                        <compilerArgument>-Xlint:unchecked</compilerArgument>
-                    </configuration>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                    <compilerArgument>-Xlint:unchecked</compilerArgument>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -216,37 +188,17 @@
                                 <goal>jar</goal>
                             </goals>
                         <configuration>
-                            <sourcepath>api/src;impl/src</sourcepath>
                             <groups>
                                 <group>
-                                    <title>Expresion Language 3.0 Implementation</title>
-                                    <packages>com.sun.el</packages>
+                                    <title>Expresion Language API Documentation</title>
+                                    <packages>javax.el</packages>
                                 </group>
                             </groups>
                             <bottom> Copyright (c) 1999-2012 Oracle and/or its affiliates. All Rights Reserved. Use is subject to license terms. </bottom>
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
-<!-- Use ant to manually inoke javacc, as this required is very infrequently
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>javacc-maven-plugin</artifactId>
-                <version>2.6</version>
-                <executions>
-                    <execution>
-                        <id>jjtree-javacc</id>
-                        <goals>
-                            <goal>jjtree-javacc</goal>
-                        </goals>
-                        <configuration>
-                            <sourceDirectory>src/main/java/com/sun/el/parser</sourceDirectory>
-                            <outputDirectory>src/main/java/com/sun/el/parser</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
--->
+            </plugin>   
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>findbugs-maven-plugin</artifactId>
@@ -267,41 +219,17 @@
                     <arguments>${release.arguments}</arguments>
                 </configuration>
             </plugin>                    
-            <plugin>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.7.1</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.apache.maven.surefire</groupId>
-                        <artifactId>surefire-junit47</artifactId>
-                        <version>2.7.1</version>
-                    </dependency>
-                </dependencies>
-                <configuration>
-                    <forkMode>never</forkMode>
-                    <!--
-                    <parallel>classes</parallel>
-                    -->
-                </configuration>
-            </plugin>
-        </plugins>
+    	</plugins>
         <resources>
             <resource>
-                <directory>api/src/main/java</directory>
+                <directory>src/main/java</directory>
                 <includes>
                     <include>**/*.properties</include>
-                    <include>**/*.xml</include>
-                </includes>
-            </resource>
-            <resource>
-                <directory>impl/src/main/java</directory>
-                <includes>
-                    <include>**/*.properties</include>
-                    <include>**/*.xml</include>
                 </includes>
             </resource>
         </resources>
     </build>
+
     <reporting>
         <plugins>
             <plugin>
@@ -315,22 +243,4 @@
             </plugin>
         </plugins>
     </reporting>
-
-    <repositories>
-        <repository>
-            <id>jvnet-nexus-release</id>
-            <url>https://maven.java.net/content/repositories/releases</url>
-            <snapshots>
-                <updatePolicy>never</updatePolicy>
-            </snapshots>
-        </repository>
-    </repositories>
-    <dependencies>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.8.2</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
 </project>
