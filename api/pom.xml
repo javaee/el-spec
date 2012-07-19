@@ -55,6 +55,18 @@
     <version>3.0-b03-SNAPSHOT</version>
     <name>Expression Language 3.0 API</name>
 
+    <properties>
+        <!-- Make sure the two versions are in sync with the maven version -->
+        <spec.version>2.2.99.03</spec.version>
+        <bundle.version>2.2.99.b03</bundle.version>
+        <extensionName>javax.el</extensionName>
+        <bundle.symbolicName>javax.el-api</bundle.symbolicName>
+        <vendorName>Oracle Corporation</vendorName>
+        <findbugs.version>2.3.1</findbugs.version>
+        <findbugs.exclude />
+        <findbugs.threshold>High</findbugs.threshold>
+    </properties>
+
     <url>http://uel-spec.java.net</url>
     <organization>
         <name>GlassFish Community</name>
@@ -83,17 +95,6 @@
         <developerConnection>scm:svn:https://svn.java.net/svn/el-spec~source-code/trunk/api</developerConnection>
         <url>http://java.net/projects/el-spec/sources/source-code/show</url>
     </scm>
-
-    <properties>
-        <spec.version>2.2.99.0</spec.version>
-        <extensionName>javax.el</extensionName>
-        <bundle.symbolicName>javax.el-api</bundle.symbolicName>
-        <bundle.version>2.2.99.b01</bundle.version>
-        <vendorName>Oracle Corporation</vendorName>
-        <findbugs.version>2.3.1</findbugs.version>
-        <findbugs.exclude />
-        <findbugs.threshold>High</findbugs.threshold>
-    </properties>
 
     <developers>
         <developer>
