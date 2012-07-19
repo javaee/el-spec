@@ -58,6 +58,7 @@ class Skip extends QueryOperator {
                     @Override
                     void doItem(Object item) {
                         if (index < count) {
+                            next();  // discarded
                             return;
                         }
                         yield(item);

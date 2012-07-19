@@ -82,6 +82,13 @@ public class LinqTest {
         assertTrue(indx == expected.length);
     }
 
+    static String exp0[] = {"Coming Home", "Greatest Hits",
+                       "History of Golf", "Toy Story" , "iSee"};
+    @Test
+    public void testSkip() {
+        testIterable("skip", "products.skip(1).select(p->p.name)", exp0);
+    }
+    
     static String[] exp1 = {
         "Product: 200, Eagle, book, 12.5, 100",
         "Product: 203, History of Golf, book, 11.0, 30",
