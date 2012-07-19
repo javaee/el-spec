@@ -64,6 +64,7 @@ class SkipWhile extends QueryOperator {
                             return;
                         }
                         if ((Boolean)predicate.invoke(context, item, index)) {
+                            next();  // discard
                             return;
                         }
                         testedFalse = true;
