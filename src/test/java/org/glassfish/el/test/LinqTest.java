@@ -369,12 +369,11 @@ public class LinqTest {
 
     @Test
     public void testGen() {
-        testIterable("linq:range", "linq:range(10, 5)()",
+        testIterable("collections:range", "collections:range(10, 5)()",
                 new String[]{"10", "11", "12", "13", "14"});
-        System.out.println(elp.eval("linq:range(0,5).select(x->x*x).toList()"));
-        testIterable("linq:repeat", "linq:repeat(\"xyz\", 3)",
+        System.out.println(elp.eval("collections:range(0,5).select(x->x*x).toList()"));
+        testIterable("collections:repeat", "collections:repeat(\"xyz\", 3)",
                 new String[]{"xyz", "xyz", "xyz"});
-        testIterable("linq:_empty", "linq:_empty()", new String[]{});
     }
 }
 
