@@ -124,12 +124,10 @@ public class ExpressionFactoryImpl extends ExpressionFactory {
         Map<String, Method> funcs = new HashMap<String, Method>();
         Class<Generation> genClass = Generation.class;
         try {
-            funcs.put("linq:range", genClass.getMethod("range",
+            funcs.put("collections:range", genClass.getMethod("range",
                     new Class<?>[] {Integer.TYPE, Integer.TYPE}));
-            funcs.put("linq:repeat", genClass.getMethod("repeat",
+            funcs.put("collections:repeat", genClass.getMethod("repeat",
                     new Class<?>[] {Object.class, Integer.TYPE}));
-            funcs.put("linq:_empty", genClass.getMethod("empty",
-                    new Class<?>[] {}));
         } catch (NoSuchMethodException ex) {
             // Should not happen
         }

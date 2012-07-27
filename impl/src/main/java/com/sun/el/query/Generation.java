@@ -114,9 +114,5 @@ public class Generation {
             }
         };
     }
-
-    public static Iterable empty() {
-        return java.util.Collections.EMPTY_LIST;
-    }
 }
 
