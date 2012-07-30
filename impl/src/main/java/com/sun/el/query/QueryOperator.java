@@ -94,7 +94,7 @@ public abstract class QueryOperator {
         operators.put("singleOrDefault", new SingleOrDefault());
         operators.put("elementAt", new ElementAt());
         operators.put("elementAtOrDefault", new ElementAtOrDefault());
-        operators.put("defaultEmpty", new DefaultEmpty());
+        operators.put("defaultIfEmpty", new DefaultIfEmpty());
         operators.put("any", new Any());
         operators.put("all", new All());
         operators.put("contains", new Contains());

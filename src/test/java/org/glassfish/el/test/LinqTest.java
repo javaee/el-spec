@@ -375,5 +375,25 @@ public class LinqTest {
         testIterable("collections:repeat", "collections:repeat(\"xyz\", 3)",
                 new String[]{"xyz", "xyz", "xyz"});
     }
+
+    @Test
+    public void testMisc() {
+        testIterable("concat", "['a','b'].concat(['x','y','z'])",
+                new String[] { "a", "b", "x", "y", "z" });
+        testIterable("defaultIfEmpty", "['a', 'b'].defaultIfEmpty()",
+                new String[] { "a", "b" });
+        testIterable("defaultIfEmpty", "[].defaultIfEmpty('zz')",
+                new String[] {"zz"});
+        Object ret = elp.eval("[].defaultIfEmpty()");
+        int i = 0;
+        for (Object o: (Iterable)ret) {
+            if (i == 0) {
+                assertEquals(o, null);
+            }
+            i++;
+        }
+        assertEquals(i, 1);
+    }
+
 }
 

@@ -68,8 +68,8 @@ class Concat extends QueryOperator {
 
                     @Override
                     public boolean hasNext() {
-                        if (!yielded) {
-                            return false;
+                        if (yielded) {
+                            return true;
                         }
                         if (iter.hasNext()) {
                             yielded = true;

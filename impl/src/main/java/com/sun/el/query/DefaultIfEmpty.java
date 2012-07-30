@@ -45,13 +45,13 @@ package com.sun.el.query;
 import javax.el.ELContext;
 import java.util.Iterator;
 
-class DefaultEmpty extends QueryOperator {
+class DefaultIfEmpty extends QueryOperator {
 
     @Override
     public Iterable<Object> invoke(final ELContext context,
                          final Iterable<Object> base,
                          final Object[] params) {
-        final Object defaultValue = getArgument("defaultEmpty",params,0,true);
+        final Object defaultValue = getArgument("defaultIfEmpty",params,0,true);
 
         Iterator iter = base.iterator();
         if (iter.hasNext()) {
