@@ -67,6 +67,9 @@ class Average extends QueryOperator {
             }
             sum = ELArithmetic.add(sum, item);
         }
+        if (count == 0) {
+            return null;
+        }
         return ELArithmetic.divide(sum, count);
     }
 }
