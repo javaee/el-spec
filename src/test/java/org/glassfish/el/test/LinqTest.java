@@ -393,6 +393,8 @@ public class LinqTest {
             i++;
         }
         assertEquals(i, 1);
+        ret = elp.eval("[].average()");
+        assertEquals(ret, null);
     }
 
 }
