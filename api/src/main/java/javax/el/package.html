@@ -131,7 +131,7 @@ of the model object <code>customer</code>) or as an <i>lvalue</i>
 
 <p>In version 2.2 and later, either type of EL expression can represent a method
 invocation, such as <code>${trader.buy("JAVA")}</code>, where the arugments to
-the mothod invocation are specified in the expression.</p>
+the method invocation are specified in the expression.</p>
 
 <p>All expression classes extend the base class {@link javax.el.Expression}, making them
 serializable and forcing them to implement <code>equals()</code> and 
@@ -172,12 +172,12 @@ in the tree building phase and evaluated in the rendering phrase.</p>
 
 <p>Adding parameters to a <code>ValueExpression</code> further enhances the
 power of deferred expressions.  The {@link javax.el.LambdaExpression}
-encapsutae such a construct.  A <code>LambdaExpression</code> can be
+encapsulates such a construct.  A <code>LambdaExpression</code> can be
 invoked by supplying the actual parameters at evaluation.  It plays
-an important role in the support for LINQ query operators.</p>
+an important role in the support for collections operators.</p>
 
 <h3><a name="EvaluationListener">Evaluation Listeners</a></h3>
-<p>By registering {@link javax.el.EvaluationListener}s in ELContext, an user can
+<p>By registering {@link javax.el.EvaluationListener}s in ELContext, a user can
 receive notifications during the EL expression evaluations.  There are three
 events that trigger the notification:
 <ul>
