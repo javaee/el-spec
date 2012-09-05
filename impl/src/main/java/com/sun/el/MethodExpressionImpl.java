@@ -300,9 +300,9 @@ public final class MethodExpressionImpl extends MethodExpression implements
             ELException {
         EvaluationContext ctx = new EvaluationContext(context, this.fnMapper,
                 this.varMapper);
-        EvaluationListener.notifyBeforeEvaluation(context, this.expr);
+        ctx.notifyBeforeEvaluation(this.expr);
         Object obj = this.getNode().invoke(ctx, this.paramTypes, params);
-        EvaluationListener.notifyAfterEvaluation(context, this.expr);
+        ctx.notifyAfterEvaluation(this.expr);
         return obj;
     }
 

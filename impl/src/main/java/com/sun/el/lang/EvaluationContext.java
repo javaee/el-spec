@@ -127,6 +127,21 @@ public final class EvaluationContext extends ELContext {
     }
 
     @Override
+    public void notifyBeforeEvaluation(String expr) {
+        this.elContext.notifyBeforeEvaluation(expr);
+    }
+
+    @Override
+    public void notifyAfterEvaluation(String expr) {
+        this.elContext.notifyAfterEvaluation(expr);
+    }
+
+    @Override
+    public void notifyPropertyResolved(Object base, Object property) {
+        this.elContext.notifyPropertyResolved(base, property);
+    }
+
+    @Override
     public boolean isLambdaArgument(String arg) {
         return this.elContext.isLambdaArgument(arg);
     }
