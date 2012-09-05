@@ -73,44 +73,4 @@ public abstract class EvaluationListener {
     public void propertyResolved(ELContext context, Object base, Object property) {
     }
 
-    /**
-     * Notifies the listeners before an EL expression is evaluated
-     * @param context The ELContext
-     * @param expr The EL expression string to be evaluated
-     */
-    public static void notifyBeforeEvaluation(ELContext context, String expr) {
-        if (context.getEvaluationListeners() == null)
-            return;
-        for (EvaluationListener listener: context.getEvaluationListeners()) {
-            listener.beforeEvaluation(context, expr);
-        }
-    }
-
-    /**
-     * Notifies the listeners after an EL expression is evaluated
-     * @param context The ELContext
-     * @param expr The EL expression string that has been evaluated
-     */
-    public static void notifyAfterEvaluation(ELContext context, String expr) {
-        if (context.getEvaluationListeners() == null)
-            return;
-        for (EvaluationListener listener: context.getEvaluationListeners()) {
-            listener.afterEvaluation(context, expr);
-        }
-    }
-
-    /**
-     * Notifies the listeners when the (base, property) pair is resolved
-     * @param context The ELContext
-     * @param base The base object
-     * @param property The property Object
-     */
-    public static void notifyPropertyResolved(ELContext context,
-                                              Object base, Object property) {
-        if (context.getEvaluationListeners() == null)
-            return;
-        for (EvaluationListener listener: context.getEvaluationListeners()) {
-            listener.propertyResolved(context, base, property);
-        }
-    }
 }

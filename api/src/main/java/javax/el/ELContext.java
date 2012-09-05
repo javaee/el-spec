@@ -154,7 +154,7 @@ public abstract class ELContext {
      */
     public void setPropertyResolved(Object base, Object property) {
         this.resolved = true;
-        EvaluationListener.notifyPropertyResolved(this, base, property);
+        notifyPropertyResolved(base, property);
     }
 
     /**
@@ -321,6 +321,43 @@ public abstract class ELContext {
      */
     public List<EvaluationListener> getEvaluationListeners() {
         return listeners;
+    }
+
+    /**
+     * Notifies the listeners before an EL expression is evaluated
+     * @param expr The EL expression string to be evaluated
+     */
+    public void notifyBeforeEvaluation(String expr) {
+        if (getEvaluationListeners() == null)
+            return;
+        for (EvaluationListener listener: getEvaluationListeners()) {
+            listener.beforeEvaluation(this, expr);
+        }
+    }
+
+    /**
+     * Notifies the listeners after an EL expression is evaluated
+     * @param expr The EL expression string that has been evaluated
+     */
+    public void notifyAfterEvaluation(String expr) {
+        if (getEvaluationListeners() == null)
+            return;
+        for (EvaluationListener listener: getEvaluationListeners()) {
+            listener.afterEvaluation(this, expr);
+        }
+    }
+
+    /**
+     * Notifies the listeners when the (base, property) pair is resolved
+     * @param base The base object
+     * @param property The property Object
+     */
+    public void notifyPropertyResolved(Object base, Object property) {
+        if (getEvaluationListeners() == null)
+            return;
+        for (EvaluationListener listener: getEvaluationListeners()) {
+            listener.propertyResolved(this, base, property);
+        }
     }
 
     /**
