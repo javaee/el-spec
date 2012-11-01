@@ -74,5 +74,8 @@ public class LambdaTest {
         testExpr(elp, "Lambda Lambda 2", "f = (x)->(tem=x; y->tem+y); f(1)(100)", 101L);
         testExpr(elp, "Lambda Lambda 3", "(()->y->y+1)()(100)", 101L);
         testExpr(elp, "Lambda Lambda 4", "(x->(y->x+y)(1))(100)", 101L);
+        testExpr(elp, "Lambda Lambda 5", "(x->(y->x+y))(1)(100)", 101L);
+        testExpr(elp, "Lambda Lambda 6"
+                , "(x->y->x(0)+y)(x->x+1)(100)", 101L);
     }
 }
