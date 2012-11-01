@@ -337,14 +337,13 @@ public abstract class ExpressionFactory {
             Class<?> targetType);
     
     /**
-     * Retrieves an ELResolver that implements the Query Operators
-     * as described in Chapter 2 of the specification.
+     * Retrieves an ELResolver that implements the operations in
+     * {@link javax.el.stream.Stream} and {@link javax.el.stream.MapStream}
      *
-     * <p>This ELResolver relsoves the method invocation on the pair
+     * <p>This ELResolver resolves the method invocation on the pair
      * (<code>base</code>, <code>property</code>) when <code>base</code> is
-     * an <code>Iterable</code> and <code>property</code> is the name of the
-     * operator.  Therefore, the operators behave like built-in methods of
-     * <code>Iterable</code>s.</p>
+     * a <code>Collection</code> or a <code>Map</code>, and
+     * <code>property</code> is the name of the operation.
      * <p>See EL.2 for detailed descriptions of these operators, their
      * arguments, and return values.</p>
      *
@@ -352,7 +351,7 @@ public abstract class ExpressionFactory {
      *
      * @since EL 3.0
      */
-    public ELResolver getQueryOperatorELResolver() {
+    public ELResolver getStreamELResolver() {
         return null;
     }
 
