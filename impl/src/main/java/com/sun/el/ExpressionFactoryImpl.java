@@ -54,7 +54,7 @@ import javax.el.ELResolver;
 import com.sun.el.lang.ExpressionBuilder;
 import com.sun.el.lang.ELSupport;
 import com.sun.el.util.MessageFactory;
-import com.sun.el.query.QueryOperatorELResolver;
+import com.sun.el.streams.StreamELResolver;
 import com.sun.el.query.Generation;
 
 /**
@@ -115,8 +115,8 @@ public class ExpressionFactoryImpl extends ExpressionFactory {
     }
 
     @Override
-    public ELResolver getQueryOperatorELResolver() {
-        return new QueryOperatorELResolver();
+    public ELResolver getStreamELResolver() {
+        return new StreamELResolver();
     }
 
     @Override
