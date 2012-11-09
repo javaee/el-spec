@@ -183,7 +183,7 @@ public class ELProcessor {
      *    with the signature is selected.
      *    
      * @throws NullPointerException if any of the arguments is null.
-     * @throws ClassNoFoundException if the specified class does not exists.
+     * @throws ClassNotFoundException if the specified class does not exists.
      * @throws NoSuchMethodException if the method (with or without the
      *    signature) is not a declared method of the class, or if the method
      *    signature is not valid.

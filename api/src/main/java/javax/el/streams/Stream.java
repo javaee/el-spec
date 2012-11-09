@@ -61,8 +61,23 @@ public interface Stream {
     Stream map(LambdaExpression mapper);
     Stream sorted(LambdaExpression comparator);
     Stream flatMap(LambdaExpression mapper);
+    Stream cumulate(LambdaExpression operator);
+    Stream tee(LambdaExpression block);
+    Stream limit(int n);
+    Stream skip(int n);
+    Stream concat(Stream other);
+    Stream uniqueElements();
     Map<Object,Collection<Object>> groupBy(LambdaExpression classifier);
-    Object reduce(Object base, LambdaExpression op);
-    void forEach(LambdaExpression sink);
+    Map<Object,Object> reduceBy(LambdaExpression classifier,
+                                LambdaExpression seed,
+                                LambdaExpression reducer);
+    Object reduce(Object base, LambdaExpression operator);
+    void forEach(LambdaExpression block);
+
+    boolean anyMatch(LambdaExpression predicate);
+    boolean allMatch(LambdaExpression predicate);
+    boolean noneMatch(LambdaExpression predicate);
+    Object[] toArray();
+    Object into(Object target);
 
 }
