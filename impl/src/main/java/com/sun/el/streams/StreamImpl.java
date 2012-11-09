@@ -50,12 +50,12 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.ArrayList;
 
-import javax.el.ELContext;
 import javax.el.ELException;
-import javax.el.ELResolver;
 import javax.el.LambdaExpression;
 import javax.el.streams.Stream;
 import com.sun.el.lang.ELSupport;
+import java.util.HashSet;
+import java.util.Set;
 
 /*
  */
@@ -88,8 +88,8 @@ public class StreamImpl implements Stream {
     public Stream filter(final LambdaExpression predicate) {
         return new StreamImpl(this, new Operator() {
             @Override
-            public Iterator<Object> iterator(final Iterator<Object> up) {
-                return new BaseIterator(up) {
+            public Iterator<Object> iterator(final Iterator<Object> upstream) {
+                return new Iterator2(upstream) {
                     @Override
                     public void doItem(Object item) {
                         if ((Boolean) predicate.invoke(item)) {
@@ -106,16 +106,143 @@ public class StreamImpl implements Stream {
         return new StreamImpl(this, new Operator() {
             @Override
             public Iterator<Object> iterator(final Iterator<Object> up) {
-                return new BaseIterator(up) {
+                return new Iterator1(up) {
                     @Override
-                    public void doItem(Object item) {
-                        yield(mapper.invoke(item));
+                    public Object next() {
+                        return mapper.invoke(iter.next());
                     }
                 };
             }
         });
     }
-
+        
+    @Override
+    public Stream tee(final LambdaExpression block) {
+        return new StreamImpl(this, new Operator() {
+            @Override
+            public Iterator<Object> iterator(final Iterator<Object> up) {
+               return new Iterator1(up) {
+                    @Override
+                    public Object next() {
+                        Object item = iter.next();
+                        block.invoke(item);
+                        return item;
+                    }
+                };
+            }
+        });
+    }
+ 
+    @Override
+    public Stream cumulate(final LambdaExpression operator) {
+        return new StreamImpl(this, new Operator() {
+            @Override
+            public Iterator<Object> iterator(final Iterator<Object> up) {
+                return new Iterator1(up) {
+                    Object value;
+                    boolean first = true;
+                    @Override
+                    public Object next() {
+                        if (first) {
+                            value = iter.next();
+                            first = false;
+                        } else {
+                            value = operator.invoke(value, iter.next());
+                        }
+                        return value;
+                    }
+                };
+            }
+        });
+    }
+ 
+    @Override
+    public Stream limit(final int n) {
+        if (n < 0) {
+            throw new IllegalArgumentException("limit must be non-negative");
+        }
+        return new StreamImpl(this, new Operator() {
+            @Override
+            public Iterator<Object> iterator(final Iterator<Object> up) {
+                return new Iterator0() {
+                    int limit = n;
+                    @Override
+                    public boolean hasNext() {
+                        return (limit > 0)? up.hasNext(): false;
+                    }
+                    @Override
+                    public Object next() {
+                        limit--;
+                        return up.next();
+                    }
+                };
+            }
+        });
+    }
+ 
+    @Override
+    public Stream skip(final int n) {
+        if (n < 0) {
+            throw new IllegalArgumentException("skip must be non-negative");
+        }
+        return new StreamImpl(this, new Operator() {
+            int skip = n;
+            @Override
+            public Iterator<Object> iterator(final Iterator<Object> up) {
+                while (skip > 0 && up.hasNext()) {
+                    up.next();
+                    skip--;
+                }
+                return up;
+            }
+        });
+    }
+    
+    @Override
+    public Stream uniqueElements () {
+        return new StreamImpl(this, new Operator() {
+            @Override
+            public Iterator<Object> iterator(final Iterator<Object> up) {
+                return new Iterator2(up) {
+                    private Set<Object> set = new HashSet<Object>();
+                    @Override
+                    public void doItem(Object item) {
+                        if (set.add(item)) {
+                            yield(item);
+                        }
+                    }
+                };
+            }
+        });
+    }
+    
+    @Override
+    public Stream concat(final Stream other) {
+        return new StreamImpl(this, new Operator() {
+            @Override
+            public Iterator<Object> iterator(final Iterator<Object> up) {
+                return new Iterator0() {
+                    Iterator<Object> iter = up;
+                    @Override
+                    public boolean hasNext() {
+                        if (iter.hasNext()) {
+                            return true;
+                        }
+                        if (iter != up) {
+                            return false;
+                        }
+                        iter = other.iterator();
+                        return iter.hasNext();
+                    }
+                    @Override
+                    public Object next() {
+                        return iter.next();
+                    }
+                };
+            }
+        });
+    }
+    
     @Override
     public Stream sorted(final LambdaExpression comparator) {
         return new StreamImpl(this, new Operator() {
@@ -124,46 +251,73 @@ public class StreamImpl implements Stream {
 
             @Override
             public Iterator<Object> iterator(final Iterator<Object> up) {
-        if (queue == null) {
-            queue = new PriorityQueue<Object>(16,
-                new Comparator<Object>() {
-                    @Override
-                    public int compare(Object o1, Object o2) {
-                        return (Integer) ELSupport.coerceToType(
-                            comparator.invoke(o1, o2),
-                            Integer.class);
+                if (queue == null) {
+                    queue = new PriorityQueue<Object>(16,
+                        new Comparator<Object>() {
+                            @Override
+                            public int compare(Object o1, Object o2) {
+                                return (Integer) ELSupport.coerceToType(
+                                    comparator.invoke(o1, o2),
+                                    Integer.class);
+                            }
+                        });
+
+                    while(up.hasNext()) {
+                        queue.add(up.next());
                     }
-                });
-
-            while(up.hasNext()) {
-                queue.add(up.next());
-            }
-        }
-
-                return new Iterator<Object>() {
-
-                @Override
-                public boolean hasNext() {
-                    return !queue.isEmpty();
                 }
 
-                @Override
-                public Object next() {
-                     return queue.remove();
-                }
-
-                @Override
-                public void remove() {
-                    throw new UnsupportedOperationException();
-                }
-            };
+                return new Iterator0() {
+                    @Override
+                    public boolean hasNext() {
+                        return !queue.isEmpty();
+                    }                   
+                    @Override
+                    public Object next() {
+                         return queue.remove();
+                    }
+                };
             }
         });
     }
 
     @Override
-    public Stream flatMap(LambdaExpression mapper) {
-        return new StreamImpl(this, new FlatMap(mapper));
+    public Stream flatMap(final LambdaExpression mapper) {
+        return new StreamImpl(this, new Operator() {
+            @Override
+            public Iterator<Object> iterator(final Iterator<Object> upstream) {
+                final BufferSink buffer = new BufferSink();
+                return new Iterator0() {
+                    Iterator<Object> iter = null;
+                    @Override
+                    public boolean hasNext() {
+                        while (true) {
+                            if (iter == null) {
+                                if (!upstream.hasNext()) {
+                                    return false;
+                                }
+                                BufferSink buffer = new BufferSink();
+                                mapper.invoke(buffer, upstream.next());
+                                iter = buffer.iterator();
+                            }
+                            else {
+                                if (iter.hasNext()) {
+                                    return true;
+                                }
+                                iter = null;
+                            }
+                        }
+                    }
+                    @Override
+                    public Object next() {
+                        if (iter == null) {
+                            return null;
+                        }
+                        return iter.next();
+                    }
+                };
+            }
+        });
     }
 
     @Override
@@ -173,6 +327,24 @@ public class StreamImpl implements Stream {
             base = op.invoke(base, iter.next());
         }
         return base;
+    }
+    
+    @Override
+    public Map<Object,Object> reduceBy(LambdaExpression classifier,
+                                       LambdaExpression seed,
+                                       LambdaExpression reducer) {
+        Map<Object,Object> map = new HashMap<Object,Object>();
+        Iterator<Object> iter = iterator();
+        while (iter.hasNext()) {
+            Object item = iter.next();
+            Object key = classifier.invoke(item);
+            Object value = map.get(key);
+            if (value == null) {
+                value = seed.invoke();
+            }
+            map.put(key, reducer.invoke(value, item));
+        }
+        return map;
     }
 
     @Override
@@ -203,13 +375,111 @@ public class StreamImpl implements Stream {
         }
         return map;
     }
+   
+    @Override
+    public boolean anyMatch(LambdaExpression predicate) {
+        Iterator<Object> iter = iterator();
+        while (iter.hasNext()) {
+            if ((Boolean) predicate.invoke(iter.next())) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-/*
+    @Override
+    public boolean allMatch(LambdaExpression predicate) {
+        Iterator<Object> iter = iterator();
+        while (iter.hasNext()) {
+            if (! (Boolean) predicate.invoke(iter.next())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean noneMatch(LambdaExpression predicate) {
+        Iterator<Object> iter = iterator();
+        while (iter.hasNext()) {
+            if ((Boolean) predicate.invoke(iter.next())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     @Override
     public Object[] toArray() {
         Iterator<Object> iter = iterator();
+        ArrayList<Object> al = new ArrayList<Object>();
         while (iter.hasNext()) {
+            al.add(iter.next());
         }
+        return al.toArray();
     }        
-*/
+
+    @Override
+    public Object into(Object target) {
+        if (! (target instanceof Collection)) {
+            throw new ELException("The argument type for into operation mush be a Collection");
+        }
+        Collection<Object> c = (Collection<Object>) target;
+        Iterator<Object> iter = iterator();
+        while (iter.hasNext()) {
+            c.add(iter.next());
+        }
+        return c;
+    }
+    
+    abstract class Iterator0 implements Iterator<Object> {
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+    }
+    
+    abstract class Iterator1 extends Iterator0 {
+
+        Iterator iter;
+
+        Iterator1(Iterator iter) {
+            this.iter = iter;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return iter.hasNext();
+        }
+    }
+    
+    abstract class Iterator2 extends Iterator1 {
+        private Object current;
+        private boolean yielded;
+        
+        Iterator2(Iterator upstream) {
+            super(upstream);
+        }
+        
+       @Override
+        public Object next() {
+            yielded = false;
+            return current;
+        }
+
+        @Override
+        public boolean hasNext() {
+            while ((!yielded) && iter.hasNext()) {
+                doItem(iter.next());
+            }
+            return yielded;
+        }
+
+        void yield(Object current) {
+            this.current = current;
+            yielded = true;
+        }
+        
+        abstract void doItem(Object item);
+    }
 }
