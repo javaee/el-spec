@@ -40,30 +40,52 @@
  * @author Kin-man Chung
  */
 
-package com.sun.el.query;
+package com.sun.el.stream;
+
+import java.util.Iterator;
+import java.util.Comparator;
 
 import javax.el.ELContext;
 import javax.el.LambdaExpression;
 
-import com.sun.el.lang.ELSupport;
+class Optional {
 
-class Max extends QueryOperator {
+    private final static Optional EMPTY = new Optional();
+    private final Object value;
 
-    @Override
-    public Object invoke(final ELContext context,
-                         final Iterable<Object> base,
-                         final Object[] params) {
-        final LambdaExpression selector = getLambda("max", params, 0, true);
-
-        Object max = null;
-        for (Object item: base) {
-            if (selector != null) {
-                item = selector.invoke(context, item);
-            }
-            if (max == null || ELSupport.compare(max, item) < 0) {
-                max = item;
-            }
+    Optional(Object value) {
+        if (value == null) {
+            throw new NullPointerException();
         }
-        return max;
+        this.value = value;
+    }
+
+    Optional() {
+        this.value = null;
+    }
+
+    public boolean isPresent() {
+        return value != null;
+    }
+
+    public void ifPresent(LambdaExpression lambda) {
+        if (value != null) {
+            lambda.invoke(value);
+        }
+    }
+
+    public Object get() {
+        if (value == null) {
+            throw new java.util.NoSuchElementException("No value present");
+        }
+        return value;
+    }
+
+    public Object orElse(Object other) {
+        return value != null ? value : other;
+    }
+
+    public Object orElse(LambdaExpression lambda) {
+        return value != null? value: lambda.invoke();
     }
 }

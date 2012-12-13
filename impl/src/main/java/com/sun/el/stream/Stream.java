@@ -40,42 +40,39 @@
  * @author Kin-man Chung
  */
 
-package com.sun.el.streams;
+package com.sun.el.stream;
 
-import java.util.Iterator;
-import java.util.PriorityQueue;
+import com.sun.el.lang.ELSupport;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.ArrayList;
-
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Set;
 import javax.el.ELException;
 import javax.el.LambdaExpression;
-import javax.el.streams.Stream;
-import com.sun.el.lang.ELSupport;
-import java.util.HashSet;
-import java.util.Set;
 
 /*
  */
 
-public class StreamImpl implements Stream {
+public class Stream {
 
     private Iterator<Object> source;
     private Stream upstream;
     private Operator op;
 
-    StreamImpl(Iterator<Object> source) {
+    Stream(Iterator<Object> source) {
         this.source = source;
     }
 
-    StreamImpl(Stream upstream, Operator op) {
+    Stream(Stream upstream, Operator op) {
         this.upstream = upstream;
         this.op = op;
     }
 
-    @Override
     public Iterator<Object> iterator() {
         if (source != null) {
             return source;
@@ -84,9 +81,8 @@ public class StreamImpl implements Stream {
         return op.iterator(upstream.iterator());
     }
 
-    @Override
     public Stream filter(final LambdaExpression predicate) {
-        return new StreamImpl(this, new Operator() {
+        return new Stream(this, new Operator() {
             @Override
             public Iterator<Object> iterator(final Iterator<Object> upstream) {
                 return new Iterator2(upstream) {
@@ -101,9 +97,8 @@ public class StreamImpl implements Stream {
         });
     }
 
-    @Override
     public Stream map(final LambdaExpression mapper) {
-        return new StreamImpl(this, new Operator() {
+        return new Stream(this, new Operator() {
             @Override
             public Iterator<Object> iterator(final Iterator<Object> up) {
                 return new Iterator1(up) {
@@ -116,9 +111,8 @@ public class StreamImpl implements Stream {
         });
     }
         
-    @Override
     public Stream tee(final LambdaExpression block) {
-        return new StreamImpl(this, new Operator() {
+        return new Stream(this, new Operator() {
             @Override
             public Iterator<Object> iterator(final Iterator<Object> up) {
                return new Iterator1(up) {
@@ -133,9 +127,8 @@ public class StreamImpl implements Stream {
         });
     }
  
-    @Override
     public Stream cumulate(final LambdaExpression operator) {
-        return new StreamImpl(this, new Operator() {
+        return new Stream(this, new Operator() {
             @Override
             public Iterator<Object> iterator(final Iterator<Object> up) {
                 return new Iterator1(up) {
@@ -156,12 +149,11 @@ public class StreamImpl implements Stream {
         });
     }
  
-    @Override
     public Stream limit(final int n) {
         if (n < 0) {
             throw new IllegalArgumentException("limit must be non-negative");
         }
-        return new StreamImpl(this, new Operator() {
+        return new Stream(this, new Operator() {
             @Override
             public Iterator<Object> iterator(final Iterator<Object> up) {
                 return new Iterator0() {
@@ -180,12 +172,11 @@ public class StreamImpl implements Stream {
         });
     }
  
-    @Override
     public Stream skip(final int n) {
         if (n < 0) {
             throw new IllegalArgumentException("skip must be non-negative");
         }
-        return new StreamImpl(this, new Operator() {
+        return new Stream(this, new Operator() {
             int skip = n;
             @Override
             public Iterator<Object> iterator(final Iterator<Object> up) {
@@ -198,9 +189,8 @@ public class StreamImpl implements Stream {
         });
     }
     
-    @Override
     public Stream uniqueElements () {
-        return new StreamImpl(this, new Operator() {
+        return new Stream(this, new Operator() {
             @Override
             public Iterator<Object> iterator(final Iterator<Object> up) {
                 return new Iterator2(up) {
@@ -216,9 +206,8 @@ public class StreamImpl implements Stream {
         });
     }
     
-    @Override
     public Stream concat(final Stream other) {
-        return new StreamImpl(this, new Operator() {
+        return new Stream(this, new Operator() {
             @Override
             public Iterator<Object> iterator(final Iterator<Object> up) {
                 return new Iterator0() {
@@ -243,9 +232,8 @@ public class StreamImpl implements Stream {
         });
     }
     
-    @Override
     public Stream sorted(final LambdaExpression comparator) {
-        return new StreamImpl(this, new Operator() {
+        return new Stream(this, new Operator() {
 
             private PriorityQueue<Object> queue = null;
 
@@ -281,12 +269,11 @@ public class StreamImpl implements Stream {
         });
     }
 
-    @Override
     public Stream flatMap(final LambdaExpression mapper) {
-        return new StreamImpl(this, new Operator() {
+        return new Stream(this, new Operator() {
             @Override
             public Iterator<Object> iterator(final Iterator<Object> upstream) {
-                final BufferSink buffer = new BufferSink();
+                final Block buffer = new Block();
                 return new Iterator0() {
                     Iterator<Object> iter = null;
                     @Override
@@ -296,7 +283,7 @@ public class StreamImpl implements Stream {
                                 if (!upstream.hasNext()) {
                                     return false;
                                 }
-                                BufferSink buffer = new BufferSink();
+                                Block buffer = new Block();
                                 mapper.invoke(buffer, upstream.next());
                                 iter = buffer.iterator();
                             }
@@ -320,7 +307,6 @@ public class StreamImpl implements Stream {
         });
     }
 
-    @Override
     public Object reduce(Object base, LambdaExpression op) {
         Iterator<Object> iter = iterator();
         while (iter.hasNext()) {
@@ -329,7 +315,6 @@ public class StreamImpl implements Stream {
         return base;
     }
     
-    @Override
     public Map<Object,Object> reduceBy(LambdaExpression classifier,
                                        LambdaExpression seed,
                                        LambdaExpression reducer) {
@@ -347,7 +332,6 @@ public class StreamImpl implements Stream {
         return map;
     }
 
-    @Override
     public void forEach(LambdaExpression sink) {
         Iterator<Object> iter = iterator();
         while (iter.hasNext()) {
@@ -355,7 +339,6 @@ public class StreamImpl implements Stream {
         }
     }
 
-    @Override
     public Map<Object,Collection<Object>> groupBy(LambdaExpression classifier) {
         Map<Object, Collection<Object>> map =
                         new HashMap<Object, Collection<Object>>();
@@ -376,7 +359,6 @@ public class StreamImpl implements Stream {
         return map;
     }
    
-    @Override
     public boolean anyMatch(LambdaExpression predicate) {
         Iterator<Object> iter = iterator();
         while (iter.hasNext()) {
@@ -387,7 +369,6 @@ public class StreamImpl implements Stream {
         return false;
     }
 
-    @Override
     public boolean allMatch(LambdaExpression predicate) {
         Iterator<Object> iter = iterator();
         while (iter.hasNext()) {
@@ -398,7 +379,6 @@ public class StreamImpl implements Stream {
         return true;
     }
 
-    @Override
     public boolean noneMatch(LambdaExpression predicate) {
         Iterator<Object> iter = iterator();
         while (iter.hasNext()) {
@@ -409,7 +389,6 @@ public class StreamImpl implements Stream {
         return true;
     }
 
-    @Override
     public Object[] toArray() {
         Iterator<Object> iter = iterator();
         ArrayList<Object> al = new ArrayList<Object>();
@@ -419,7 +398,6 @@ public class StreamImpl implements Stream {
         return al.toArray();
     }        
 
-    @Override
     public Object into(Object target) {
         if (! (target instanceof Collection)) {
             throw new ELException("The argument type for into operation mush be a Collection");

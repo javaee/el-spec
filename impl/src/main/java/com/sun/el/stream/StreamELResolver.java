@@ -40,46 +40,73 @@
  * @author Kin-man Chung
  */
 
-package com.sun.el.query;
+package com.sun.el.stream;
 
-import java.util.Iterator;
 import java.beans.FeatureDescriptor;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.el.ELContext;
+import javax.el.ELException;
 import javax.el.ELResolver;
+import javax.el.LambdaExpression;
 
 /*
- * This ELResolver handles the operators (implemented with build-in
- * methods in Iterable's) in LINQ, .NET Language Integrated Query.  See
- * http://msdn.microsoft.com/en-us/library/bb394939.aspx
+ * This ELResolver intercepts method calls to a Collections, to provide
+ * support for collection operations. 
  */
 
-public class QueryOperatorELResolver extends ELResolver {
+public class StreamELResolver extends ELResolver {
 
-    public Object invoke(ELContext context,
-                         Object base,
-                         Object method,
-                         Class<?>[] paramTypes,
-                         Object[] params) {
+    public Object invoke(final ELContext context,
+                         final Object base,
+                         final Object method,
+                         final Class<?>[] paramTypes,
+                         final Object[] params) {
 
         if (context == null) {
             throw new NullPointerException();
         }
 
-        if (! (base instanceof Iterable && method instanceof String)) {
-            return null;
+        if (base instanceof Collection) {
+            @SuppressWarnings("unchecked")
+            Collection<Object> c = (Collection<Object>)base;
+            if ("stream".equals(method)) {
+                context.setPropertyResolved(true);
+                return new Stream(c.iterator());
+            }
+            if ("forEach".equals(method)) {
+                context.setPropertyResolved(true);
+                Stream stream = new Stream(c.iterator());
+                LambdaExpression expr =
+                        getLambda(params[0], ""+base+".forEach");
+                expr.setELContext(context);
+                stream.forEach(expr);
+                return null;
+            }
         }
-
-        QueryOperator operator =
-            QueryOperator.getQueryOperator(method.toString());
-        if (operator == null) {
-            return null;
+        if (base instanceof List && "sort".equals(method)) {
+            Collections.sort((List)base, new Comparator<Object>() {
+                @Override
+                public int compare(Object o1, Object o2) {
+                    LambdaExpression expr =
+                            getLambda(params[0], ""+base+".sort");
+                    return (Integer) expr.invoke(context, o1, o2);
+                }
+            });
         }
+        return null;
+    }
 
-        context.setPropertyResolved(true);
-        @SuppressWarnings("unchecked")
-        Iterable<Object> iterable = (Iterable<Object>) base;
-        return operator.invoke(context, iterable, params);
+    private LambdaExpression getLambda(Object obj, String method) {
+        if (obj == null || ! (obj instanceof LambdaExpression)) {
+            throw new ELException ("When calling " + method + ", expecting an " +
+                "EL lambda expression, but found " + obj);
+        }
+        return (LambdaExpression) obj;
     }
 
     public Object getValue(ELContext context, Object base, Object property) {

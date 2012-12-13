@@ -48,7 +48,7 @@ public class StreamTest {
         Object ret = elp.eval(query);
         int indx = 0;
         p(" = returns =");
-        Iterator<Object> iter = ((javax.el.streams.Stream)ret).iterator();
+        Iterator<Object> iter = ((com.sun.el.stream.Stream)ret).iterator();
         while (iter.hasNext()) {
             Object item = iter.next();
             p(" " + item.toString());
