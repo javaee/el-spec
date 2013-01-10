@@ -78,6 +78,7 @@ public class StreamELResolver extends ELResolver {
                 context.setPropertyResolved(true);
                 return new Stream(c.iterator());
             }
+/*
             if ("forEach".equals(method)) {
                 context.setPropertyResolved(true);
                 Stream stream = new Stream(c.iterator());
@@ -87,7 +88,9 @@ public class StreamELResolver extends ELResolver {
                 stream.forEach(expr);
                 return null;
             }
+*/
         }
+/*
         if (base instanceof List && "sort".equals(method)) {
             Collections.sort((List)base, new Comparator<Object>() {
                 @Override
@@ -98,9 +101,11 @@ public class StreamELResolver extends ELResolver {
                 }
             });
         }
+*/
         return null;
     }
 
+/*
     private LambdaExpression getLambda(Object obj, String method) {
         if (obj == null || ! (obj instanceof LambdaExpression)) {
             throw new ELException ("When calling " + method + ", expecting an " +
@@ -108,7 +113,7 @@ public class StreamELResolver extends ELResolver {
         }
         return (LambdaExpression) obj;
     }
-
+*/
     public Object getValue(ELContext context, Object base, Object property) {
         return null;
     }

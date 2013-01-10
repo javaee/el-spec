@@ -43,6 +43,10 @@
 package com.sun.el.stream;
 
 import com.sun.el.lang.ELSupport;
+import com.sun.el.lang.ELArithmetic;
+
+import java.lang.reflect.Array;
+import java.util.List;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -52,8 +56,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Set;
+
 import javax.el.ELException;
 import javax.el.LambdaExpression;
+
 
 /*
  */
@@ -127,29 +133,7 @@ public class Stream {
         });
     }
  
-    public Stream cumulate(final LambdaExpression operator) {
-        return new Stream(this, new Operator() {
-            @Override
-            public Iterator<Object> iterator(final Iterator<Object> up) {
-                return new Iterator1(up) {
-                    Object value;
-                    boolean first = true;
-                    @Override
-                    public Object next() {
-                        if (first) {
-                            value = iter.next();
-                            first = false;
-                        } else {
-                            value = operator.invoke(value, iter.next());
-                        }
-                        return value;
-                    }
-                };
-            }
-        });
-    }
- 
-    public Stream limit(final int n) {
+    public Stream limit(final long n) {
         if (n < 0) {
             throw new IllegalArgumentException("limit must be non-negative");
         }
@@ -157,7 +141,7 @@ public class Stream {
             @Override
             public Iterator<Object> iterator(final Iterator<Object> up) {
                 return new Iterator0() {
-                    int limit = n;
+                    long limit = n;
                     @Override
                     public boolean hasNext() {
                         return (limit > 0)? up.hasNext(): false;
@@ -172,12 +156,12 @@ public class Stream {
         });
     }
  
-    public Stream skip(final int n) {
-        if (n < 0) {
-            throw new IllegalArgumentException("skip must be non-negative");
+    public Stream substream(final long startIndex) {
+        if (startIndex < 0) {
+            throw new IllegalArgumentException("substream index must be non-negative");
         }
         return new Stream(this, new Operator() {
-            int skip = n;
+            long skip = startIndex;
             @Override
             public Iterator<Object> iterator(final Iterator<Object> up) {
                 while (skip > 0 && up.hasNext()) {
@@ -187,6 +171,10 @@ public class Stream {
                 return up;
             }
         });
+    }
+
+    public Stream substream(long startIndex, long endIndex) {
+        return substream(startIndex).limit(endIndex-startIndex);
     }
     
     public Stream uniqueElements () {
@@ -205,33 +193,7 @@ public class Stream {
             }
         });
     }
-    
-    public Stream concat(final Stream other) {
-        return new Stream(this, new Operator() {
-            @Override
-            public Iterator<Object> iterator(final Iterator<Object> up) {
-                return new Iterator0() {
-                    Iterator<Object> iter = up;
-                    @Override
-                    public boolean hasNext() {
-                        if (iter.hasNext()) {
-                            return true;
-                        }
-                        if (iter != up) {
-                            return false;
-                        }
-                        iter = other.iterator();
-                        return iter.hasNext();
-                    }
-                    @Override
-                    public Object next() {
-                        return iter.next();
-                    }
-                };
-            }
-        });
-    }
-    
+
     public Stream sorted(final LambdaExpression comparator) {
         return new Stream(this, new Operator() {
 
@@ -269,11 +231,10 @@ public class Stream {
         });
     }
 
-    public Stream flatMap(final LambdaExpression mapper) {
+    public Stream explode(final LambdaExpression mapper) {
         return new Stream(this, new Operator() {
             @Override
             public Iterator<Object> iterator(final Iterator<Object> upstream) {
-                final Block buffer = new Block();
                 return new Iterator0() {
                     Iterator<Object> iter = null;
                     @Override
@@ -283,7 +244,7 @@ public class Stream {
                                 if (!upstream.hasNext()) {
                                     return false;
                                 }
-                                Block buffer = new Block();
+                                Downstream buffer = new Downstream();
                                 mapper.invoke(buffer, upstream.next());
                                 iter = buffer.iterator();
                             }
@@ -315,6 +276,19 @@ public class Stream {
         return base;
     }
     
+    public Optional reduce(LambdaExpression op) {
+        Iterator<Object> iter = iterator();
+        if (iter.hasNext()) {
+            Object base = iter.next();
+            while (iter.hasNext()) {
+                base = op.invoke(base, iter.next());
+            }
+            return new Optional(base);
+        }
+        return new Optional();
+    }
+    
+/*
     public Map<Object,Object> reduceBy(LambdaExpression classifier,
                                        LambdaExpression seed,
                                        LambdaExpression reducer) {
@@ -331,6 +305,7 @@ public class Stream {
         }
         return map;
     }
+*/
 
     public void forEach(LambdaExpression sink) {
         Iterator<Object> iter = iterator();
@@ -339,6 +314,7 @@ public class Stream {
         }
     }
 
+/*
     public Map<Object,Collection<Object>> groupBy(LambdaExpression classifier) {
         Map<Object, Collection<Object>> map =
                         new HashMap<Object, Collection<Object>>();
@@ -358,7 +334,7 @@ public class Stream {
         }
         return map;
     }
-   
+*/   
     public boolean anyMatch(LambdaExpression predicate) {
         Iterator<Object> iter = iterator();
         while (iter.hasNext()) {
@@ -398,6 +374,7 @@ public class Stream {
         return al.toArray();
     }        
 
+/*
     public Object into(Object target) {
         if (! (target instanceof Collection)) {
             throw new ELException("The argument type for into operation mush be a Collection");
@@ -409,7 +386,74 @@ public class Stream {
         }
         return c;
     }
-    
+*/
+
+    public Optional findFirst() {
+        Iterator<Object> iter = iterator();
+        if (iter.hasNext()) {
+            return new Optional(iter.next());
+        } else {
+            return new Optional();
+        }
+    }
+
+    public Optional findAny() {
+        return findFirst();
+    }
+
+    public Object sum() {
+        Number sum = Long.valueOf(0);
+        Iterator<Object> iter = iterator();
+        while (iter.hasNext()) {
+            sum = ELArithmetic.add(sum, iter.next());
+        }
+        return sum;
+    }
+
+    public Optional min() {
+        Object min = null;
+        Iterator<Object> iter = iterator();
+        while (iter.hasNext()) {
+            Object item = iter.next();
+            if (min == null || ELSupport.compare(min, item) > 0) {
+                min = item;
+            }
+        }
+        if (min == null) {
+            return new Optional();
+        }
+        return new Optional(min);
+    }
+
+    public Optional max() {
+        Object max = null;
+        Iterator<Object> iter = iterator();
+        while (iter.hasNext()) {
+            Object item = iter.next();
+            if (max == null || ELSupport.compare(max, item) < 0) {
+                max = item;
+            }
+        }
+        if (max == null) {
+            return new Optional();
+        }
+        return new Optional(max);
+    }
+
+    public Optional average() {
+        Number sum = Long.valueOf(0);
+        long count = 0;
+        Iterator<Object> iter = iterator();
+        while (iter.hasNext()) {
+            count++;
+            sum = ELArithmetic.add(sum, iter.next());
+        }
+        if (count == 0) {
+            return new Optional();
+        }
+        return new Optional(ELArithmetic.divide(sum, count));
+    }
+
     abstract class Iterator0 implements Iterator<Object> {
         @Override
         public void remove() {
@@ -420,7 +464,6 @@ public class Stream {
     abstract class Iterator1 extends Iterator0 {
 
         Iterator iter;
-
         Iterator1(Iterator iter) {
             this.iter = iter;
         }
@@ -459,5 +502,34 @@ public class Stream {
         }
         
         abstract void doItem(Object item);
+    }
+
+    public class Downstream {
+
+        private List<Object> buffer = new ArrayList<Object>();
+
+        public void send(Object item) {
+            // current implemenation does not handle method overloading well, so...
+            if (item instanceof Collection) {
+                for (Object obj: (Collection<Object>) item) {
+                    send(obj);
+                }
+            } else if (item instanceof Stream) {
+                Iterator iter = ((Stream) item).iterator();
+                while (iter.hasNext()) {
+                    send(iter.next());
+                }
+            } else if (item.getClass().isArray()) {
+                for (int i = 0; i < Array.getLength(item); i++) {
+                    send(Array.get(item, i));
+                }
+            } else {
+                buffer.add(item);
+            }
+        }
+
+        Iterator<Object> iterator() {
+            return buffer.iterator();
+        }
     }
 }

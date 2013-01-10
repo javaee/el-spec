@@ -48,7 +48,7 @@ import java.util.Comparator;
 import javax.el.ELContext;
 import javax.el.LambdaExpression;
 
-class Optional {
+public class Optional {
 
     private final static Optional EMPTY = new Optional();
     private final Object value;
@@ -82,10 +82,12 @@ class Optional {
     }
 
     public Object orElse(Object other) {
-        return value != null ? value : other;
-    }
-
-    public Object orElse(LambdaExpression lambda) {
-        return value != null? value: lambda.invoke();
+        if (value != null) {
+            return value;
+        }
+        if (other instanceof LambdaExpression) {
+            return ((LambdaExpression) other).invoke();
+        }
+        return other;
     }
 }
