@@ -129,9 +129,6 @@
                         <Specification-Vendor>${vendorName}</Specification-Vendor>
                         <Implementation-Version>${version}</Implementation-Version>
                         <Implementation-Vendor>${vendorName}</Implementation-Vendor>
-                        <Export-Package>
-                            javax.el
-                        </Export-Package>
                     </instructions>
                 </configuration>
                 <executions>

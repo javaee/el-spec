@@ -154,16 +154,6 @@
                         <Specification-Vendor>${vendorName}</Specification-Vendor>
                         <Implementation-Version>${version}</Implementation-Version>
                         <Implementation-Vendor>${vendorName}</Implementation-Vendor>
-                        <Export-Package>
-                            javax.el,
-                            com.sun.el
-                        </Export-Package>
-                        <Private-Package>
-                            com.sun.el.lang,
-                            com.sun.el.parser,
-                            com.sun.el.util,
-                            com.sun.el.query
-                        </Private-Package>
                     </instructions>
                 </configuration>
                 <executions>
