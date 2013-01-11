@@ -526,6 +526,13 @@ public class BeanELResolver extends ELResolver {
         }
         Method m = ELUtil.findMethod(base.getClass(), method.toString(),
                                     paramTypes,params, false);
+        for (Object p: params) {
+            // If the parameters is a LambdaExpression, set the ELContext
+            // for its evaluation
+            if (p instanceof javax.el.LambdaExpression) {
+                ((javax.el.LambdaExpression) p).setELContext(context);
+            }
+        }
         Object ret = ELUtil.invokeMethod(context, m, base, params);
         context.setPropertyResolved(base, method);
         return ret;

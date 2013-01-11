@@ -70,6 +70,9 @@ public class LambdaExpression {
 
     private List<String> formalParameters = new ArrayList<String>();
     private ValueExpression expression;
+    private ELContext context;
+    // Arguments from nesting lambdas, when the body is another lambda
+    private Map<String, Object> envirArgs = null;
 
     /**
      * Creates a new LambdaExpression.
@@ -82,6 +85,17 @@ public class LambdaExpression {
                              ValueExpression expression) {
         this.formalParameters = formalParameters;
         this.expression = expression;
+        this.envirArgs = new HashMap<String, Object>();
+    }
+
+    /**
+     * Set the ELContext to use in evaluating the LambdaExpression.
+     * The ELContext must to be set prior to the invocation of the LambdaExpression,
+     * unless it is supplied with {@link LambdaExpression#invoke}.
+     * @param elContext The ELContext to use in evaluating the LambdaExpression.
+     */
+    public void setELContext(ELContext context) {
+        this.context = context;
     }
 
     /**
@@ -97,16 +111,22 @@ public class LambdaExpression {
      * removed after the evaluation.</p>
      *
      * @param elContext The ELContext used for the evaluation of the expression
+     *     The ELContext set by {@link setELContext} is ignored.
      * @param args The arguments to invoke the Lambda expression. For calls with
      *     no arguments, an empty array must be provided.  A Lambda argument
      *     can be <code>null</code>.
      * @return The result of invoking the Lambda expression
      * @throws ELException if not enough arguments are provided
+     * @throws NullPointerException is elContext is null
      */
     public Object invoke(ELContext elContext, Object... args) 
             throws ELException {
         int i = 0;
         Map<String, Object> lambdaArgs = new HashMap<String, Object>();
+
+        // First get arguments injected from the outter lambda, if any
+        lambdaArgs.putAll(envirArgs);
+
         for (String fParam: formalParameters) {
             if (i >= args.length) {
                 throw new ELException("Expected Argument " + fParam +
@@ -114,9 +134,45 @@ public class LambdaExpression {
             }
             lambdaArgs.put(fParam, args[i++]);
         }
+
         elContext.enterLambdaScope(lambdaArgs);
         Object ret = expression.getValue(elContext);
+
+        // If the result of evaluating the body is another LambdaExpression,
+        // whose body has not been evaluated yet.  (A LambdaExpression is
+        // evaluated iff when its invoke method is called.) The current lambda
+        // arguments may be needed in that body when it is evaluated later,
+        // after the current lambda exits.  To make these arguments available
+        // then, they are injected into it.
+        if (ret instanceof LambdaExpression) {
+            ((LambdaExpression) ret).envirArgs.putAll(lambdaArgs);
+        }
         elContext.exitLambdaScope();
         return ret;
+    }
+
+    /**
+     * Invoke the encapsulated Lambda expression.
+     * <p> The supplied arguments are matched, in
+     * the same order, to the formal parameters.  If there are more arguments
+     * than the formal parameters, the extra arguments are ignored.  If there
+     * are less arguments than the formal parameters, an
+     * <code>ELException</code> is thrown.</p>
+     *
+     * <p>The actual Lambda arguments are added to the ELContext and are
+     * available during the evaluation of the Lambda expression.  They are
+     * removed after the evaluation.</p>
+     *
+     * The ELContext set by {@link LambdaExpression#setELContext} is used in
+     * the evaluation of the Lambda Expression.
+     *
+     * @param args The arguments to invoke the Lambda expression. For calls with
+     *     no arguments, an empty array must be provided.  A Lambda argument
+     *     can be <code>null</code>.
+     * @return The result of invoking the Lambda expression
+     * @throws ELException if not enough arguments are provided
+     */
+    public Object invoke(Object... args) {
+        return invoke(this.context, args);
     }
 }

@@ -40,31 +40,54 @@
  * @author Kin-man Chung
  */
 
-package com.sun.el.query;
+package com.sun.el.stream;
 
 import java.util.Iterator;
-import javax.el.ELContext;
+import java.util.Comparator;
 
-class Take extends QueryOperator {
-    @Override
-    public Iterable<Object> invoke(final ELContext context,
-                                   final Iterable<Object> base,
-                                   final Object[] params) {
-        final int count = getInt("take", params, 0);
-        return new Iterable<Object>() {
-            @Override
-            public Iterator<Object> iterator() {
-                return new BaseIterator(base) {
-                    @Override
-                    void doItem(Object item) {
-                        if (index < count) {
-                            yield(item);
-                        } else {
-                            yieldBreak();
-                        }
-                    }
-                };
-            }
-        };
+import javax.el.ELContext;
+import javax.el.LambdaExpression;
+
+public class Optional {
+
+    private final static Optional EMPTY = new Optional();
+    private final Object value;
+
+    Optional(Object value) {
+        if (value == null) {
+            throw new NullPointerException();
+        }
+        this.value = value;
+    }
+
+    Optional() {
+        this.value = null;
+    }
+
+    public boolean isPresent() {
+        return value != null;
+    }
+
+    public void ifPresent(LambdaExpression lambda) {
+        if (value != null) {
+            lambda.invoke(value);
+        }
+    }
+
+    public Object get() {
+        if (value == null) {
+            throw new java.util.NoSuchElementException("No value present");
+        }
+        return value;
+    }
+
+    public Object orElse(Object other) {
+        if (value != null) {
+            return value;
+        }
+        if (other instanceof LambdaExpression) {
+            return ((LambdaExpression) other).invoke();
+        }
+        return other;
     }
 }

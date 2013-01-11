@@ -54,8 +54,7 @@ import javax.el.ELResolver;
 import com.sun.el.lang.ExpressionBuilder;
 import com.sun.el.lang.ELSupport;
 import com.sun.el.util.MessageFactory;
-import com.sun.el.query.QueryOperatorELResolver;
-import com.sun.el.query.Generation;
+import com.sun.el.stream.StreamELResolver;
 
 /**
  * @see javax.el.ExpressionFactory
@@ -115,13 +114,14 @@ public class ExpressionFactoryImpl extends ExpressionFactory {
     }
 
     @Override
-    public ELResolver getQueryOperatorELResolver() {
-        return new QueryOperatorELResolver();
+    public ELResolver getStreamELResolver() {
+        return new StreamELResolver();
     }
 
     @Override
     public Map<String, Method> getInitFunctionMap() {
         Map<String, Method> funcs = new HashMap<String, Method>();
+/*
         Class<Generation> genClass = Generation.class;
         try {
             funcs.put("collections:range", genClass.getMethod("range",
@@ -131,6 +131,7 @@ public class ExpressionFactoryImpl extends ExpressionFactory {
         } catch (NoSuchMethodException ex) {
             // Should not happen
         }
+*/
         return funcs;
     }
 }

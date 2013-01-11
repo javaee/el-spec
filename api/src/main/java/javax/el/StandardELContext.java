@@ -69,7 +69,7 @@ public class StandardELContext extends ELContext {
     /*
      * The ELResolver implementing the query operators.
      */
-    private ELResolver queryOperatorELResolver;
+    private ELResolver streamELResolver;
 
     /*
      * The ImportHandler for this ELContext.
@@ -108,7 +108,7 @@ public class StandardELContext extends ELContext {
      * @param factory The ExpressionFactory 
      */
     public StandardELContext(ExpressionFactory factory) {
-        this.queryOperatorELResolver = factory.getQueryOperatorELResolver();
+        this.streamELResolver = factory.getStreamELResolver();
         initFunctionMap = factory.getInitFunctionMap();
     }
 
@@ -157,7 +157,7 @@ public class StandardELContext extends ELContext {
      * <ol>
      * <li>A {@link BeanNameELResolver} for beans defined locally</li>
      * <li>Any custom <code>ELResolver</code>s</li>
-     * <li>An <code>ELResolver</code> implementing the Linq query operators</li>
+     * <li>An <code>ELResolver</code> supporting the collection operations</li>
      * <li>A {@link StaticFieldELResolver} for resolving static fields</li>
      * <li>A {@link MapELResolver} for resolving Map properties</li>
      * <li>A {@link ResourceBundleELResolver} for resolving ResourceBundle properties</li>
@@ -175,8 +175,8 @@ public class StandardELContext extends ELContext {
             resolver.add(new BeanNameELResolver(new LocalBeanNameResolver()));
             customResolvers = new CompositeELResolver();
             resolver.add(customResolvers);
-            if (queryOperatorELResolver != null) {
-                resolver.add(queryOperatorELResolver);
+            if (streamELResolver != null) {
+                resolver.add(streamELResolver);
             }
             resolver.add(new StaticFieldELResolver());
             resolver.add(new MapELResolver());
