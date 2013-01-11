@@ -57,9 +57,13 @@ import java.util.ArrayList;
  * a Lambda expression is evaluated.</p>
  * <p>A <code>LambdaExpression</code> can be invoked by calling
  * {@link LambdaExpression#invoke}, with
- * an {@link javax.el.ELContext} and a list of the actual arguments.  The
- * evaluation of the <code>ValueExpression</code> in the body uses the
- * {@link ELContext} to resolve references to the parameters.
+ * an {@link javax.el.ELContext} and a list of the actual arguments.
+ * Alternately, a <code>LambdaExpression</code> can be invoked without passing
+ * a <code>ELContext</code>, in which case the <code>ELContext</code> previously
+ * set by calling {@link LambdaExpression#setELContext} will be used.
+ * The evaluation of the <code>ValueExpression</code> in the body uses the
+ * {@link ELContext} to resolve references to the parameters, and to evaluate
+ * the lambda expression.
  * The result of the evaluation is returned.</p>
  * @see ELContext#getLambdaArgument
  * @see ELContext#enterLambdaScope
@@ -92,7 +96,7 @@ public class LambdaExpression {
      * Set the ELContext to use in evaluating the LambdaExpression.
      * The ELContext must to be set prior to the invocation of the LambdaExpression,
      * unless it is supplied with {@link LambdaExpression#invoke}.
-     * @param elContext The ELContext to use in evaluating the LambdaExpression.
+     * @param context The ELContext to use in evaluating the LambdaExpression.
      */
     public void setELContext(ELContext context) {
         this.context = context;
@@ -111,7 +115,7 @@ public class LambdaExpression {
      * removed after the evaluation.</p>
      *
      * @param elContext The ELContext used for the evaluation of the expression
-     *     The ELContext set by {@link setELContext} is ignored.
+     *     The ELContext set by {@link #setELContext} is ignored.
      * @param args The arguments to invoke the Lambda expression. For calls with
      *     no arguments, an empty array must be provided.  A Lambda argument
      *     can be <code>null</code>.
@@ -164,7 +168,7 @@ public class LambdaExpression {
      * removed after the evaluation.</p>
      *
      * The ELContext set by {@link LambdaExpression#setELContext} is used in
-     * the evaluation of the Lambda Expression.
+     * the evaluation of the lambda Expression.
      *
      * @param args The arguments to invoke the Lambda expression. For calls with
      *     no arguments, an empty array must be provided.  A Lambda argument

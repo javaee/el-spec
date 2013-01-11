@@ -337,8 +337,7 @@ public abstract class ExpressionFactory {
             Class<?> targetType);
     
     /**
-     * Retrieves an ELResolver that implements the operations in
-     * {@link javax.el.stream.Stream} and {@link javax.el.stream.MapStream}
+     * Retrieves an ELResolver that implements the operations in collections.
      *
      * <p>This ELResolver resolves the method invocation on the pair
      * (<code>base</code>, <code>property</code>) when <code>base</code> is
