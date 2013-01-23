@@ -151,9 +151,12 @@ public abstract class ELContext {
      * @see CompositeELResolver
      * @param base The base object
      * @param property The property object
+     *
+     * @since EL 3.0
      */
     public void setPropertyResolved(Object base, Object property) {
-        this.resolved = true;
+        setPropertyResolved(true); // Don't set the variable here, for 2.2 users
+                                   // ELContext may be overridden or delegated.
         notifyPropertyResolved(base, property);
     }
 
@@ -447,6 +450,7 @@ public abstract class ELContext {
      */
     public Object convertToType(Object obj,
                                 Class<?> targetType) {
+        boolean propertyResolvedSave = isPropertyResolved();
         try {
             setPropertyResolved(false);
             Object res = getELResolver().convertToType(this, obj, targetType);
@@ -457,6 +461,8 @@ public abstract class ELContext {
             throw ex;
         } catch (Exception ex) {
             throw new ELException(ex);
+        } finally {
+            setPropertyResolved(propertyResolvedSave);
         }
         return ELUtil.getExpressionFactory().coerceToType(obj, targetType);
     }
