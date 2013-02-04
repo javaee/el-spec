@@ -78,6 +78,7 @@ public class OperatorTest {
     @Test
     public void testSemi() {
         testExpr("semi", "10; 20", 20L);
+        testExpr("semi0", "10; 20; 30", 30L);
         elp.eval("x = 10; 20");
         testExpr("semi 2", "x", 10L);
         testExpr("semi 3", "(x = 10; 20) + (x ; x+1)", 31L);

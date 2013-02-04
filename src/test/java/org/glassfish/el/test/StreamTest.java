@@ -114,7 +114,7 @@ public class StreamTest {
 
     @Test
     public void testSorted() {
-        testStream("uniqueElements", "[2, 3, 2, 4, 4].stream().uniqueElements()", exp3);
+        testStream("distinct", "[2, 3, 2, 4, 4].stream().distinct()", exp3);
         testStream("sorted", "[1, 3, 5, 2, 4, 6].stream().sorted((i,j)->i-j)", exp0);
         testStream("sorted", "[1, 3, 5, 2, 4, 6].stream().sorted((i,j)->i.compareTo(j))", exp0);
         testStream("sorted", "['2', '4', '6', '5', '3', '1'].stream().sorted((s, t)->s.compareTo(t))", exp0);
@@ -136,10 +136,16 @@ public class StreamTest {
     static String exp8[] = {"Eagle", "Coming Home", "Greatest Hits",
                        "History of Golf", "Toy Story" , "iSee"};
 
+    String exp11[] = {"1","2","3","4"};
     @Test
     public void testForEach() {
         testStream("forEach",
             "lst = []; products.stream().forEach(p->lst.add(p.name)); lst.stream()", exp8);
+        testStream("forEachUntil",
+            "lst = []; [1,2,3,4,5].stream().forEachUntil(p->(tem=p;lst.add(p)),()->tem==4); lst.stream()", exp11);
+        testStream("peek",
+             "lst = []; [1,2,3,4].stream().peek(i->lst.add(i))", exp11);
+        testStream("peek2", "lst.stream()", exp11);
     }
 
     static String[] exp7 = {
@@ -220,8 +226,20 @@ public class StreamTest {
         testStream("sum", "[1.4,2,3,4,5.1].stream().sum()", Double.valueOf(15.5)); 
         testStream("average", "[1,2,3,4,5].stream().average().get()", Double.valueOf(3.0)); 
         testStream("average", "[1.4,2,3,4,5.1].stream().average().get()", Double.valueOf(3.1)); 
+    }
+    
+    @Test
+    public void testMinMax() {
         testStream("min", "[2,3,1,5].stream().min().get()", Long.valueOf(1));
         testStream("max", "[2,3,1,5].stream().max().get()", Long.valueOf(5));
         testStream("max", "['xy', 'xyz', 'abc'].stream().max().get()", "xyz");
+        testStream("max", "[2].stream().max((i,j)->i-j).get()", Long.valueOf(2));
+        elp.eval("comparing = map->(x,y)->map(x).compareTo(map(y))");
+        testStream("max", "customers.stream().max((x,y)->x.orders.size()-y.orders.size()).get().name", "John Doe");
+        testStream("max", "customers.stream().max(comparing(c->c.orders.size())).get().name", "John Doe");
+        testStream("min", "[3,2,1].stream().min((i,j)->i-j).get()", Long.valueOf(1));
+        testStream("min", "customers.stream().min((x,y)->x.orders.size()-y.orders.size()).get().name", "Charlie Yeh");
+        elp.eval("comparing = map->(x,y)->map(x).compareTo(map(y))");
+        testStream("min", "customers.stream().min(comparing(c->c.orders.size())).get().name", "Charlie Yeh");
     }
 }

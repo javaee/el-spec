@@ -117,16 +117,15 @@ public class Stream {
         });
     }
         
-    public Stream tee(final LambdaExpression block) {
+    public Stream peek(final LambdaExpression comsumer) {
         return new Stream(this, new Operator() {
             @Override
             public Iterator<Object> iterator(final Iterator<Object> up) {
-               return new Iterator1(up) {
+               return new Iterator2(up) {
                     @Override
-                    public Object next() {
-                        Object item = iter.next();
-                        block.invoke(item);
-                        return item;
+                    void doItem(Object item){
+                        comsumer.invoke(item);
+                        yield(item);
                     }
                 };
             }
@@ -177,7 +176,7 @@ public class Stream {
         return substream(startIndex).limit(endIndex-startIndex);
     }
     
-    public Stream uniqueElements () {
+    public Stream distinct () {
         return new Stream(this, new Operator() {
             @Override
             public Iterator<Object> iterator(final Iterator<Object> up) {
@@ -307,10 +306,20 @@ public class Stream {
     }
 */
 
-    public void forEach(LambdaExpression sink) {
+    public void forEach(LambdaExpression comsumer) {
         Iterator<Object> iter = iterator();
         while (iter.hasNext()) {
-            sink.invoke(iter.next());
+            comsumer.invoke(iter.next());
+        }
+    }
+
+    public void forEachUntil(LambdaExpression comsumer, LambdaExpression until) {
+        Iterator<Object> iter = iterator();
+        while (iter.hasNext()) {
+            comsumer.invoke(iter.next());
+            if ((Boolean)until.invoke()) {
+                break;
+            }
         }
     }
 
@@ -372,7 +381,16 @@ public class Stream {
             al.add(iter.next());
         }
         return al.toArray();
-    }        
+    }
+    
+    public Object toList() {
+        Iterator<Object> iter = iterator();
+        ArrayList<Object> al = new ArrayList<Object>();
+        while (iter.hasNext()) {
+            al.add(iter.next());
+        }
+        return al;
+    }
 
 /*
     public Object into(Object target) {
@@ -431,6 +449,38 @@ public class Stream {
         while (iter.hasNext()) {
             Object item = iter.next();
             if (max == null || ELSupport.compare(max, item) < 0) {
+                max = item;
+            }
+        }
+        if (max == null) {
+            return new Optional();
+        }
+        return new Optional(max);
+    }
+    
+    public Optional min(final LambdaExpression comparator) {
+        Object min = null;
+        Iterator<Object> iter = iterator();
+        while (iter.hasNext()) {
+            Object item = iter.next();
+            if (min == null ||
+                    ELSupport.compare(comparator.invoke(item, min), Long.valueOf(0)) < 0) {
+                min = item;
+            }
+        }
+        if (min == null) {
+            return new Optional();
+        }
+        return new Optional(min);
+    }
+    
+    public Optional max(final LambdaExpression comparator) {
+        Object max = null;
+        Iterator<Object> iter = iterator();
+        while (iter.hasNext()) {
+            Object item = iter.next();
+            if (max == null ||
+                    ELSupport.compare(comparator.invoke(max, item), Long.valueOf(0)) < 0) {
                 max = item;
             }
         }
