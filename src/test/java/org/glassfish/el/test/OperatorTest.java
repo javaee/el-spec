@@ -55,11 +55,11 @@ public class OperatorTest {
     public void testConcat() {
         testExpr("concat", "a = null; b = null; a + b", 0L);
         testExpr("add", "10 + 11", 21L);
-        testExpr("concat", "'10' + 11", "1011");
-        testExpr("concat 2", "11 + '10'", "1110");
+        testExpr("concat", "'10' + 11", 21L);
+        testExpr("concat 2", "11 + '10'", 21L);
         testExpr("concat 3", "100 cat 10 ", "10010");
         testExpr("concat 4", "'100' cat 10", "10010");
-        testExpr("concat 5", "'100' + 10 + 1", "100101");
+        testExpr("concat 5", "'100' + 10 + 1", 111L);
         testExpr("concat 6", "'100' cat 10 + 1", "10011");
     }
     
@@ -72,7 +72,7 @@ public class OperatorTest {
         testExpr("assign 3", "x = vv = vv+1; x + vv", 202L);
         elp.eval("map = {'one':100, 'two':200}");
         testExpr("assign 4", "map.two = 201; map.two", 201L);
-        testExpr("assign string", "x='string'; x+1", "string1");
+        testExpr("assign string", "x='string'; x cat 1", "string1");
     }
     
     @Test

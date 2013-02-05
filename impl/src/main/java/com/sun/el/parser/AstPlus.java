@@ -59,10 +59,6 @@ public final class AstPlus extends ArithmeticNode {
             throws ELException {
         Object obj0 = this.children[0].getValue(ctx);
         Object obj1 = this.children[1].getValue(ctx);
-        // If obj0 or obj1 is a String, return the concatenated string.
-        if (obj0 instanceof String || obj1 instanceof String) {
-            return obj0.toString() + obj1.toString();
-        }
         return ELArithmetic.add(obj0, obj1);
     }
 }

@@ -70,7 +70,7 @@ public class ELProcessorTest {
     @Test
     public void testConcat() {
         Object result = elp.eval("'10' + 1");
-        assertEquals(result.toString(), "101");
+        assertEquals(result, 11L);
         result = elp.eval("10 cat '1'");
         assertEquals(result.toString(), "101");
     }
