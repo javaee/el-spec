@@ -351,7 +351,6 @@ void NonLiteral() : {}
  	| <LPAREN> Expression() <RPAREN>
  	| LOOKAHEAD(4) Function()
 	| Identifier()
-        | Type()
         | MapData()
         | ListData()
 }
@@ -373,18 +372,6 @@ void ListData() #ListData: {}
     <LBRACK>
         ( Expression() ( <COMMA> Expression() )* )?
     <RBRACK>
-}
-
-/*
- * Type
- * T(...)
- */
-void Type() #Type : { Token t; StringBuilder buffer = new StringBuilder(); }
-{
-        <TYPE> <LPAREN> t=<IDENTIFIER> {buffer.append(t.image); }
-                 (<DOT> t=<IDENTIFIER> {buffer.append('.').append(t.image);} )* 
-               <RPAREN> {jjtThis.setImage(buffer.toString()); }
-        (MethodArguments())?
 }
 
 /*
@@ -566,7 +553,6 @@ TOKEN_MGR_DECLS:
 |	< MOD1 : "mod" >
 |       < CONCAT : "cat" >
 |       < ASSIGN : "=" >
-|       < TYPE : "T" >
 |       < ARROW : "->" >
 |	< IDENTIFIER : (<LETTER>|<IMPL_OBJ_START>) (<LETTER>|<DIGIT>)* >
 |	< #IMPL_OBJ_START: "#" >

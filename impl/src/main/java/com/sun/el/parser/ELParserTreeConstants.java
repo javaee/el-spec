@@ -37,15 +37,14 @@ public interface ELParserTreeConstants
   public int JJTMAPDATA = 31;
   public int JJTMAPENTRY = 32;
   public int JJTLISTDATA = 33;
-  public int JJTTYPE = 34;
-  public int JJTIDENTIFIER = 35;
-  public int JJTFUNCTION = 36;
-  public int JJTTRUE = 37;
-  public int JJTFALSE = 38;
-  public int JJTFLOATINGPOINT = 39;
-  public int JJTINTEGER = 40;
-  public int JJTSTRING = 41;
-  public int JJTNULL = 42;
+  public int JJTIDENTIFIER = 34;
+  public int JJTFUNCTION = 35;
+  public int JJTTRUE = 36;
+  public int JJTFALSE = 37;
+  public int JJTFLOATINGPOINT = 38;
+  public int JJTINTEGER = 39;
+  public int JJTSTRING = 40;
+  public int JJTNULL = 41;
 
 
   public String[] jjtNodeName = {
@@ -83,7 +82,6 @@ public interface ELParserTreeConstants
     "MapData",
     "MapEntry",
     "ListData",
-    "Type",
     "Identifier",
     "Function",
     "True",
@@ -94,4 +92,4 @@ public interface ELParserTreeConstants
     "Null",
   };
 }
-/* JavaCC - OriginalChecksum=d8b1a46e82b8e5d40cb40350260012ae (do not edit this line) */
+/* JavaCC - OriginalChecksum=295bae338407e43a1d349f1ce802614a (do not edit this line) */
