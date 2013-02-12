@@ -72,11 +72,6 @@ public class StandardELContext extends ELContext {
     private ELResolver streamELResolver;
 
     /*
-     * The ImportHandler for this ELContext.
-     */
-    private ImportHandler importHandler;
-
-    /*
      * The FunctionMapper for this ELContext.
      */
     private FunctionMapper functionMapper;
@@ -198,17 +193,6 @@ public class StandardELContext extends ELContext {
     public void addELResolver(ELResolver cELResolver) {
         getELResolver();  // make sure elResolver is constructed
         customResolvers.add(cELResolver);
-    }
-
-    /**
-     * Construct (if need) and return an ImportHandler
-     */
-    @Override
-    public ImportHandler getImportHandler() {
-        if (importHandler == null) {
-            importHandler = new ImportHandler();
-        }
-        return importHandler;
     }
 
     /**

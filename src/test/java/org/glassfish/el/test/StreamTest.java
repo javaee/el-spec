@@ -115,6 +115,7 @@ public class StreamTest {
     @Test
     public void testSorted() {
         testStream("distinct", "[2, 3, 2, 4, 4].stream().distinct()", exp3);
+        testStream("sorted", "[1, 3, 5, 2, 4, 6].stream().sorted()", exp0);
         testStream("sorted", "[1, 3, 5, 2, 4, 6].stream().sorted((i,j)->i-j)", exp0);
         testStream("sorted", "[1, 3, 5, 2, 4, 6].stream().sorted((i,j)->i.compareTo(j))", exp0);
         testStream("sorted", "['2', '4', '6', '5', '3', '1'].stream().sorted((s, t)->s.compareTo(t))", exp0);
@@ -159,19 +160,16 @@ public class StreamTest {
 
     @Test
     public void testExplode() {
-        testStream("explode",
+        testStream("flatMap",
             "customers.stream().filter(c->c.country=='USA')\n" +
-            "                  .explode((s,c)->s.send(c.orders))",
+            "                  .flatMap(c->c.orders.stream())",
             exp7);
-        elp.eval("mapBy = m->(s,c)->s.send(m(c))");
-        testStream("explodeBy",
-            "customers.stream().filter(c->c.country=='USA')\n" +
-            "                  .explode(mapBy(c->c.orders))",
-            exp7);
-        testStream("explode String",
+/*
+        testStream("flatMap String",
              "['the', 'quick', 'brown', 'fox']" +
              ".stream().explode((s,str)->s.send(str.toCharArray()))",
              exp9);
+*/
     }
 
     static String exp10[] = {"0", "1", "2"};

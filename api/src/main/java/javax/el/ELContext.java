@@ -247,7 +247,10 @@ public abstract class ELContext {
      * @since EL 3.0
      */
     public ImportHandler getImportHandler() {
-        return null;
+        if (importHandler == null) {
+            importHandler = new ImportHandler();
+        }
+        return importHandler;
     }
 
     /**
@@ -471,5 +474,6 @@ public abstract class ELContext {
     private HashMap<Class<?>, Object> map = new HashMap<Class<?>, Object>();
     private transient List<EvaluationListener> listeners = null;
     private Stack<Map<String,Object>> lambdaArgs;
+    private ImportHandler importHandler;
 }
 

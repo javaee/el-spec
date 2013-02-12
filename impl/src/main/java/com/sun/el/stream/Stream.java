@@ -193,6 +193,41 @@ public class Stream {
         });
     }
 
+    public Stream sorted() {
+        return new Stream(this, new Operator() {
+
+            private PriorityQueue<Object> queue = null;
+
+            @Override
+            public Iterator<Object> iterator(final Iterator<Object> up) {
+                if (queue == null) {
+                    queue = new PriorityQueue<Object>(16,
+                        new Comparator<Object>() {
+                            @Override
+                            public int compare(Object o1, Object o2) {
+                                return ((Comparable)o1).compareTo(o2);
+                            }
+                        });
+
+                    while(up.hasNext()) {
+                        queue.add(up.next());
+                    }
+                }
+
+                return new Iterator0() {
+                    @Override
+                    public boolean hasNext() {
+                        return !queue.isEmpty();
+                    }
+                    @Override
+                    public Object next() {
+                         return queue.remove();
+                    }
+                };
+            }
+        });
+    }
+
     public Stream sorted(final LambdaExpression comparator) {
         return new Stream(this, new Operator() {
 
@@ -230,7 +265,7 @@ public class Stream {
         });
     }
 
-    public Stream explode(final LambdaExpression mapper) {
+    public Stream flatMap(final LambdaExpression mapper) {
         return new Stream(this, new Operator() {
             @Override
             public Iterator<Object> iterator(final Iterator<Object> upstream) {
@@ -243,9 +278,12 @@ public class Stream {
                                 if (!upstream.hasNext()) {
                                     return false;
                                 }
-                                Downstream buffer = new Downstream();
-                                mapper.invoke(buffer, upstream.next());
-                                iter = buffer.iterator();
+                                Object mapped = mapper.invoke(upstream.next());
+                                if (! (mapped instanceof Stream)) {
+                                   throw new ELException("Expecting a Stream " +
+                                           "from flatMap's mapper function.");
+                                }
+                                iter = ((Stream)mapped).iterator();
                             }
                             else {
                                 if (iter.hasNext()) {
@@ -552,34 +590,5 @@ public class Stream {
         }
         
         abstract void doItem(Object item);
-    }
-
-    public class Downstream {
-
-        private List<Object> buffer = new ArrayList<Object>();
-
-        public void send(Object item) {
-            // current implemenation does not handle method overloading well, so...
-            if (item instanceof Collection) {
-                for (Object obj: (Collection<Object>) item) {
-                    send(obj);
-                }
-            } else if (item instanceof Stream) {
-                Iterator iter = ((Stream) item).iterator();
-                while (iter.hasNext()) {
-                    send(iter.next());
-                }
-            } else if (item.getClass().isArray()) {
-                for (int i = 0; i < Array.getLength(item); i++) {
-                    send(Array.get(item, i));
-                }
-            } else {
-                buffer.add(item);
-            }
-        }
-
-        Iterator<Object> iterator() {
-            return buffer.iterator();
-        }
     }
 }

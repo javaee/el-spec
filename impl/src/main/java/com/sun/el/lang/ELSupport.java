@@ -348,8 +348,7 @@ public class ELSupport {
      */
     public final static String coerceToString(final Object obj) {
         if (obj == null) {
-            // EL 3.0 change
-            return null;
+            return "";
         } else if (obj instanceof String) {
             return (String) obj;
         } else if (obj instanceof Enum) {
@@ -386,7 +385,7 @@ public class ELSupport {
         }
 
         // new to EL 3.0
-        if (obj == null && !type.isPrimitive()) {
+        if (obj == null && !type.isPrimitive() && !String.class.equals(type)) {
             return null;
         }
 
