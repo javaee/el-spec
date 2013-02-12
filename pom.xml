@@ -57,9 +57,9 @@
 
     <properties>
         <!-- the bundle build number must be the same as the maven number -->
-        <bundle.version>2.2.99.b02</bundle.version>
+        <bundle.version>2.2.99.b04</bundle.version>
         <!-- The most current api version -->
-        <spec.version>2.2.99.02</spec.version>
+        <spec.version>2.2.99.05</spec.version>
         <extensionName>javax.el</extensionName>
         <bundle.symbolicName>org.glassfish.javax.el</bundle.symbolicName>
         <vendorName>Oracle Corporation</vendorName>
