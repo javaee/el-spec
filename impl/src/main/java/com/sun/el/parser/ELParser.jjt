@@ -551,7 +551,7 @@ TOKEN_MGR_DECLS:
 |	< DIV1 : "div" >
 |	< MOD0 : "%" >
 |	< MOD1 : "mod" >
-|       < CONCAT : "cat" >
+|       < CONCAT : "+=" >
 |       < ASSIGN : "=" >
 |       < ARROW : "->" >
 |	< IDENTIFIER : (<LETTER>|<IMPL_OBJ_START>) (<LETTER>|<DIGIT>)* >

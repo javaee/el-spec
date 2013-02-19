@@ -189,7 +189,7 @@ public interface ELParserConstants {
     "\"div\"",
     "\"%\"",
     "\"mod\"",
-    "\"cat\"",
+    "\"+=\"",
     "\"=\"",
     "\"->\"",
     "<IDENTIFIER>",
