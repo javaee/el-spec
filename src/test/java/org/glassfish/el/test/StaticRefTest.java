@@ -50,10 +50,12 @@ public class StaticRefTest {
         assertTrue((Boolean)elp.eval("Boolean.TRUE"));
     }
 
+/*
     @Test
     public void testClass() {
         assertEquals(String.class, elp.eval("String.class"));
     }
+*/
 
     @Test
     public void testConstructor() {

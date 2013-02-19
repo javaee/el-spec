@@ -67,7 +67,7 @@ public class ImportHandler {
      * @throws ELException if the name is not a full class name.
      */
     public void importClass(String name) throws ELException {
-        int i = name.indexOf('.');
+        int i = name.lastIndexOf('.');
         if (i <= 0) {
             throw new ELException(
                 "The name " + name + " is not a full class name");

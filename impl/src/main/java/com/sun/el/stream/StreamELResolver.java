@@ -48,6 +48,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.lang.reflect.Array;
 
 import javax.el.ELContext;
 import javax.el.ELException;
@@ -74,37 +75,49 @@ public class StreamELResolver extends ELResolver {
         if (base instanceof Collection) {
             @SuppressWarnings("unchecked")
             Collection<Object> c = (Collection<Object>)base;
-            if ("stream".equals(method)) {
+            if ("stream".equals(method) && params.length == 0) {
                 context.setPropertyResolved(true);
                 return new Stream(c.iterator());
             }
-/*
-            if ("forEach".equals(method)) {
+        }
+        if (base.getClass().isArray()) {
+            if ("stream".equals(method) && params.length == 0) {
                 context.setPropertyResolved(true);
-                Stream stream = new Stream(c.iterator());
-                LambdaExpression expr =
-                        getLambda(params[0], ""+base+".forEach");
-                expr.setELContext(context);
-                stream.forEach(expr);
-                return null;
+                return new Stream(arrayIterator(base));
             }
-*/
         }
-/*
-        if (base instanceof List && "sort".equals(method)) {
-            Collections.sort((List)base, new Comparator<Object>() {
-                @Override
-                public int compare(Object o1, Object o2) {
-                    LambdaExpression expr =
-                            getLambda(params[0], ""+base+".sort");
-                    return (Integer) expr.invoke(context, o1, o2);
-                }
-            });
-        }
-*/
         return null;
     }
 
+    private static Iterator<Object> arrayIterator(final Object base) {
+        final int size = Array.getLength(base);
+        return new Iterator<Object>() {
+            int index = 0;
+            boolean yielded;
+            Object current;
+
+            @Override
+            public boolean hasNext() {
+                if ((!yielded) && index < size) {
+                    current = Array.get(base, index++);
+                    yielded = true;
+                }
+                return yielded;
+            }
+
+            @Override
+            public Object next() {
+                yielded = false;
+                return current;
+            }
+
+            @Override
+            public void remove() {
+                throw new UnsupportedOperationException();
+            }
+        };
+    }
+            
 /*
     private LambdaExpression getLambda(Object obj, String method) {
         if (obj == null || ! (obj instanceof LambdaExpression)) {

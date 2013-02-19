@@ -37,7 +37,7 @@ public class StreamTest {
         System.out.println(msg);
     }
     /**
-     * Test a Linq query that returns an Iterable.
+     * Test a collection query that returns an Iterable.
      * @param name of the test
      * @param query The EL query string
      * @param expected The expected result of the Iterable.  The array
@@ -61,16 +61,31 @@ public class StreamTest {
             return;
         }
 
-        // Must be a Stream
-        Iterator<Object> iter = ((com.sun.el.stream.Stream)ret).iterator();
-        int indx = 0;
-        while (iter.hasNext()) {
-            Object item = iter.next();
-            p(" " + item.toString());
-            assertEquals(item.toString(), expected[indx]);
-            indx++;
+        if (ret instanceof List) {
+            List<Object> list = (List<Object>) ret;
+            int i = 0;
+            for (Object item: list) {
+                p(" " + item.toString());
+                assertEquals(item.toString(), expected[i++]); 
+            }
+            assertTrue(i == expected.length);
+            return;
         }
-        assertTrue(indx == expected.length);
+
+        if (ret instanceof Iterator) {
+            int i = 0;
+            Iterator<Object> iter = (Iterator<Object>) ret;
+            while (iter.hasNext()) {
+                Object item = iter.next();
+                p(" " + item.toString());
+                assertEquals(item.toString(), expected[i++]);
+            }
+            assertTrue(i == expected.length);
+            return;
+        }
+
+        // unexpected return type
+        assertTrue(false);
     }
 
     void testStream(String name, String query, Object expected) {
@@ -90,10 +105,10 @@ public class StreamTest {
 
     @Test
     public void testFilterMap() {
-        testStream("filter", "[1,2,3,4].stream().filter(i->i > 1)", exp3);
-        testStream("map", "[2,3,4].stream().map(i->i*10)", exp4);
+        testStream("filter", "[1,2,3,4].stream().filter(i->i > 1).toList()", exp3);
+        testStream("map", "[2,3,4].stream().map(i->i*10).iterator()", exp4);
         testStream("filtermap", "[1,2,3,4].stream().filter(i->i > 1)\n" +
-                                "                  .map(i->i*10)", exp4);
+                                "                  .map(i->i*10).toArray()", exp4);
     }
 
     static String[] exp5 = {
@@ -114,24 +129,24 @@ public class StreamTest {
 
     @Test
     public void testSorted() {
-        testStream("distinct", "[2, 3, 2, 4, 4].stream().distinct()", exp3);
-        testStream("sorted", "[1, 3, 5, 2, 4, 6].stream().sorted()", exp0);
-        testStream("sorted", "[1, 3, 5, 2, 4, 6].stream().sorted((i,j)->i-j)", exp0);
-        testStream("sorted", "[1, 3, 5, 2, 4, 6].stream().sorted((i,j)->i.compareTo(j))", exp0);
-        testStream("sorted", "['2', '4', '6', '5', '3', '1'].stream().sorted((s, t)->s.compareTo(t))", exp0);
-        testStream("sorted", "[1, 3, 5, 2, 4, 6].stream().sorted((i,j)->j.compareTo(i))", exp1);
+        testStream("distinct", "[2, 3, 2, 4, 4].stream().distinct().toList()", exp3);
+        testStream("sorted", "[1, 3, 5, 2, 4, 6].stream().sorted().toList()", exp0);
+        testStream("sorted", "[1, 3, 5, 2, 4, 6].stream().sorted((i,j)->i-j).toList()", exp0);
+        testStream("sorted", "[1, 3, 5, 2, 4, 6].stream().sorted((i,j)->i.compareTo(j)).toList()", exp0);
+        testStream("sorted", "['2', '4', '6', '5', '3', '1'].stream().sorted((s, t)->s.compareTo(t)).toList()", exp0);
+        testStream("sorted", "[1, 3, 5, 2, 4, 6].stream().sorted((i,j)->j.compareTo(i)).toList()", exp1);
         testStream("sorted", "['xyz', 'yz', 'z', 'abc', 'aaa', 'q'].stream().sorted" +
-                "((s,t)->(s.length()== t.length()? s.compareTo(t): s.length() - t.length()))",
+                "((s,t)->(s.length()== t.length()? s.compareTo(t): s.length() - t.length())).toList()",
                 exp2);
         elp.eval("comparing = map->(x,y)->map(x).compareTo(map(y))");
         testStream("sorted", "products.stream().sorted(" +
-            "(x,y)->x.name.compareTo(y.name))", exp5);
+            "(x,y)->x.name.compareTo(y.name)).toList()", exp5);
         testStream("sorted", "products.stream().sorted(" +
-            "comparing(p->p.name))", exp5);
+            "comparing(p->p.name)).toList()", exp5);
         elp.eval("compose = (m1,m2)->(x,y)->(tx = m1(x).compareTo(m1(y)); "
                 + "tx!=0? tx: (m2(x).compareTo(m2(y))))");
         testStream("sorted", "products.stream().sorted(" +
-                "compose(p->p.category, p->p.unitPrice))", exp6);
+                "compose(p->p.category, p->p.unitPrice)).toList()", exp6);
     }
 
     static String exp8[] = {"Eagle", "Coming Home", "Greatest Hits",
@@ -141,12 +156,10 @@ public class StreamTest {
     @Test
     public void testForEach() {
         testStream("forEach",
-            "lst = []; products.stream().forEach(p->lst.add(p.name)); lst.stream()", exp8);
-        testStream("forEachUntil",
-            "lst = []; [1,2,3,4,5].stream().forEachUntil(p->(tem=p;lst.add(p)),()->tem==4); lst.stream()", exp11);
+            "lst = []; products.stream().forEach(p->lst.add(p.name)); lst", exp8);
         testStream("peek",
-             "lst = []; [1,2,3,4].stream().peek(i->lst.add(i))", exp11);
-        testStream("peek2", "lst.stream()", exp11);
+             "lst = []; [1,2,3,4].stream().peek(i->lst.add(i)).toList()", exp11);
+        testStream("peek2", "lst", exp11);
     }
 
     static String[] exp7 = {
@@ -159,26 +172,25 @@ public class StreamTest {
     static String[] exp9 = {"t","h","e","q","u","i","c","k","b","r","o","w","n","f","o","x"};
 
     @Test
-    public void testExplode() {
+    public void testFlapMap() {
         testStream("flatMap",
             "customers.stream().filter(c->c.country=='USA')\n" +
-            "                  .flatMap(c->c.orders.stream())",
+            "                  .flatMap(c->c.orders.stream()).toList()",
             exp7);
-/*
+        elp.getELManager().importClass("java.util.Arrays");
         testStream("flatMap String",
              "['the', 'quick', 'brown', 'fox']" +
-             ".stream().explode((s,str)->s.send(str.toCharArray()))",
+             ".stream().flatMap(s->s.toCharArray().stream()).toList()",
              exp9);
-*/
     }
 
     static String exp10[] = {"0", "1", "2"};
 
     @Test
     public void testSubstream() {
-        testStream("limit", "[0,1,2,3,4,5].stream().limit(3)", exp10);
-        testStream("substream", "[0,1,2,3,4].stream().substream(2)", exp3);
-        testStream("substream", "[0,1,2,3,4,5,6].stream().substream(2,5)", exp3);
+        testStream("limit", "[0,1,2,3,4,5].stream().limit(3).toList()", exp10);
+        testStream("substream", "[0,1,2,3,4].stream().substream(2).toList()", exp3);
+        testStream("substream", "[0,1,2,3,4,5,6].stream().substream(2,5).toList()", exp3);
     }
 
     @Test
@@ -200,8 +212,10 @@ public class StreamTest {
     }
 
     @Test
-    public void testToArray() {
+    public void testToType() {
         testStream("toArray", "[2,3,4].stream().map(i->i*10).toArray()", exp4);
+        testStream("toList", "[2,3,4].stream().map(i->i*10).toList()", exp4);
+        testStream("Iterator", "[2,3,4].stream().map(i->i*10).iterator()", exp4);
     }
 
     @Test
@@ -214,8 +228,8 @@ public class StreamTest {
             caught = true;
         }
         assertTrue(caught);
-        testStream("findAny", "[101, 100].stream().findAny().isPresent()", Boolean.TRUE);
-        testStream("findAny", "[].stream().findAny().isPresent()", Boolean.FALSE);
+        testStream("findFirst", "[101, 100].stream().findFirst().isPresent()", Boolean.TRUE);
+        testStream("findFirst", "[].stream().findFirst().isPresent()", Boolean.FALSE);
     }
 
     @Test

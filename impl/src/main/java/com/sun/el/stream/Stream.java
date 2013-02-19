@@ -351,16 +351,6 @@ public class Stream {
         }
     }
 
-    public void forEachUntil(LambdaExpression comsumer, LambdaExpression until) {
-        Iterator<Object> iter = iterator();
-        while (iter.hasNext()) {
-            comsumer.invoke(iter.next());
-            if ((Boolean)until.invoke()) {
-                break;
-            }
-        }
-    }
-
 /*
     public Map<Object,Collection<Object>> groupBy(LambdaExpression classifier) {
         Map<Object, Collection<Object>> map =
@@ -451,10 +441,6 @@ public class Stream {
         } else {
             return new Optional();
         }
-    }
-
-    public Optional findAny() {
-        return findFirst();
     }
 
     public Object sum() {

@@ -68,19 +68,16 @@ public class StaticFieldELResolver extends ELResolver {
      * returning. If this property is not <code>true</code> after this
      * method is called, the caller should ignore the return value.</p>
      *
-     * <p>If the property is the string "class", return the
-     * <code>java.lang.Class</code> instance of the class specified in
-     * <code>ELClass</code>.
      * If the property is a public static field of class specified in
      * <code>ELClass</code>, return the value of the static field.
      * An Enum constant is a
      * public static field of an Enum object, and is a special case of this.
      * @param context The context of this evaluation.
      * @param base An <code>ELClass</code>.
-     * @param property The string "class", or a static field name.
+     * @param property A static field name.
      * @return If the <code>propertyResolved</code> property of
-     *     <code>ELContext</code> was set to <code>true</code>, then the Class
-     *     instance for the class or the static field value.
+     *     <code>ELContext</code> was set to <code>true</code>, then
+     *     the static field value.
      * @throws NullPointerException if context is <code>null</code>.
      * @throws PropertyNotFoundException if the specified class does not exist,
      *         or if the field is not a public static filed of the class,
@@ -98,9 +95,6 @@ public class StaticFieldELResolver extends ELResolver {
             String fieldName = (String) property;
             try {
                 context.setPropertyResolved(base, property);
-                if ("class".equals(fieldName)) {
-                    return klass;
-                }
                 Field field = klass.getField(fieldName);
                 int mod = field.getModifiers();
                 if (Modifier.isPublic(mod) && Modifier.isStatic(mod)) {
@@ -226,8 +220,6 @@ public class StaticFieldELResolver extends ELResolver {
      * <code>true</code> after this method is called, the caller can
      * safely assume no value has been set.</p>
      *
-     * <p>If the property is the string "class", returns
-     * <code>java.lang.Class.class</code>.
      * If the property string is a public static field of class specified in
      * ELClass, return the type of the static field.</p>
      * @param context The context of this evaluation.
@@ -252,9 +244,6 @@ public class StaticFieldELResolver extends ELResolver {
             String fieldName = (String) property;
             try {
                 context.setPropertyResolved(true);
-                if ("class".equals(fieldName)) {
-                    return Class.class;
-                }
                 Field field = klass.getField(fieldName);
                 int mod = field.getModifiers();
                 if (Modifier.isPublic(mod) && Modifier.isStatic(mod)) {
