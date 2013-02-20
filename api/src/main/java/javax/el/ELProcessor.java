@@ -193,7 +193,12 @@ public class ELProcessor {
                                String className,
                                String method)
             throws ClassNotFoundException, NoSuchMethodException {
-
+        
+        if (prefix == null || function == null || className == null
+                || method == null) {
+            throw new NullPointerException("Null argument for defineFunction");
+        }
+        
         Method meth = null;
         ClassLoader loader = getClass().getClassLoader();
         Class<?> klass = Class.forName(className, false, loader);
