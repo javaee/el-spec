@@ -198,7 +198,7 @@ public class StreamTest {
         testStream("reduce", "[1,2,3,4,5].stream().reduce(0, (l,r)->l+r)", Long.valueOf(15));
         testStream("reduce", "[1,2,3,4,5].stream().reduce((l,r)->l+r).get()", Long.valueOf(15));
         testStream("reduce", "[].stream().reduce((l,r)->l+r).orElse(101)", Long.valueOf(101));
-        testStream("reduce", "[].stream().reduce((l,r)->l+r).orElse(()->101)", Long.valueOf(101));
+        testStream("reduce", "[].stream().reduce((l,r)->l+r).orElseGet(()->101)", Long.valueOf(101));
     }
 
     @Test

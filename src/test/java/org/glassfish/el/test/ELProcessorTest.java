@@ -74,4 +74,23 @@ public class ELProcessorTest {
         result = elp.eval("10 += '1'");
         assertEquals(result.toString(), "101");
     }
+    
+/*
+    @Test
+    public void testBean() {
+        elp.defineBean("xyz", new MyBean());
+        Object result = elp.eval("xyz.foo");
+        assertEquals(result.toString(), "100");
+    }
+
+    static class MyBean {
+        public int getFoo() {
+            return 100;
+        }
+        public int getFoo(int i) {
+            return 200;
+        }
+    }
+    */
 }
+

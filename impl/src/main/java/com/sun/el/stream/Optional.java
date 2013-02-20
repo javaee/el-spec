@@ -82,12 +82,10 @@ public class Optional {
     }
 
     public Object orElse(Object other) {
-        if (value != null) {
-            return value;
-        }
-        if (other instanceof LambdaExpression) {
-            return ((LambdaExpression) other).invoke();
-        }
-        return other;
+        return value != null? value: other;
+    }
+
+    public Object orElseGet(LambdaExpression other) {
+        return value != null? value: other.invoke();
     }
 }
