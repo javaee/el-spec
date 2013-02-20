@@ -251,8 +251,7 @@ public class ELProcessor {
      *    If empty (""), the method name is used as the function name.
      * @param method The <code>java.lang.reflect.Method</code> instance of
      *    the method that implements the function.
-     * @throws NullPointerException if any of the arguments is null, or if
-     *    the method is not a static method.
+     * @throws NullPointerException if any of the arguments is null.
      * @throws NoSuchMethodException if the method is not a static method
      */
     public void defineFunction(String prefix, String function, Method method)
