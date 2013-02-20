@@ -51,8 +51,8 @@ import java.beans.FeatureDescriptor;
  *     ELProcessor elp = new ELProcessor();
  *     elp.getELManager().addELResolver(new TypeConverter() {
  *         Object convertToType(ELContext context, Object obj, Class<?> type) {
- *             if (obj instanceof String) && type == MyDate.class) {
- *                 context.setPropertyResoved(obj, type);
+ *             if ((obj instanceof String) && type == MyDate.class) {
+ *                 context.setPropertyResolved(obj, type);
  *                 return (obj == null)? null: new MyDate(obj.toString());
  *             }
  *             return null;
