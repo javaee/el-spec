@@ -11,6 +11,7 @@ import javax.el.ELManager;
 import javax.el.ExpressionFactory;
 import javax.el.MethodExpression;
 import javax.el.ELContext;
+import java.lang.reflect.Method;
 
 public class ELProcessorTest {
 
@@ -75,6 +76,52 @@ public class ELProcessorTest {
         assertEquals(result.toString(), "101");
     }
     
+    @Test
+    public void defineFuncNullTest() {
+        Class c = MyBean.class;
+        Method meth = null;
+        Method meth2 = null;
+        try {
+            meth = c.getMethod("getBar", new Class<?>[] {});
+            meth2 = c.getMethod("getFoo", new Class<?>[] {});
+        } catch (Exception e) {
+            System.out.printf("Exception: ", e);
+        }
+        try {
+            elp.defineFunction("xx", "", meth);
+            Object ret = elp.eval("xx:getBar() == 64");
+            assertTrue((Boolean)ret);
+        } catch (NoSuchMethodException ex) {
+            
+        }
+        
+        boolean caught = false;
+        try {
+            elp.defineFunction("", "", meth2);
+            Object ret = elp.eval("getFoo() == 100");
+            assertTrue((Boolean)ret);
+        } catch (NoSuchMethodException ex) {
+            caught = true;
+        }
+        assertTrue(caught);
+        
+        try {
+            elp.defineFunction("yy", "", "testBean", "getBar");
+            Object ret = elp.eval("yy:getBar() == 64");
+            assertTrue((Boolean)ret);
+        } catch (ClassNotFoundException | NoSuchMethodException ex) {
+        }
+        
+        caught = false;
+        try {
+            elp.defineFunction("yy", "", "testBean", "getFoo");
+            Object ret = elp.eval("yy:getBar() == 100");
+            assertTrue((Boolean)ret);
+        } catch (ClassNotFoundException | NoSuchMethodException ex) {
+            caught = true;
+        }
+        assertTrue(caught);
+    }
 /*
     @Test
     public void testBean() {
@@ -82,15 +129,17 @@ public class ELProcessorTest {
         Object result = elp.eval("xyz.foo");
         assertEquals(result.toString(), "100");
     }
-
-    static class MyBean {
+*/
+    static public class MyBean {
         public int getFoo() {
             return 100;
         }
         public int getFoo(int i) {
             return 200;
         }
+        public static int getBar() {
+            return 64;
+        }
     }
-    */
 }
 

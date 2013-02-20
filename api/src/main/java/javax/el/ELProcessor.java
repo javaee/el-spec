@@ -41,6 +41,7 @@
 package javax.el;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
 /**
  * <p>Provides an API for using EL in a stand-alone environment.</p>
@@ -186,7 +187,7 @@ public class ELProcessor {
      * @throws ClassNotFoundException if the specified class does not exists.
      * @throws NoSuchMethodException if the method (with or without the
      *    signature) is not a declared method of the class, or if the method
-     *    signature is not valid.
+     *    signature is not valid, or if the method is not a static method.
      */
     public void defineFunction(String prefix, String function,
                                String className,
@@ -229,6 +230,9 @@ public class ELProcessor {
             }
             meth = klass.getDeclaredMethod(methodName, paramTypes);
         }
+        if (! Modifier.isStatic(meth.getModifiers())) {
+            throw new NoSuchMethodException("The method specified in defineFunction must be static: " + meth);
+        }
         if (function.equals("")) {
             function = method;
         }
@@ -242,9 +246,18 @@ public class ELProcessor {
      *    If empty (""), the method name is used as the function name.
      * @param method The <code>java.lang.reflect.Method</code> instance of
      *    the method that implements the function.
-     * @throws NullPointerException if any of the arguements is null.
+     * @throws NullPointerException if any of the arguments is null, or if
+     *    the method is not a static method.
+     * @throws NoSuchMethodException if the method is not a static method
      */
-    public void defineFunction(String prefix, String function, Method method) {
+    public void defineFunction(String prefix, String function, Method method)
+            throws NoSuchMethodException {
+        if (prefix == null || function == null || method == null) {
+            throw new NullPointerException("Null argument for defineFunction");
+        }
+        if (! Modifier.isStatic(method.getModifiers())) {
+            throw new NoSuchMethodException("The method specified in defineFunction must be static: " + method);
+        }
         if (function.equals("")) {
             function = method.getName();
        }
