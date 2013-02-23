@@ -213,16 +213,16 @@
                             <sourcepath>api/src;impl/src</sourcepath>
                             <groups>
                                 <group>
-                                    <title>Expresion Language 3.0 Implementation</title>
+                                    <title>Expresion Language 3.0 API and Implementation</title>
                                     <packages>com.sun.el</packages>
                                 </group>
                             </groups>
-                            <bottom> Copyright (c) 1999-2013 Oracle and/or its affiliates. All Rights Reserved. Use is subject to license terms. </bottom>
+                            <bottom> Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved. Use is subject to license terms. </bottom>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
-<!-- Use ant to manually inoke javacc, as this required is very infrequently
+<!-- Use ant to manually invoke javacc, as this required is very infrequently
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>javacc-maven-plugin</artifactId>

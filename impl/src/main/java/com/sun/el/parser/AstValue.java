@@ -147,18 +147,22 @@ public final class AstValue extends SimpleNode {
     }
 
     private final Object getBase(EvaluationContext ctx) {
-        // First check if the base is an imported class
-        if (this.children[0] instanceof AstIdentifier) {
-            String name = ((AstIdentifier) this.children[0]).image;
-            ImportHandler importHandler = ctx.getImportHandler();
-            if (importHandler != null) {
-                Class<?> c = importHandler.resolve(name);
-                if (c != null) {
-                    return new ELClass(c);
+        try {
+            return this.children[0].getValue(ctx);
+        } catch (PropertyNotFoundException ex) {
+            // Next check if the base is an imported class
+            if (this.children[0] instanceof AstIdentifier) {
+                String name = ((AstIdentifier) this.children[0]).image;
+                ImportHandler importHandler = ctx.getImportHandler();
+                if (importHandler != null) {
+                    Class<?> c = importHandler.resolveClass(name);
+                    if (c != null) {
+                        return new ELClass(c);
+                    }
                 }
             }
+            throw ex;
         }
-        return this.children[0].getValue(ctx);
     }
 
     private final Target getTarget(EvaluationContext ctx) throws ELException {

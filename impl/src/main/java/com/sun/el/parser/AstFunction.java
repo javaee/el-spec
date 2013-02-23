@@ -136,38 +136,24 @@ public final class AstFunction extends SimpleNode {
         // Check to see if a function is a bean that is a Lambdaexpression.
         // If so, invoke it.  Also allow for the case that a Lambda expression
         // can return another Lambda expression.
-        if (prefix.length() == 0 && ctx.getImportHandler() != null) {
-            // First check if this is an imported class
-            Class<?> c = ctx.getImportHandler().resolve(this.localName);
-            if (c != null) {
-                // This is really a constructor call, use StaticFieldELResolver
-                // to invoke it.
-                Object[] params =
-                    ((AstMethodArguments)this.children[0]).getParameters(ctx);
-                return ctx.getELResolver().invoke(ctx, new ELClass(c),
-                                   "<init>", null, params);
-            }
+        if (prefix.length() == 0) {
             Object val = findValue(ctx, this.localName);
-            int i = 0;
-            for (; i < this.children.length; i++) {
-                if (val == null || !(val instanceof LambdaExpression)) {
-                    break;
-                }
-                Object[] params = ((AstMethodArguments)this.children[i]).
+            // Check the case of repeated lambda invocation, such as f()()()
+
+            if ((val != null) && (val instanceof LambdaExpression)) {
+                for (int i = 0; i < this.children.length; i++) {
+                    Object[] params = ((AstMethodArguments)this.children[i]).
                                                              getParameters(ctx);
-                val = ((LambdaExpression)val).invoke(ctx, params);
-            }
-            if (i == 0 && (i == this.children.length-1)) {
-                // Possibly a function call
-            } else if (i > 0 && (i == this.children.length)) {
-                // Lambda invokes
-                return val;
-            } else {
-                throw new ELException(MessageFactory.get(
+                    if (! (val instanceof LambdaExpression)) {
+                        throw new ELException(MessageFactory.get(
                             "error.function.syntax", getOutputName()));
+                    }
+                    val = ((LambdaExpression)val).invoke(ctx, params);
+                }
+                return val;
             }
         }
-        
+
         FunctionMapper fnMapper = ctx.getFunctionMapper();
         
         // quickly validate again for this request
@@ -176,6 +162,26 @@ public final class AstFunction extends SimpleNode {
         }
         Method m = fnMapper.resolveFunction(this.prefix, this.localName);
         if (m == null) {
+            if (this.prefix.length() == 0 && ctx.getImportHandler() != null) {
+                Class<?> c = null;;
+                // Check if this is a constructor call for an imported class
+                c = ctx.getImportHandler().resolveClass(this.localName);
+                String methodName = null;
+                if (c != null) {
+                    methodName = "<init>";
+                } else {
+                    // Check if this is a imported static method
+                    c = ctx.getImportHandler().resolveStatic(this.localName);
+                    methodName = this.localName;;
+                }
+                if (c != null) {
+                    // Use StaticFieldELResolver to invoke the constructor.
+                    Object[] params =
+                        ((AstMethodArguments)this.children[0]).getParameters(ctx);
+                    return ctx.getELResolver().invoke(ctx, new ELClass(c),
+                                   methodName, null, params);
+                }
+            }
             throw new ELException(MessageFactory.get("error.fnMapper.method",
                     this.getOutputName()));
         }

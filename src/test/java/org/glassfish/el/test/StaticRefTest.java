@@ -48,6 +48,7 @@ public class StaticRefTest {
 //        assertTrue((Boolean)elp.eval("T(java.lang.Boolean).TRUE"));
 //        assertTrue((Boolean)elp.eval("T(Boolean).TRUE"));
         assertTrue((Boolean)elp.eval("Boolean.TRUE"));
+        assertTrue((Boolean)elp.eval("Boolean.TRUE"));  // test caching Boolean
     }
 
 /*

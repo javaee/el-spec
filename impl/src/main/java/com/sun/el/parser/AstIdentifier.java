@@ -49,6 +49,7 @@ import javax.el.ValueExpression;
 import javax.el.VariableMapper;
 import javax.el.ValueReference;
 import javax.el.PropertyNotWritableException;
+import javax.el.ELClass;
 
 import com.sun.el.lang.EvaluationContext;
 import com.sun.el.lang.ELSupport;
@@ -114,6 +115,14 @@ public final class AstIdentifier extends SimpleNode {
         ctx.setPropertyResolved(false);
         Object ret = ctx.getELResolver().getValue(ctx, null, this.image);
         if (! ctx.isPropertyResolved()) {
+            // Check if this is an imported static field
+            if (ctx.getImportHandler() != null) {
+                Class<?> c = ctx.getImportHandler().resolveStatic(this.image);
+                if (c != null) {
+                    return ctx.getELResolver().getValue(ctx, new ELClass(c),
+                                this.image);
+                }
+            }
             ELSupport.throwUnhandled(null, this.image);
         }
         return ret;

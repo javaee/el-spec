@@ -177,7 +177,6 @@ public class StreamTest {
             "customers.stream().filter(c->c.country=='USA')\n" +
             "                  .flatMap(c->c.orders.stream()).toList()",
             exp7);
-        elp.getELManager().importClass("java.util.Arrays");
         testStream("flatMap String",
              "['the', 'quick', 'brown', 'fox']" +
              ".stream().flatMap(s->s.toCharArray().stream()).toList()",

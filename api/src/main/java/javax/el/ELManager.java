@@ -138,8 +138,18 @@ public class ELManager {
     }
 
     /**
-     * Import a class.  The imported class must be loadable from the
-     * classloader, at class resolution time.
+     * Import a static field or method.  The class of the static member must be
+     * loadable from the classloader, at class resolution time.
+     * @param className The full class name of the class to be imported
+     * @throws ELException if the name is not a full class name.
+     */
+    public void importStatic(String staticMemberName) throws ELException {
+        getELContext().getImportHandler().importStatic(staticMemberName);
+    }
+
+    /**
+     * Import a class.  The imported class must be loadable from the classloader
+     * at the expression evaluation time.
      * @param className The full class name of the class to be imported
      * @throws ELException if the name is not a full class name.
      */
@@ -148,7 +158,7 @@ public class ELManager {
     }
 
     /**
-     * Import a package.  At the class resolution time, the imported package
+     * Import a package.  At the expression evalution time, the imported package
      * name will be used to construct the full class name, which will then be
      * used to load the class.  Inherently, this is less efficient than
      * importing a class.
