@@ -175,7 +175,8 @@ public final class AstFunction extends SimpleNode {
                     methodName = this.localName;;
                 }
                 if (c != null) {
-                    // Use StaticFieldELResolver to invoke the constructor.
+                    // Use StaticFieldELResolver to invoke the constructor or the
+                    // static method.
                     Object[] params =
                         ((AstMethodArguments)this.children[0]).getParameters(ctx);
                     return ctx.getELResolver().invoke(ctx, new ELClass(c),
