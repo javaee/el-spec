@@ -57,8 +57,8 @@
 
     <properties>
         <!-- Make sure the two versions are in sync with the maven version -->
-        <spec.version>2.2.99.05</spec.version>
-        <bundle.version>2.2.99.b05</bundle.version>
+        <spec.version>2.2.99.06</spec.version>
+        <bundle.version>2.2.99.b06</bundle.version>
         <extensionName>javax.el</extensionName>
         <bundle.symbolicName>javax.el-api</bundle.symbolicName>
         <vendorName>Oracle Corporation</vendorName>
