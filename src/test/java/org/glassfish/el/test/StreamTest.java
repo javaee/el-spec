@@ -237,6 +237,7 @@ public class StreamTest {
         testStream("sum", "[1.4,2,3,4,5.1].stream().sum()", Double.valueOf(15.5)); 
         testStream("average", "[1,2,3,4,5].stream().average().get()", Double.valueOf(3.0)); 
         testStream("average", "[1.4,2,3,4,5.1].stream().average().get()", Double.valueOf(3.1)); 
+        testStream("count", "[1,2,3,4,5].stream().count()", Long.valueOf(5));
     }
     
     @Test

@@ -452,6 +452,16 @@ public class Stream {
         return sum;
     }
 
+    public Object count() {
+        long count = 0;
+        Iterator<Object> iter = iterator();
+        while (iter.hasNext()) {
+            count++;
+            iter.next();
+        }
+        return Long.valueOf(count);
+    }
+
     public Optional min() {
         Object min = null;
         Iterator<Object> iter = iterator();
