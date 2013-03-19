@@ -81,7 +81,7 @@ public class StaticFieldELResolver extends ELResolver {
      * @throws NullPointerException if context is <code>null</code>.
      * @throws PropertyNotFoundException if the specified class does not exist,
      *         or if the field is not a public static filed of the class,
-     *         or if the field is inacessible.
+     *         or if the field is inaccessible.
      */
     @Override
     public Object getValue(ELContext context, Object base, Object property) {
@@ -230,7 +230,7 @@ public class StaticFieldELResolver extends ELResolver {
      *     the type of the type of the field.
      * @throws NullPointerException if context is <code>null</code>.
      * @throws PropertyNotFoundException if field is not a public static
-     *         filed of the class, or if the field is inacessible.
+     *         filed of the class, or if the field is inaccessible.
      */
     @Override
     public Class<?> getType(ELContext context, Object base, Object property) {

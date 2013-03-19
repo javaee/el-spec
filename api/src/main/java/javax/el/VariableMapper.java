@@ -85,7 +85,7 @@ public abstract class VariableMapper {
      * @param expression The ValueExpression to be assigned
      *        to the variable.
      * @return The previous ValueExpression assigned to this variable,
-     *         null if there is no previouse assignment to this variable.
+     *         null if there is no previous assignment to this variable.
      */
     public abstract ValueExpression setVariable(
             String variable,

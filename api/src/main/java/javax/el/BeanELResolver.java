@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2013 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -486,7 +486,7 @@ public class BeanELResolver extends ELResolver {
      * Note the resolution for overloaded methods will likely be clarified
      * in a future version of the spec.
      *
-     * The provide parameters are coerced to the correcponding parameter
+     * The provide parameters are coerced to the corresponding parameter
      * types of the method, and the method is then invoked.
      *
      * @param context The context of this evaluation.

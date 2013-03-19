@@ -191,7 +191,7 @@ public abstract class ELResolver {
                                     Object property);
 
     /**
-     * Attemps to resolve and invoke the given <code>method</code> on the given
+     * Attempts to resolve and invoke the given <code>method</code> on the given
      * <code>base</code> object.
      *
      * <p>If this resolver handles the given (base, method) pair,

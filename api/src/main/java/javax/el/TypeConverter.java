@@ -114,7 +114,7 @@ public abstract class TypeConverter extends ELResolver {
      *
      * @param context The context of this evaluation.
      * @param obj The object to convert.
-     * @param targetType The target type for the convertion.
+     * @param targetType The target type for the conversion.
      * @throws ELException thrown if errors occur.
      */
     @Override

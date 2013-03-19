@@ -99,8 +99,8 @@ public class ELProcessor {
     private ExpressionFactory factory = elManager.getExpressionFactory();
 
     /**
-     * Return the ELManager used for EL porcessing.
-     * @return The ELManager used for EL porcessing.
+     * Return the ELManager used for EL processing.
+     * @return The ELManager used for EL processing.
      */
     public ELManager getELManager() {
         return elManager;
