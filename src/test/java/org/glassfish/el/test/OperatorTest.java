@@ -10,6 +10,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import javax.el.ELProcessor;
+import javax.el.ELManager;
+import javax.el.ExpressionFactory;
+import javax.el.ValueExpression;
+import javax.el.MethodExpression;
 
 /**
  *
@@ -83,5 +87,26 @@ public class OperatorTest {
         testExpr("semi 2", "x", 10L);
         testExpr("semi 3", "(x = 10; 20) + (x ; x+1)", 31L);
         testExpr("semi 4", "(x = 10; y) = 11; x + y", 21L);
+    }
+    @Test
+    public void testMisc() {
+        testExpr("quote", "\"'\"", "'");
+        testExpr("quote", "'\"'", "\"");
+        ELManager elm = elp.getELManager();
+        ValueExpression v = elm.getExpressionFactory().createValueExpression(
+                elm.getELContext(), "#${1+1}", Object.class);
+        Object ret = v.getValue(elm.getELContext());
+        assertEquals(ret, "#2");
+//        elp.eval("[1,2][true]"); // throws IllegalArgumentExpression
+/*        
+        elp.defineBean("date", new Date(2013, 1,2));
+        elp.eval("date.getYear()");
+        
+        elp.defineBean("href", null);
+        testExpr("space", "(empty href)?'#':href", "#");
+        MethodExpression m = elm.getExpressionFactory().createMethodExpression(
+                elm.getELContext(), "${name}", Object.class, new Class[] {});
+        m.invoke(elm.getELContext(), null);
+        */
     }
 }
