@@ -97,6 +97,9 @@ public class OperatorTest {
                 elm.getELContext(), "#${1+1}", Object.class);
         Object ret = v.getValue(elm.getELContext());
         assertEquals(ret, "#2");
+        
+        elp.setVariable("debug", "true");
+        ret = elp.eval("debug == true");
 //        elp.eval("[1,2][true]"); // throws IllegalArgumentExpression
 /*        
         elp.defineBean("date", new Date(2013, 1,2));

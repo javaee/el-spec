@@ -37,11 +37,12 @@ public class StreamTest {
         System.out.println(msg);
     }
     /**
-     * Test a collection query that returns an Iterable.
+     * Test a collection query that returns an array, list or Iterable.
      * @param name of the test
      * @param query The EL query string
-     * @param expected The expected result of the Iterable.  The array
-     *           element should equal the Iterable element, when enumerated.
+     * @param expected The expected result of the array, list or Iterable.
+     *     The array element should equal the elements in the array, list or
+     *     Iterable, when enumerated.
      */
 
     void testStream(String name, String query, String[] expected) {

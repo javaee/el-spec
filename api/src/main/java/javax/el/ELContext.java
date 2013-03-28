@@ -456,9 +456,12 @@ public abstract class ELContext {
         boolean propertyResolvedSave = isPropertyResolved();
         try {
             setPropertyResolved(false);
-            Object res = getELResolver().convertToType(this, obj, targetType);
-            if (isPropertyResolved()) {
-                return res;
+            ELResolver elResolver = getELResolver();
+            if (elResolver != null) {
+                Object res = elResolver.convertToType(this, obj, targetType);
+                if (isPropertyResolved()) {
+                    return res;
+                }
             }
         } catch (ELException ex) {
             throw ex;
