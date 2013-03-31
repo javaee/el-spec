@@ -255,4 +255,9 @@ public class StreamTest {
         elp.eval("comparing = map->(x,y)->map(x).compareTo(map(y))");
         testStream("min", "customers.stream().min(comparing(c->c.orders.size())).get().name", "Charlie Yeh");
     }
+    
+    @Test
+    public void testMap() {
+        elp.eval("v = {'one':1, 'two':2}");
+    }
 }

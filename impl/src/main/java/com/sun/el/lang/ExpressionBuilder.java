@@ -250,8 +250,21 @@ public final class ExpressionBuilder implements NodeVisitor {
      */
     public void visit(Node node) throws ELException {
         if (node instanceof AstFunction) {
-
             AstFunction funcNode = (AstFunction) node;
+            if ((funcNode.getPrefix().length() == 0) &&
+                (this.fnMapper == null || fnMapper.resolveFunction(
+                                              funcNode.getPrefix(),
+                                              funcNode.getLocalName()) == null)) {
+                // This can be a call to a LambdaExpression.  The target
+                // of the call is a bean or an EL variable.  Capture
+                // the variable name in the variable mapper if it is an
+                // variable.  The decision to invoke the static method or
+                // the LambdaExpression will be made at runtime.
+                if (this.varMapper != null) {
+                    this.varMapper.resolveVariable(funcNode.getLocalName());
+                }
+                return;
+            }
 
             if (this.fnMapper == null) {
                 throw new ELException(MessageFactory.get("error.fnMapper.null"));
@@ -259,15 +272,6 @@ public final class ExpressionBuilder implements NodeVisitor {
             Method m = fnMapper.resolveFunction(funcNode.getPrefix(), funcNode
                     .getLocalName());
             if (m == null) {
-                if (funcNode.getPrefix().length() == 0){
-                    // This can be a call to a LambdaExpression.  The target
-                    // of the call is a bean or an EL variable.  Capture
-                    // the variable name in the variable mapper if it is an
-                    // variable.  The decision to invoke the static method or
-                    // the LambdaExpression will be made at runtime.
-                    this.varMapper.resolveVariable(funcNode.getLocalName());
-                    return;
-                }
                 throw new ELException(MessageFactory.get(
                         "error.fnMapper.method", funcNode.getOutputName()));
             }
