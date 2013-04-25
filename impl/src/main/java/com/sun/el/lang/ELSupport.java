@@ -74,9 +74,9 @@ public class ELSupport {
     }
 
     /**
-     * @param obj0
-     * @param obj1
-     * @return
+     * @param obj0 First object to be compared
+     * @param obj1 Second object to be compared
+     * @return The result (an int with values -1, 0, or 1) of the comparison
      * @throws EvaluationException
      */
     public final static int compare(final Object obj0, final Object obj1)
@@ -123,9 +123,9 @@ public class ELSupport {
     }
 
     /**
-     * @param obj0
-     * @param obj1
-     * @return
+     * @param obj0 Fisrt object to be compared
+     * @param obj1 Second object to be compared
+     * @return true if the objects compared equal
      * @throws EvaluationException
      */
     public final static boolean equals(final Object obj0, final Object obj1)
@@ -173,8 +173,8 @@ public class ELSupport {
     }
 
     /**
-     * @param obj
-     * @return
+     * @param obj Object to be coerced
+     * @return The result of coercion
      */
     public final static Boolean coerceToBoolean(final Object obj)
             throws IllegalArgumentException {
@@ -343,8 +343,8 @@ public class ELSupport {
     }
 
     /**
-     * @param obj
-     * @return
+     * @param obj Object to be coerced
+     * @return The result of coercion
      */
     public final static String coerceToString(final Object obj) {
         if (obj == null) {
@@ -419,8 +419,8 @@ public class ELSupport {
     }
 
     /**
-     * @param obj
-     * @return
+     * @param obj An array of objects
+     * @return true if the array contains a null, false otherwise
      */
     public final static boolean containsNulls(final Object[] obj) {
         for (int i = 0; i < obj.length; i++) {

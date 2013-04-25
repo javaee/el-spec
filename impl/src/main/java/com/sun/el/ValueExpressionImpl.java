@@ -179,7 +179,7 @@ public final class ValueExpressionImpl extends ValueExpression implements
     }
 
     /**
-     * @return
+     * @return The Node for the expression
      * @throws ELException
      */
     private Node getNode() throws ELException {

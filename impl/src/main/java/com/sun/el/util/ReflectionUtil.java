@@ -109,7 +109,7 @@ public class ReflectionUtil {
     /**
      * Converts an array of Class names to Class types
      * @param s
-     * @return
+     * @return The array of Classes
      * @throws ClassNotFoundException
      */
     public static Class[] toTypeArray(String[] s) throws ClassNotFoundException {
@@ -125,7 +125,7 @@ public class ReflectionUtil {
     /**
      * Converts an array of Class types to Class names
      * @param c
-     * @return
+     * @return The array of Classes
      */
     public static String[] toTypeNameArray(Class[] c) {
         if (c == null)
@@ -218,9 +218,9 @@ public class ReflectionUtil {
     }
 
     /**
-     * @param base
-     * @param property
-     * @return
+     * @param base The base object
+     * @param property The property
+     * @return The PropertyDescriptor for the base with the given property
      * @throws ELException
      * @throws PropertyNotFoundException
      */

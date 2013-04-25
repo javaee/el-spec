@@ -234,7 +234,7 @@ public final class MethodExpressionImpl extends MethodExpression implements
     }
 
     /**
-     * @return
+     * @return The Node for the expression
      * @throws ELException
      */
     private Node getNode() throws ELException {

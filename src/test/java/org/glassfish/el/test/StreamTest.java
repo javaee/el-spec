@@ -258,6 +258,9 @@ public class StreamTest {
     
     @Test
     public void testMap() {
-        elp.eval("v = {'one':1, 'two':2}");
+        Object r = elp.eval("v = {'one':1, 'two':2}");
+        System.out.println(" "+ r);
+        r = elp.eval("{1,2,3}");
+        System.out.println(" "+ r);
     }
 }

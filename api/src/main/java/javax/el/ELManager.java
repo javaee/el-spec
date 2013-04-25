@@ -140,7 +140,7 @@ public class ELManager {
     /**
      * Import a static field or method.  The class of the static member must be
      * loadable from the classloader, at class resolution time.
-     * @param className The full class name of the class to be imported
+     * @param staticMemberName The full class name of the class to be imported
      * @throws ELException if the name is not a full class name.
      */
     public void importStatic(String staticMemberName) throws ELException {
