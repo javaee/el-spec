@@ -126,7 +126,7 @@
                         <Extension-Name>${extensionName}</Extension-Name>
                         <Specification-Version>${spec.version}</Specification-Version>
                         <Specification-Vendor>${vendorName}</Specification-Vendor>
-                        <Implementation-Version>${version}</Implementation-Version>
+                        <Implementation-Version>${project.version}</Implementation-Version>
                         <Implementation-Vendor>${vendorName}</Implementation-Vendor>
                     </instructions>
                 </configuration>
@@ -142,6 +142,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-jar-plugin</artifactId>
+                <version>2.4</version>
                 <configuration>
                     <archive>
                         <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
@@ -180,6 +181,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.8.1</version>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
