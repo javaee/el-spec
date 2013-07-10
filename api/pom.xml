@@ -67,7 +67,7 @@
         <findbugs.threshold>High</findbugs.threshold>
     </properties>
 
-    <url>http://uel-spec.java.net</url>
+    <url>http://el-spec.java.net</url>
     <organization>
         <name>GlassFish Community</name>
         <url>http://glassfish.org</url>
